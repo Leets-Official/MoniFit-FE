@@ -1,33 +1,48 @@
 import { cva, type VariantProps } from "class-variance-authority";
 import clsx from "clsx";
 
-const buttonStyles = cva("flex items-center font-medium text-base", {
-  variants: {
-    width: {
-      xxl: "w-[452px]",
-      xl: "w-[359px]",
-      md: "w-[322px]",
-      sm: "w-[305px]",
-      xs: "w-[186px]",
+const buttonStyles = cva(
+  clsx(
+    "flex items-center justify-center",
+    "font-medium text-base",
+    "disabled:bg-[#757575] disabled:border disabled:border-[#D9D9D9]",
+  ),
+  {
+    variants: {
+      width: {
+        xxl: "w-[452px]",
+        xl: "w-[359px]",
+        md: "w-[322px]",
+        sm: "w-[305px]",
+        xs: "w-[81px]",
+      },
+      height: {
+        xl: "h-[79px]",
+        md: "h-[70px]",
+        sm: "h-[60px]",
+        xs: "h-[45px]",
+      },
+      rounded: {
+        md: "rounded-[13px]",
+        sm: "rounded-[7px]",
+      },
+      fontSize: {
+        md: "text-[16px]",
+        sm: "text-[12px]",
+      },
+      fontColor: { default: "text-[#EAEAEA]" },
+      bgColor: { default: "bg-[#6E76AD] active:bg-[#555C8E]" },
     },
-    height: {
-      xl: "h-[79px]",
-      md: "h-[70px]",
-      sm: "h-[60px]",
-      xs: "h-[45px]",
+    defaultVariants: {
+      width: "xl",
+      height: "xs",
+      rounded: "sm",
+      fontSize: "md",
+      bgColor: "default",
+      fontColor: "default",
     },
-    rounded: {
-      md: "rounded-[13px]",
-      sm: "rounded-[7px]",
-    },
-    fontColor: {},
   },
-  defaultVariants: {
-    width: "xl",
-    height: "xs",
-    rounded: "sm",
-  },
-});
+);
 
 type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> &
   VariantProps<typeof buttonStyles>;
@@ -37,11 +52,19 @@ export default function Button({
   width,
   height,
   rounded,
+  fontSize,
+  bgColor,
+  fontColor,
   children,
+  ...props
 }: ButtonProps) {
   return (
     <button
-      className={clsx(buttonStyles({ width, height, rounded }), className)}
+      className={clsx(
+        buttonStyles({ width, height, rounded, fontSize, bgColor, fontColor }),
+        className,
+      )}
+      {...props}
     >
       {children}
     </button>
