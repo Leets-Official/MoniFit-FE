@@ -1,6 +1,6 @@
 import { Canvas } from "@react-three/fiber";
 import { useState } from "react";
-import LiquidSphere from "../../components/LiquidSphere";
+import LiquidSphere from "@/components/LiquidSphere";
 
 export default function LiquidSphereTestPage() {
   const TOTAL_AMOUNT = 10000000;
