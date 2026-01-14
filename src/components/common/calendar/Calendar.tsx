@@ -1,9 +1,9 @@
-import { DateCell } from "./DateCell";
+import { DateGrid } from "./DateGrid";
+
 export function Calendar() {
     return (
         <div>
-            <DateCell isSelected={true} />
-            <DateCell isSelected={false} />
+            <DateGrid />
         </div>
     );
 }
