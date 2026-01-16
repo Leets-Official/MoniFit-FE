@@ -6,7 +6,7 @@ export function CalendarHeader() {
     <div className="flex items-center justify-between w-[276.74px]">
       
       {/* 년/월 */}
-      <span className="font-semibold">
+      <span className="font-semibold text-[12.48px]">
         2026년 10월
       </span>
 
