@@ -22,11 +22,11 @@ const buttonStyles = cva(
       },
       borderColor: {
         default: "",
-        outline: "border border-gray-0 opacity-30",
+        outline: "border border-gray-0 border-opacity-30",
       },
       fontColor: {
-        default: "text-gray-90 ",
-        white: "text-gray-0",
+        default: "text-gray-90",
+        white: "text-white",
       },
       width: {
         default: "w-71.25",
@@ -38,12 +38,12 @@ const buttonStyles = cva(
       height: { default: "h-15", sm: "h-13" },
     },
     defaultVariants: {
-      rounded: "default",
-      fontColor: "default",
-      bgColor: "default",
-      borderColor: "default",
       width: "default",
       height: "default",
+      rounded: "default",
+      bgColor: "default",
+      borderColor: "default",
+      fontColor: "default",
     },
   },
 );
