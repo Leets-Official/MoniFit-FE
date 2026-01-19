@@ -1,3 +1,4 @@
+import { ColoredStarIcon, ReportIcon } from "@/assets/icons";
 import { Outlet } from "react-router-dom";
 
 export default function MobileLayout() {
@@ -7,6 +8,8 @@ export default function MobileLayout() {
         <header className="bg-point-mint flex h-8 w-full items-center justify-center">
           Header
         </header>
+        <ReportIcon />
+        <ColoredStarIcon />
         <Outlet />
       </div>
     </main>
