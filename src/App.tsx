@@ -3,17 +3,13 @@ import "@/App.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import MobileLayout from "@/layouts/MobileLayout";
-import { TestForButtonPage, TestForInputPage } from "./pages/test";
-
-import { MainPage } from "./pages";
-
 import {
   TestForButtonPage,
   TestForCategoryButtonPage,
-  TestForExpenseRecordModalPage,
   TestForInputPage,
-  TestForLiquidSpherePage,
 } from "./pages/test";
+
+import { MainPage } from "./pages";
 
 function App() {
   return (
