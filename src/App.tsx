@@ -7,7 +7,6 @@ import MobileLayout from "@/layouts/MobileLayout";
 import {
   TestForButtonPage,
   TestForCategoryButtonPage,
-  TestForExpenseRecordModalPage,
   TestForInputPage,
   TestForLiquidSpherePage,
 } from "./pages/test";
