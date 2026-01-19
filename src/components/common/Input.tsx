@@ -4,49 +4,34 @@ import { cva, type VariantProps } from "class-variance-authority";
 import clsx from "clsx";
 
 const InputStyles = cva(
-  [
-    "flex items-center justify-center",
-    "placeholder:text-sub2 text-sub1 placeholder:text-gray-10 text-gray-0",
-    "px-4",
-  ],
+  ["flex items-center justify-center", "placeholder:text-gray-50 text-gray-0"],
   {
     variants: {
-      rounded: {
-        large: "rounded-lg",
-        medium: "rounded-md",
-        small: "rounded-sm",
-      },
       width: {
         large: "w-84.75",
         medium: "w-58.75",
         small: "w-32",
       },
-
-      borderColor: {
-        "opacity-30": "border-opacity-30 border border-gray-0",
-        "opacity-10": "border-opacity-10 border-[0.7px] border-gray-0",
-        "opacity-100": "border border-gray-10",
-      },
-      // 53, 44, 23
-      height: { large: "h-13.25", medium: "h-11", small: "h-5.75" },
     },
     compoundVariants: [
       {
         width: "large",
-        height: "large",
-        class: "text-sub1 placeholder:text-sub2",
+        class:
+          "px-4 pr-10 h-13.25 rounded-lg border-opacity-30 border border-gray-0 text-sub1 placeholder:text-sub2",
       },
       {
         width: "medium",
-        height: "medium",
-        class: "text-sub1 placeholder:text-sub2",
+        class:
+          "px-4 h-11 rounded-md text-sub1 placeholder:text-sub2 border border-gray-0",
+      },
+      {
+        width: "small",
+        class:
+          "pl-2 pr-6 h-5.75 border-[0.7px] border-opacity-30 rounded-sm text-[8px] font-semibold",
       },
     ],
     defaultVariants: {
       width: "large",
-      height: "large",
-      rounded: "large",
-      borderColor: "opacity-10",
     },
   },
 );
@@ -54,31 +39,22 @@ const InputStyles = cva(
 type InputProps = React.InputHTMLAttributes<HTMLInputElement> &
   VariantProps<typeof InputStyles>;
 
-export const Input = ({
-  // fontColor,
-  borderColor,
-  width,
-  height,
-  rounded,
-  className,
-  children,
-  ...props
-}: InputProps) => (
-  <input
-    className={clsx(
-      InputStyles({
-        rounded,
-
-        borderColor,
-        width,
-        height,
-        // fontColor,
-      }),
-      className,
-      "",
+export const Input = ({ width, className, ...props }: InputProps) => (
+  <div className="relative">
+    <input
+      className={clsx(
+        InputStyles({
+          width,
+        }),
+        className,
+      )}
+      {...props}
+    />
+    {width === "large" && props.type === "number" && (
+      <span className="absolute top-4 right-3 text-gray-50">원</span>
     )}
-    {...props}
-  >
-    {children}
-  </input>
+    {width === "small" && props.type === "number" && (
+      <span className="absolute text-xs top-1 right-2 text-gray-50">원</span>
+    )}
+  </div>
 );
