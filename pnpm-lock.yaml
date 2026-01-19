@@ -2206,6 +2206,13 @@ packages:
       }
     engines: { node: ">=8" }
 
+  path-exists@4.0.0:
+    resolution:
+      {
+        integrity: sha512-ak9Qy5Q7jYb2Wwcey5Fpvg2KoAc/ZIhLSLOSBmRmygPsGwkVVt0fZa0qrtMz+m6tJTAHfZQ8FnmB4MG4LWy7/w==,
+      }
+    engines: { node: ">=8" }
+
   path-key@3.1.1:
     resolution:
       {
