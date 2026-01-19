@@ -31,7 +31,7 @@ export const ExpenseRecordModal = ({ onClose }: ExpenseRecordModalProps) => {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    setIsVisible(true);
+    setTimeout(() => setIsVisible(true), 0);
   }, []);
 
   const handleClose = () => {
