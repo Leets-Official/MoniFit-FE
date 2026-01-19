@@ -3,13 +3,17 @@ import "@/App.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import MobileLayout from "@/layouts/MobileLayout";
+import { TestForButtonPage } from "./pages/test";
 
 function App() {
   return (
     <>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<MobileLayout />}></Route>
+          <Route path="/" element={<MobileLayout />}>
+            {/* 테스트 페이지용 라우팅 */}
+            <Route path="/test/button" element={<TestForButtonPage />}></Route>
+          </Route>
         </Routes>
       </BrowserRouter>
     </>
