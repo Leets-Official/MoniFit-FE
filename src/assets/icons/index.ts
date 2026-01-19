@@ -1,0 +1,37 @@
+import ColoredFoodSvg from "./colored/colored_food.svg?react";
+import ColoredHospitalSvg from "./colored/colored_hospital.svg?react";
+import ColoredShopingSvg from "./colored/colored_shoping.svg?react";
+import ColoredHomeSvg from "./colored/colored-home.svg?react";
+import ColoredStarSvg from "./colored/colored-star.svg?react";
+
+import AddCircleFillSvg from "./general/add-circle-fill.svg?react";
+import AddCircleOutlineSvg from "./general/add-circle-outline.svg?react";
+import AddSvg from "./general/add.svg?react";
+import CalendarSvg from "./general/calendar.svg?react";
+import ChevronDownSvg from "./general/chevron-down.svg?react";
+import ChevronLeftSvg from "./general/chevron-left.svg?react";
+import ChevronRightSvg from "./general/chevron-right.svg?react";
+import CloseCircleFillSvg from "./general/close-circle-fill.svg?react";
+import CloseCircleOutlineSvg from "./general/close-circle-outline.svg?react";
+import CloseSvg from "./general/close.svg?react";
+import HomeSvg from "./general/home.svg?react";
+import ReportSvg from "./general/report.svg?react";
+
+export const ColoredFoodIcon = ColoredFoodSvg;
+export const ColoredHospitalIcon = ColoredHospitalSvg;
+export const ColoredShopingIcon = ColoredShopingSvg;
+export const ColoredHomeIcon = ColoredHomeSvg;
+export const ColoredStarIcon = ColoredStarSvg;
+
+export const AddCircleFillIcon = AddCircleFillSvg;
+export const AddCircleOutlineIcon = AddCircleOutlineSvg;
+export const AddIcon = AddSvg;
+export const CalendarIcon = CalendarSvg;
+export const ChevronDownIcon = ChevronDownSvg;
+export const ChevronLeftIcon = ChevronLeftSvg;
+export const ChevronRightIcon = ChevronRightSvg;
+export const CloseCircleFillIcon = CloseCircleFillSvg;
+export const CloseCircleOutlineIcon = CloseCircleOutlineSvg;
+export const CloseIcon = CloseSvg;
+export const HomeIcon = HomeSvg;
+export const ReportIcon = ReportSvg;

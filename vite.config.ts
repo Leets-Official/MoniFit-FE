@@ -5,15 +5,7 @@ import tailwindcss from "@tailwindcss/vite";
 import svgr from "vite-plugin-svgr";
 
 export default defineConfig({
-  plugins: [
-    react(),
-    tailwindcss(),
-    svgr({
-      svgrOptions: {
-        icon: true,
-      },
-    }),
-  ],
+  plugins: [react(), tailwindcss(), svgr()],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "src"),
