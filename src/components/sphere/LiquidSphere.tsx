@@ -7,7 +7,14 @@ type LiquidSphereProps = {
   percent: number;
 };
 
-export default function LiquidSphere({ percent }: LiquidSphereProps) {
+const GLASS_RADIUS = 1.99;
+const LIQUID_GAP = 0.01;
+const LIQUID_RADIUS = GLASS_RADIUS - LIQUID_GAP;
+const RIM_RADIUS = 2.0;
+const PARTICLE_GAP = 0.01;
+const PARTICLE_RADIUS = LIQUID_RADIUS - PARTICLE_GAP;
+
+export function LiquidSphere({ percent }: LiquidSphereProps) {
   const liquidRef = useRef<Mesh>(null!);
   const particleRef = useRef<THREE.Points>(null!);
   const fill = THREE.MathUtils.clamp(percent / 100, 0, 1);
@@ -34,11 +41,11 @@ export default function LiquidSphere({ percent }: LiquidSphereProps) {
       uniforms: {
         uTime: { value: 0 },
         uFill: { value: fill },
-        uRadius: { value: 1.818 },
+        uRadius: { value: LIQUID_RADIUS },
         uWaveAmp: { value: 1 },
-        uColor: { value: new THREE.Color("#4fd0e5") },
-        uDeep: { value: new THREE.Color("#0a3557") },
-        uHighlight: { value: new THREE.Color("#dff8ff") },
+        uColor: { value: new THREE.Color("#d6cbff") },
+        uDeep: { value: new THREE.Color("#4a3a7a") },
+        uHighlight: { value: new THREE.Color("#f6f2ff") },
         uWallDir: { value: new THREE.Vector3(1, 0, 0).normalize() },
       },
       vertexShader: `
@@ -158,8 +165,8 @@ export default function LiquidSphere({ percent }: LiquidSphereProps) {
   }, [fill]);
 
   const particleData = useMemo(() => {
-    const count = 600;
-    const radius = 1.71;
+    const count = 400;
+    const radius = PARTICLE_RADIUS;
     const positions = new Float32Array(count * 3);
     const seeds = new Float32Array(count);
     const rand = (i: number, offset: number) => {
@@ -190,9 +197,9 @@ export default function LiquidSphere({ percent }: LiquidSphereProps) {
       uniforms: {
         uTime: { value: 0 },
         uFill: { value: fill },
-        uRadius: { value: 1.818 },
-        uSilver: { value: new THREE.Color("#e4f4ff") },
-        uGold: { value: new THREE.Color("#bfe9ff") },
+        uRadius: { value: LIQUID_RADIUS },
+        uSilver: { value: new THREE.Color("#f2edff") },
+        uGold: { value: new THREE.Color("#ddd2ff") },
       },
       vertexShader: `
         uniform float uTime;
@@ -309,13 +316,13 @@ export default function LiquidSphere({ percent }: LiquidSphereProps) {
   return (
     <group>
       <mesh>
-        <sphereGeometry args={[1.98, 196, 196]} />
+        <sphereGeometry args={[GLASS_RADIUS, 196, 196]} />
         <meshPhysicalMaterial
           color="#ffffff"
           roughness={0.0}
           metalness={0.0}
           transmission={1}
-          thickness={0.5}
+          thickness={0.1}
           ior={1.48}
           attenuationColor="#ffffff"
           attenuationDistance={8.0}
@@ -328,10 +335,10 @@ export default function LiquidSphere({ percent }: LiquidSphereProps) {
         />
       </mesh>
       <mesh material={rimMaterial}>
-        <sphereGeometry args={[2.052, 128, 128]} />
+        <sphereGeometry args={[RIM_RADIUS, 128, 128]} />
       </mesh>
       <mesh ref={liquidRef} material={liquidMaterial} renderOrder={1}>
-        <sphereGeometry args={[1.818, 196, 196]} />
+        <sphereGeometry args={[LIQUID_RADIUS, 196, 196]} />
       </mesh>
       <points ref={particleRef} material={particleMaterial} renderOrder={2}>
         <bufferGeometry>

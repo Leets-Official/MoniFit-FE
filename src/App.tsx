@@ -3,13 +3,13 @@ import "@/App.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import MobileLayout from "./layouts/MobileLayout";
-import LiquidSphereTestPage from "./pages/test/LiquidSphereTest";
 
 import {
   TestForButtonPage,
   TestForCategoryButtonPage,
   TestForExpenseRecordModalPage,
   TestForInputPage,
+  TestForLiquidSpherePage,
 } from "./pages/test";
 
 function App() {
@@ -18,10 +18,6 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<MobileLayout />}>
-            <Route
-              path="/test/liquid-sphere"
-              element={<LiquidSphereTestPage />}
-            />
             {/* 테스트 페이지용 라우팅 */}
             <Route path="/test/button" element={<TestForButtonPage />} />
             <Route path="/test/input" element={<TestForInputPage />} />
@@ -32,6 +28,10 @@ function App() {
             <Route
               path="/test/modal/expense-record"
               element={<TestForExpenseRecordModalPage />}
+            />
+            <Route
+              path="/test/liquid-sphere"
+              element={<TestForLiquidSpherePage />}
             />
           </Route>
         </Routes>
