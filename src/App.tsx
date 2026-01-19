@@ -3,15 +3,13 @@ import "@/App.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import MobileLayout from "@/layouts/MobileLayout";
-import { TestForButtonPage } from "./pages/test";
-
-import { MainPage } from "./pages";
 
 import {
   TestForButtonPage,
   TestForCategoryButtonPage,
   TestForExpenseRecordModalPage,
   TestForInputPage,
+  TestForLiquidSpherePage,
 } from "./pages/test";
 
 import { MainPage } from "./pages";
@@ -33,10 +31,6 @@ function App() {
             <Route
               path="/test/modal/expense-record"
               element={<TestForExpenseRecordModalPage />}
-            />
-            <Route
-              path="/test/liquid-sphere"
-              element={<TestForLiquidSpherePage />}
             />
             <Route
               path="/test/liquid-sphere"
