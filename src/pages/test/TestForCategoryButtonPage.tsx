@@ -20,9 +20,9 @@ export const TestForCategoryButtonPage = () => {
   const [selected, setSelected] = useState<string>("food");
 
   return (
-    <main className="flex items-center justify-center w-full h-full bg-black">
+    <main className="flex h-full w-full items-center justify-center bg-black">
       <section className="to-[] flex h-132.5 w-93.75 flex-col items-center bg-linear-to-b from-[#1F1F1F] to-[#30304F]">
-        <div className="flex mt-37">
+        <div className="mt-37 flex">
           {CATEGORIES.map(({ key, label, icon }) => (
             <CategoryButton
               key={key}
