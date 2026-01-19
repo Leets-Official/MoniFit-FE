@@ -60,11 +60,11 @@ export const ExpenseRecordModal = ({ onClose }: ExpenseRecordModalProps) => {
       )}
     >
       <button onClick={handleClose}>
-        <ChevronDownIcon className="absolute top-3 left-1/2 -translate-x-1/2" />
+        <ChevronDownIcon className="absolute -translate-x-1/2 top-3 left-1/2" />
       </button>
 
-      <div className="flex h-full w-full flex-col items-center">
-        <span className="text-h3 text-gray-10 w-full">지출 기록</span>
+      <div className="flex flex-col items-center w-full h-full">
+        <span className="w-full text-h3 text-gray-10">지출 기록</span>
         <div className="relative mt-15.5 flex w-full">
           {CATEGORIES.map(({ key, label, icon }) => (
             <CategoryButton
@@ -83,7 +83,7 @@ export const ExpenseRecordModal = ({ onClose }: ExpenseRecordModalProps) => {
             </span>
           )}
         </div>
-        <div className="relative mt-7 w-full">
+        <div className="relative w-full mt-7">
           <Input
             width="large"
             type="number"
