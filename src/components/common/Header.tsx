@@ -16,7 +16,7 @@ export const Header = ({
 }: HeaderProps) => {
   const navigate = useNavigate();
   return (
-    <header className="flex h-13 w-full items-center justify-between border-2 border-white px-4 py-2">
+    <header className="flex h-13 w-full items-center justify-between px-4 py-2">
       <button onClick={() => navigate("/")}>
         <img src={"/src/public/banner.png"} alt="banner" />
       </button>
