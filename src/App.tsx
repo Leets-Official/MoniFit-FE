@@ -33,6 +33,10 @@ function App() {
               path="/test/liquid-sphere"
               element={<TestForLiquidSpherePage />}
             />
+            <Route
+              path="/test/liquid-sphere"
+              element={<TestForLiquidSpherePage />}
+            />
           </Route>
         </Routes>
       </BrowserRouter>
