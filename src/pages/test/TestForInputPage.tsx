@@ -5,11 +5,11 @@ export const TestForInputPage = () => {
     <>
       <main className="flex flex-col items-center justify-start w-full h-full gap-4 pt-10 bg-black opacity-70">
         <div className="flex flex-col items-center justify-center w-full gap-2">
-          <Input width="large" placeholder="금액을 입력하세요" />
+          <Input width="large" placeholder="금액을 입력하세요" suffix="원" />
           <Input width="large" type="number" placeholder="금액을 입력하세요" />
           <Input width="medium" placeholder="홍길동" />
-          <Input width="small" type="number" placeholder="홍길동" />
-          <Input width="small" placeholder="홍길동" />
+          <Input width="small" type="number" placeholder="홍길동" suffix="원" />
+          <Input width="small" placeholder="홍길동" suffix="원" />
         </div>
       </main>
     </>

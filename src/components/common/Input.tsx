@@ -37,11 +37,20 @@ const InputStyles = cva(
 );
 
 type InputProps = React.InputHTMLAttributes<HTMLInputElement> &
-  VariantProps<typeof InputStyles>;
+  VariantProps<typeof InputStyles> & {
+    suffix?: React.ReactNode;
+  };
 
-export const Input = ({ width, className, ...props }: InputProps) => (
+export const Input = ({
+  width,
+  type,
+  suffix,
+  className,
+  ...props
+}: InputProps) => (
   <div className="relative">
     <input
+      type={type}
       className={clsx(
         InputStyles({
           width,
@@ -50,11 +59,16 @@ export const Input = ({ width, className, ...props }: InputProps) => (
       )}
       {...props}
     />
-    {width === "large" && props.type === "number" && (
-      <span className="absolute top-4 right-3 text-gray-50">원</span>
-    )}
-    {width === "small" && props.type === "number" && (
-      <span className="absolute text-xs top-1 right-2 text-gray-50">원</span>
+    {suffix && (
+      <span
+        className={clsx(
+          "absolute text-gray-50",
+          width === "large" && "text-sub2 top-4 right-3",
+          width === "small" && "top-1 right-2 text-xs",
+        )}
+      >
+        {suffix}
+      </span>
     )}
   </div>
 );
