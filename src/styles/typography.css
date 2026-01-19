@@ -196,7 +196,7 @@
     letter-spacing: var(--tracking-tight);
   }
 
-  .text-sub2 {
+  <<<<<<< HEAD .text-sub2 {
     font-family: var(--font-sans);
     font-size: var(--text-sub2-size);
     line-height: var(--text-sub2-line);
@@ -204,7 +204,7 @@
     letter-spacing: var(--tracking-tight);
   }
 
-  .text-body1 {
+  =======>>>>>>>24b3fc7 (style:Color 및 Typo 시스템 적용) .text-body1 {
     font-family: var(--font-sans);
     font-size: var(--text-body1-size);
     line-height: var(--text-body1-line);
@@ -228,7 +228,7 @@
     letter-spacing: var(--tracking-tight);
   }
 
-  .text-caption2 {
+  <<<<<<< HEAD .text-caption2 {
     font-family: var(--font-sans);
     font-size: var(--text-caption2-size);
     line-height: var(--text-caption2-line);
@@ -236,7 +236,7 @@
     letter-spacing: var(--tracking-tight);
   }
 
-  .text-button1 {
+  =======>>>>>>>24b3fc7 (style:Color 및 Typo 시스템 적용) .text-button1 {
     font-family: var(--font-sans);
     font-size: var(--text-button1-size);
     line-height: var(--text-button1-line);
