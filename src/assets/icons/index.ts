@@ -16,6 +16,7 @@ import CloseCircleOutlineSvg from "./general/close-circle-outline.svg?react";
 import CloseSvg from "./general/close.svg?react";
 import HomeSvg from "./general/home.svg?react";
 import ReportSvg from "./general/report.svg?react";
+import AvartarSvg from "./general/avatar.svg?react";
 
 export const ColoredFoodIcon = ColoredFoodSvg;
 export const ColoredHospitalIcon = ColoredHospitalSvg;
@@ -35,3 +36,4 @@ export const CloseCircleOutlineIcon = CloseCircleOutlineSvg;
 export const CloseIcon = CloseSvg;
 export const HomeIcon = HomeSvg;
 export const ReportIcon = ReportSvg;
+export const AvartarIcon = AvartarSvg;
