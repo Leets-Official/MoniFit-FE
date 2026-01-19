@@ -4,14 +4,14 @@ import { Button } from "@/components/common/Button";
 export const TestForButtonPage = () => {
   return (
     <>
-      <main className="flex h-full w-full flex-col items-center justify-start gap-4 bg-black pt-10 opacity-70">
-        <div className="flex w-full justify-center gap-1">
+      <main className="flex flex-col items-center justify-start w-full h-full gap-4 pt-10 bg-black opacity-70">
+        <div className="flex justify-center w-full gap-1">
           <Button>다음</Button>
         </div>
-        <div className="flex w-full justify-center gap-1">
+        <div className="flex justify-center w-full gap-1">
           <Button width="md">지출 입력하기</Button>
         </div>
-        <div className="flex w-full justify-center gap-2">
+        <div className="flex justify-center w-full gap-2">
           <Button
             bgColor={"none"}
             width={"xs"}
@@ -25,7 +25,7 @@ export const TestForButtonPage = () => {
             저장하기
           </Button>
         </div>
-        <div className="flex w-full justify-center gap-2">
+        <div className="flex justify-center w-full gap-2">
           <Button
             bgColor={"none"}
             fontColor={"white"}
