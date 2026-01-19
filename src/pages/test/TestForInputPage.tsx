@@ -3,8 +3,8 @@ import { Input } from "@/components/common/Input";
 export const TestForInputPage = () => {
   return (
     <>
-      <main className="flex h-full w-full flex-col items-center justify-start gap-4 bg-black pt-10 opacity-70">
-        <div className="flex w-full flex-col items-center justify-center gap-2">
+      <main className="flex flex-col items-center justify-start w-full h-full gap-4 pt-10 bg-black opacity-70">
+        <div className="flex flex-col items-center justify-center w-full gap-2">
           <Input width="large" placeholder="금액을 입력하세요" suffix="원" />
           <Input width="large" type="number" placeholder="금액을 입력하세요" />
           <Input width="medium" placeholder="홍길동" />
