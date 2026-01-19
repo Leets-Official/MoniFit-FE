@@ -3,6 +3,9 @@ import "@/App.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import MobileLayout from "@/layouts/MobileLayout";
+
+import { MainPage } from "./pages";
+
 import {
   TestForButtonPage,
   TestForCategoryButtonPage,
