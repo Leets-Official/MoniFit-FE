@@ -7,7 +7,6 @@ export default function MobileLayout() {
         <header className="bg-point-mint flex h-8 w-full items-center justify-center">
           Header
         </header>
-
         <Outlet />
       </div>
     </main>
