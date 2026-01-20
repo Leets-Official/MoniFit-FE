@@ -1,3 +1,4 @@
+import { Header } from "@/components";
 import { Outlet } from "react-router-dom";
 
 export default function MobileLayout() {
@@ -7,6 +8,13 @@ export default function MobileLayout() {
         <header className="bg-point-mint text-h1 flex h-8 w-full items-center justify-center">
           Header
         </header>
+      <div className="flex h-203 w-93.75 flex-col border-2 border-white">
+        <Header
+          onStampClick={() => {}}
+          onImgClick={() => {}}
+          showButton={true}
+        />
+
         <Outlet />
       </div>
     </main>
