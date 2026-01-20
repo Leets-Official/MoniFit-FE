@@ -8,7 +8,6 @@ import {
   TestForButtonPage,
   TestForCategoryButtonPage,
   TestForInputPage,
-  TestForLiquidSpherePage,
 } from "./pages/test";
 
 import { MainPage } from "./pages";
@@ -30,10 +29,6 @@ function App() {
             <Route
               path="/test/modal/expense-record"
               element={<TestForExpenseRecordModalPage />}
-            />
-            <Route
-              path="/test/liquid-sphere"
-              element={<TestForLiquidSpherePage />}
             />
           </Route>
         </Routes>
