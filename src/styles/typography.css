@@ -1,0 +1,230 @@
+@theme {
+  --font-sans: "Pretendard Variable", system-ui, sans-serif;
+
+  --font-regular: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+
+  --tracking-tight: -0.005em;
+
+  /* Headings */
+  --text-h1-size: 48px;
+  --text-h1-line: 60px;
+  --text-h1-weight: var(--font-regular);
+
+  --text-h2-size: 32px;
+  --text-h2-line: 40px;
+  --text-h2-weight: var(--font-medium);
+
+  --text-h3-size: 24px;
+  --text-h3-line: 30px;
+  --text-h3-weight: var(--font-medium);
+
+  /* Sub */
+  --text-sub1-size: 18px;
+  --text-sub1-line: 22px;
+  --text-sub1-weight: var(--font-semibold);
+
+  --text-sub2-size: 16px;
+  --text-sub2-line: 20px;
+  --text-sub2-weight: var(--font-semibold);
+
+  /* Body */
+  --text-body1-size: 16px;
+  --text-body1-line: 24px;
+  --text-body1-weight: var(--font-medium);
+
+  --text-body2-size: 14px;
+  --text-body2-line: 20px;
+  --text-body2-weight: var(--font-medium);
+
+  /* Caption */
+  --text-caption1-size: 12px;
+  --text-caption1-line: 16px;
+  --text-caption1-weight: var(--font-semibold);
+
+  --text-caption2-size: 12px;
+  --text-caption2-line: 16px;
+  --text-caption2-weight: var(--font-medium);
+
+  /* Button */
+  --text-button1-size: 16px;
+  --text-button1-line: 24px;
+  --text-button1-weight: var(--font-semibold);
+
+  --text-button2-size: 14px;
+  --text-button2-line: 20px;
+  --text-button2-weight: var(--font-semibold);
+}
+
+@theme {
+  /* =========================
+   * Color – Gray
+   * ========================= */
+  --gray-0: #ffffff;
+  --gray-10: #e6e6e6;
+  --gray-20: #cccccc;
+  --gray-30: #b3b3b3;
+  --gray-40: #8e8e93;
+  --gray-50: #636366;
+  --gray-60: #48484a;
+  --gray-70: #3a3a3c;
+  --gray-80: #1c1c1e;
+  --gray-90: #1c1c1e;
+
+  /* =========================
+   * Color – Primary
+   * ========================= */
+  --primary-40: #d1d0ff;
+  --primary-50: #a8a6ff;
+  --primary-60: #7976ff;
+  --primary-opacity-50: rgba(121, 118, 255, 0.5);
+
+  /* =========================
+   * Color – Point
+   * ========================= */
+  --point-orange: #ff6643;
+  --point-pink: #ff6bb2;
+  --point-mint: #50ffe5;
+  --point-yellow: #edff26;
+
+  /* =========================
+   * Color – Semantic
+   * ========================= */
+  --surface-background: #1c1c1e;
+  --surface-card: #3a3a3c;
+
+  --text-primary: #ffffff;
+  --text-secondary: #8e8e93;
+  --text-disabled: #636366;
+
+  /* =========================
+   * Font (원자 단위)
+   * ========================= */
+  --font-sans: "Pretendard Variable", system-ui, sans-serif;
+
+  --font-regular: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+
+  --tracking-tight: -0.005em;
+
+  /* =========================
+   * Text Style (조합 결과)
+   * ========================= */
+
+  /* Headings */
+  --text-h1-size: 48px;
+  --text-h1-line: 60px;
+  --text-h1-weight: var(--font-regular);
+
+  --text-h2-size: 32px;
+  --text-h2-line: 40px;
+  --text-h2-weight: var(--font-medium);
+
+  --text-h3-size: 24px;
+  --text-h3-line: 30px;
+  --text-h3-weight: var(--font-medium);
+
+  /* Sub */
+  --text-sub1-size: 18px;
+  --text-sub1-line: 22px;
+  --text-sub1-weight: var(--font-semibold);
+
+  --text-sub2-size: 16px;
+  --text-sub2-line: 20px;
+  --text-sub2-weight: var(--font-semibold);
+
+  /* Body */
+  --text-body1-size: 16px;
+  --text-body1-line: 24px;
+  --text-body1-weight: var(--font-medium);
+
+  --text-body2-size: 14px;
+  --text-body2-line: 20px;
+  --text-body2-weight: var(--font-medium);
+
+  /* Caption */
+  --text-caption1-size: 12px;
+  --text-caption1-line: 16px;
+  --text-caption1-weight: var(--font-semibold);
+
+  --text-caption2-size: 12px;
+  --text-caption2-line: 16px;
+  --text-caption2-weight: var(--font-medium);
+
+  /* Button */
+  --text-button1-size: 16px;
+  --text-button1-line: 24px;
+  --text-button1-weight: var(--font-semibold);
+
+  --text-button2-size: 14px;
+  --text-button2-line: 20px;
+  --text-button2-weight: var(--font-semibold);
+}
+
+@layer components {
+  .text-h1 {
+    font-family: var(--font-sans);
+    font-size: var(--text-h1-size);
+    line-height: var(--text-h1-line);
+    font-weight: var(--text-h1-weight);
+    letter-spacing: var(--tracking-tight);
+  }
+
+  .text-h2 {
+    font-family: var(--font-sans);
+    font-size: var(--text-h2-size);
+    line-height: var(--text-h2-line);
+    font-weight: var(--text-h2-weight);
+    letter-spacing: var(--tracking-tight);
+  }
+
+  .text-h3 {
+    font-family: var(--font-sans);
+    font-size: var(--text-h3-size);
+    line-height: var(--text-h3-line);
+    font-weight: var(--text-h3-weight);
+    letter-spacing: var(--tracking-tight);
+  }
+
+  .text-sub1 {
+    font-family: var(--font-sans);
+    font-size: var(--text-sub1-size);
+    line-height: var(--text-sub1-line);
+    font-weight: var(--text-sub1-weight);
+    letter-spacing: var(--tracking-tight);
+  }
+
+  .text-body1 {
+    font-family: var(--font-sans);
+    font-size: var(--text-body1-size);
+    line-height: var(--text-body1-line);
+    font-weight: var(--text-body1-weight);
+    letter-spacing: var(--tracking-tight);
+  }
+
+  .text-body2 {
+    font-family: var(--font-sans);
+    font-size: var(--text-body2-size);
+    line-height: var(--text-body2-line);
+    font-weight: var(--text-body2-weight);
+    letter-spacing: var(--tracking-tight);
+  }
+
+  .text-caption1 {
+    font-family: var(--font-sans);
+    font-size: var(--text-caption1-size);
+    line-height: var(--text-caption1-line);
+    font-weight: var(--text-caption1-weight);
+    letter-spacing: var(--tracking-tight);
+  }
+
+  .text-button1 {
+    font-family: var(--font-sans);
+    font-size: var(--text-button1-size);
+    line-height: var(--text-button1-line);
+    font-weight: var(--text-button1-weight);
+    letter-spacing: var(--tracking-tight);
+  }
+}
