@@ -5,7 +5,7 @@ export function WeekdayHeader() {
             {weekdays.map((day) => (
                 <div
                     key={day}
-                    className="flex items-center justify-center text-[12.48px]"
+                    className="flex items-center justify-center text-[12.48px] text-[#EAEAEA]"
                 >
                     {day}
                 </div>                                                         

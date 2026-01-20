@@ -6,7 +6,7 @@ export function Calendar() {
     return (
         <div>
             <div>
-                <h2 className="font-semibold text-[20.29px]">날짜를 선택해주세요.</h2>
+                <h2 className="font-semibold text-[20.29px] text-[#EAEAEA]">날짜를 선택해주세요.</h2>
             </div>
             <CalendarHeader />
             <WeekdayHeader />
