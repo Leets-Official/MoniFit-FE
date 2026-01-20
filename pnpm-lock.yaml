@@ -1898,10 +1898,9 @@ packages:
       }
     resolution:
       {
-        integrity: sha512-FTiCpNxtwiZZHEZbcbTIcZjERVICn9yq/pDFkTl95/AxzD1naBctN7YO68riM/gLSDY7sdrMby8hofADYuuqOA==,
+        integrity: sha512-P8BjAsXvZS+VIDUI11hHCQEv74YT67YUi5JJFNWIqL235sBmjX4+qx9Muvls5ivyNENctx46xQLQ3aTuE7ssaQ==,
       }
-
-  callsites@3.1.0:
+    engines: { node: ">=6" }
     resolution:
       {
         integrity: sha512-P8BjAsXvZS+VIDUI11hHCQEv74YT67YUi5JJFNWIqL235sBmjX4+qx9Muvls5ivyNENctx46xQLQ3aTuE7ssaQ==,
@@ -2391,10 +2390,9 @@ packages:
       }
     resolution:
       {
-        integrity: sha512-cPJU47OaAoCbg0pBvzsgpTPhmhqI5eJjh/JIu8tPj5q+T7iLvW/JAYUqmE7KOB4R1ZyEhzBaIQpQpardBF5z8A==,
+        integrity: sha512-XXTUwCvisa5oacNGRP9SfNtYBNAMi+RPwBFmblZEF7N7swHYQS6/Zfk7SRwx4D5j3CH211YNRco1DEMNVfZCnQ==,
       }
-
-  file-entry-cache@8.0.0:
+    engines: { node: ">=16.0.0" }
     resolution:
       {
         integrity: sha512-XXTUwCvisa5oacNGRP9SfNtYBNAMi+RPwBFmblZEF7N7swHYQS6/Zfk7SRwx4D5j3CH211YNRco1DEMNVfZCnQ==,
@@ -3519,8 +3517,10 @@ packages:
   svg-parser@2.0.4:
     resolution:
       {
-        integrity: sha512-e4hG1hRwoOdRb37cIMSgzNsxyzKfayW6VOflrwvR+/bzrkyxY/31WkbgnQpgtrNp1SdpJvpUAGTa/ZoiPNDuRQ==,
+        integrity: sha512-aqldKgX9aZqpoDp3e8/BZ8Dm7x1pJl+qI3ZKxDN0i/IQTWUwBx/ManmlVJ3wowqbno6c2bmiIfs+Um6LbsjJyQ==,
       }
+    peerDependencies:
+      react: ">=17.0"
 
   tailwind-merge@3.4.0:
     resolution:
@@ -4928,7 +4928,6 @@ snapshots:
       "@types/react-reconciler": 0.28.9(@types/react@19.2.9)
       react: 19.2.3
     transitivePeerDependencies:
-      - "@types/react"
       - "@types/react"
 
   jiti@2.6.1: {}
