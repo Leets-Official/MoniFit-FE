@@ -1,11 +1,7 @@
-//! 26.01.12 작업 완료
-
-"use client";
-
 import { useEffect } from "react";
 
-import { lockBodyScroll, unlockBodyScroll } from "@/shared/lib/bodyScrollLock";
 import clsx from "clsx";
+import { lockBodyScroll, unlockBodyScroll } from "@/lib";
 
 type ModalWrapperProps = {
   children: React.ReactNode;
@@ -29,9 +25,9 @@ export function ModalWrapper({
       aria-modal="true"
       className="fixed inset-0 z-9999 flex items-center justify-center"
     >
-      {/* dim overlay */}
+      {/* dim 오버레이 */}
       <div className="absolute inset-0 bg-black/20" />
-      {/* modal content */}
+      {/* modal  */}
       <div className="relative z-10 opacity-100">{children}</div>
       className=
       {clsx("fixed inset-0 z-50 flex items-center justify-center", className)}
