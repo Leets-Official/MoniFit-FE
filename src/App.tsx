@@ -3,13 +3,11 @@ import "@/App.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import MobileLayout from "@/layouts/MobileLayout";
-
 import {
   TestForButtonPage,
   TestForCategoryButtonPage,
   TestForExpenseRecordModalPage,
   TestForInputPage,
-  TestForLiquidSpherePage,
 } from "./pages/test";
 
 function App() {
@@ -28,14 +26,6 @@ function App() {
             <Route
               path="/test/modal/expense-record"
               element={<TestForExpenseRecordModalPage />}
-            />
-            <Route
-              path="/test/liquid-sphere"
-              element={<TestForLiquidSpherePage />}
-            />
-            <Route
-              path="/test/liquid-sphere"
-              element={<TestForLiquidSpherePage />}
             />
           </Route>
         </Routes>
