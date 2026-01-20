@@ -22,9 +22,13 @@ const CATEGORIES = [
 
 interface ExpenseRecordModalProps {
   onClose: () => void;
+  onSave: (expense: number, category: string) => void;
 }
 
-export const ExpenseRecordModal = ({ onClose }: ExpenseRecordModalProps) => {
+export const ExpenseRecordModal = ({
+  onClose,
+  onSave,
+}: ExpenseRecordModalProps) => {
   const [selected, setSelected] = useState<string | null>(null);
   const [expense, setExpense] = useState<number | "">("");
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -39,12 +43,20 @@ export const ExpenseRecordModal = ({ onClose }: ExpenseRecordModalProps) => {
 
     setTimeout(() => {
       onClose();
-    }, 300); // 애니메이션 시간과 동일
+    }, 300);
   };
 
   const handleEaseClick = () => {
     setExpense("");
     setSelected(null);
+  };
+
+  const handleSave = () => {
+    setIsSubmitted(true);
+
+    if (!selected || expense === "") return;
+
+    onSave(expense, selected);
   };
 
   return (
@@ -60,12 +72,20 @@ export const ExpenseRecordModal = ({ onClose }: ExpenseRecordModalProps) => {
       )}
     >
       <button onClick={handleClose}>
-        <ChevronDownIcon className="absolute top-3 left-1/2 -translate-x-1/2" />
+        <ChevronDownIcon
+          className={"absolute top-3 left-1/2 -translate-x-1/2"}
+        />
       </button>
 
-      <div className="flex h-full w-full flex-col items-center">
-        <span className="text-h3 text-gray-10 w-full">지출 기록</span>
-        <div className="relative mt-15.5 flex w-full">
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleSave();
+        }}
+        className={"flex h-full w-full flex-col items-center"}
+      >
+        <span className={"text-h3 text-gray-10 w-full"}>지출 기록</span>
+        <div className={"relative mt-15.5 flex w-full"}>
           {CATEGORIES.map(({ key, label, icon }) => (
             <CategoryButton
               type="button"
@@ -78,31 +98,36 @@ export const ExpenseRecordModal = ({ onClose }: ExpenseRecordModalProps) => {
             </CategoryButton>
           ))}
           {isSubmitted && !selected && (
-            <span className="text-body2 absolute -bottom-5 left-2 text-[#CA0111]">
+            <span
+              className={"text-body2 absolute -bottom-5 left-2 text-[#CA0111]"}
+            >
               카테고리를 선택하세요
             </span>
           )}
         </div>
-        <div className="relative mt-7 w-full">
+        <div className={"relative mt-7 w-full"}>
           <Input
-            width="large"
-            type="number"
-            suffix="원"
-            placeholder="금액을 입력하세요"
+            width={"large"}
+            type={"number"}
+            suffix={"원"}
+            placeholder={"금액을 입력하세요"}
             value={expense}
             onChange={(e) =>
               setExpense(e.target.value === "" ? "" : Number(e.target.value))
             }
           />
           {isSubmitted && expense === "" && (
-            <span className="text-body2 absolute -bottom-6 left-2 text-[#CA0111]">
+            <span
+              className={"text-body2 absolute -bottom-6 left-2 text-[#CA0111]"}
+            >
               금액을 입력하세요
             </span>
           )}
         </div>
         <div className="relative mt-21.25 flex h-40 w-full gap-4.5">
           <Button
-            width="xs"
+            type={"button"}
+            width={"xs"}
             bgColor={"none"}
             borderColor={"outline"}
             fontColor={"white"}
@@ -110,11 +135,11 @@ export const ExpenseRecordModal = ({ onClose }: ExpenseRecordModalProps) => {
           >
             지우기
           </Button>
-          <Button width={"lg"} onClick={() => setIsSubmitted(true)}>
+          <Button type={"submit"} width={"lg"}>
             저장하기
           </Button>
         </div>
-      </div>
+      </form>
     </section>
   );
 };

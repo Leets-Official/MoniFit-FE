@@ -3,9 +3,13 @@ import { Button, ExpenseRecordModal, LiquidSphere } from "@/components";
 import { Canvas } from "@react-three/fiber";
 import { useState } from "react";
 
+// TODO : MOCK_DATA
+const TOTAL_AMOUNT = 1000000;
+
 export const MainPage = () => {
   const [showModal, setShowModal] = useState(false);
   const [percent, setPercent] = useState(100);
+  const [spent, setSpent] = useState(0);
   const fillRatio = Math.min(1, Math.max(0, percent / 100));
 
   const mixColor = (from: string, to: string, t: number) => {
@@ -23,6 +27,19 @@ export const MainPage = () => {
 
   const gradientCenter = mixColor("#7976FF", "#1F1F1F", 1 - fillRatio);
 
+  const handleSaveExpense = (expense: number) => {
+    setSpent((prev) => prev + expense);
+
+    const nextSpent = spent + expense;
+    const nextPercent = Math.min(
+      100,
+      ((TOTAL_AMOUNT - nextSpent) / TOTAL_AMOUNT) * 100,
+    );
+
+    setPercent(nextPercent);
+    setShowModal(false);
+  };
+
   return (
     <main className="relative flex h-full w-full flex-col items-center">
       <section className="mt-6.25 flex h-fit w-full justify-center">
@@ -32,7 +49,7 @@ export const MainPage = () => {
           <span>2026.01.31</span>
         </div>
       </section>
-      <section>
+      <section className="relative">
         <div
           className="relative h-90 w-90"
           style={{
@@ -45,22 +62,22 @@ export const MainPage = () => {
             <LiquidSphere percent={percent} />
           </Canvas>
         </div>
+        <div className="absolute -bottom-30 left-1/2 flex -translate-x-1/2 flex-col items-center">
+          <span className="text-body2 text-[#8A8A8A]">남은 금액</span>
+          <span className="text-h1 text-gray-0 flex items-center gap-2">
+            <span>₩</span>
+            <span>{(TOTAL_AMOUNT - spent).toLocaleString()}</span>
+          </span>
+          <Button
+            width="md"
+            className="mt-3.5"
+            onClick={() => setShowModal(true)}
+          >
+            지출 입력하기
+          </Button>
+        </div>
       </section>
-      <section className="flex flex-col items-center">
-        <span className="text-body2 text-[#8A8A8A]">남은 금액</span>
-        <span className="text-h1 text-gray-0 flex items-center gap-2">
-          <span>₩</span>
-          <span>257, 000</span>
-        </span>
-        <Button
-          width="md"
-          className="mt-3.5"
-          onClick={() => setShowModal(true)}
-        >
-          지출 입력하기
-        </Button>
-      </section>
-      <section className="mt-17.5 flex w-full items-center justify-center gap-3">
+      <section className="absolute bottom-20 flex w-full items-center justify-center gap-3">
         <Button
           width={"sm"}
           borderColor={"outline"}
@@ -82,7 +99,12 @@ export const MainPage = () => {
           <span>리포트</span>
         </Button>
       </section>
-      {showModal && <ExpenseRecordModal onClose={() => setShowModal(false)} />}
+      {showModal && (
+        <ExpenseRecordModal
+          onClose={() => setShowModal(false)}
+          onSave={handleSaveExpense}
+        />
+      )}
     </main>
   );
 };
