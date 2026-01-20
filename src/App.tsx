@@ -7,7 +7,9 @@ import MobileLayout from "@/layouts/MobileLayout";
 import {
   TestForButtonPage,
   TestForCategoryButtonPage,
+  TestForExpenseRecordModalPage,
   TestForInputPage,
+  TestForLiquidSpherePage,
 } from "./pages/test";
 
 import { MainPage } from "./pages";
@@ -29,6 +31,10 @@ function App() {
             <Route
               path="/test/modal/expense-record"
               element={<TestForExpenseRecordModalPage />}
+            />
+            <Route
+              path="/test/sphere/liquid-sphere"
+              element={<TestForLiquidSpherePage />}
             />
           </Route>
         </Routes>
