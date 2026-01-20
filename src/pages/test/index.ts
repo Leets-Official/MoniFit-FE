@@ -1,0 +1,1 @@
+export { TestForButtonPage } from "./TestForButtonPage";
