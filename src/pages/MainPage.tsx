@@ -1,5 +1,6 @@
 import { CalendarIcon, ReportIcon } from "@/assets/icons";
 import { Button, ExpenseRecordModal, LiquidSphere } from "@/components";
+import { ModalWrapper } from "@/components/modal/ModalWrapper";
 import { Canvas } from "@react-three/fiber";
 import { useState } from "react";
 
@@ -100,10 +101,12 @@ export const MainPage = () => {
         </Button>
       </section>
       {showModal && (
-        <ExpenseRecordModal
-          onClose={() => setShowModal(false)}
-          onSave={handleSaveExpense}
-        />
+        <ModalWrapper onClose={() => setShowModal(false)}>
+          <ExpenseRecordModal
+            onClose={() => setShowModal(false)}
+            onSave={handleSaveExpense}
+          />
+        </ModalWrapper>
       )}
     </main>
   );

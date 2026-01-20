@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-
 import clsx from "clsx";
 import { lockBodyScroll, unlockBodyScroll } from "@/lib";
 
@@ -23,15 +22,16 @@ export function ModalWrapper({
     <div
       role="dialog"
       aria-modal="true"
-      className="fixed inset-0 z-9999 flex items-center justify-center"
+      className={clsx(
+        "fixed z-50 h-full w-full items-center justify-center",
+        className,
+      )}
+      onClick={onClose}
     >
-      {/* dim 오버레이 */}
-      <div className="absolute inset-0 bg-black/20" />
-      {/* modal  */}
-      <div className="relative z-10 opacity-100">{children}</div>
-      className=
-      {clsx("fixed inset-0 z-50 flex items-center justify-center", className)}
-      <div className="absolute inset-0 bg-black/40" onClick={onClose} />
+      {/* dim */}
+      <div className="absolute inset-0 bg-green-700" />
+
+      {/* modal content */}
       <div className="relative z-10" onClick={(e) => e.stopPropagation()}>
         {children}
       </div>
