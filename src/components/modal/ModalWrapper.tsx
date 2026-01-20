@@ -25,7 +25,7 @@ export function ModalWrapper({
       className={clsx("absolute inset-0 z-50", className)}
     >
       {/* dim */}
-      <div className="absolute inset-0 bg-black/40" onClick={onClose} />
+      <div className="h-full bg-black/40" onClick={onClose} />
 
       {/* modal content */}
       <div

@@ -65,7 +65,7 @@ export const MainPage = () => {
         </div>
         <div className="absolute -bottom-30 left-1/2 flex -translate-x-1/2 flex-col items-center">
           <span className="text-body2 text-[#8A8A8A]">남은 금액</span>
-          <span className="text-h1 text-gray-0 flex items-center gap-2">
+          <span className="text-h1 text-gray-0 flex max-w-70 items-center gap-2 overflow-x-scroll">
             <span>₩</span>
             <span>{(TOTAL_AMOUNT - spent).toLocaleString()}</span>
           </span>
