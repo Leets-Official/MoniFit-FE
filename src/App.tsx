@@ -20,7 +20,7 @@ function App() {
     <>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<MobileLayout />
+          <Route path="/" element={<MobileLayout />}>
             <Route path="/" element={<MainPage />} />
             {/* 테스트 페이지용 라우팅 */}
             <Route path="/test/calendar" element={<CalendarTestPage />} />
