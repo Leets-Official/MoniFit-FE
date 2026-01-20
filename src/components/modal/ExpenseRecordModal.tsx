@@ -62,6 +62,7 @@ export const ExpenseRecordModal = ({
   return (
     <section
       className={clsx(
+        "absolute -bottom-0.5",
         "flex h-132.5 w-93.75 flex-col rounded-t-[50px]",
         "bg-linear-to-b from-[#1F1F1F] to-[#30304F]",
         "px-4.5 pt-12",
