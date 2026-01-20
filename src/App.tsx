@@ -6,6 +6,7 @@ import MobileLayout from "@/layouts/MobileLayout";
 import {
   TestForButtonPage,
   TestForCategoryButtonPage,
+  TestForExpenseRecordModalPage,
   TestForInputPage,
 } from "./pages/test";
 
@@ -16,12 +17,16 @@ function App() {
         <Routes>
           <Route path="/" element={<MobileLayout />}>
             {/* 테스트 페이지용 라우팅 */}
-            <Route path="/test/button" element={<TestForButtonPage />}></Route>
-            <Route path="/test/input" element={<TestForInputPage />}></Route>
+            <Route path="/test/button" element={<TestForButtonPage />} />
+            <Route path="/test/input" element={<TestForInputPage />} />
             <Route
               path="/test/category-button"
               element={<TestForCategoryButtonPage />}
-            ></Route>
+            />
+            <Route
+              path="/test/modal/expense-record"
+              element={<TestForExpenseRecordModalPage />}
+            />
           </Route>
         </Routes>
       </BrowserRouter>
