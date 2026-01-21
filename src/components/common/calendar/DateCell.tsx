@@ -2,7 +2,7 @@ import {cva} from "class-variance-authority";
 import {clsx} from "clsx";
 
 const dateCellVariants = cva(
-    "grid grid-cols-1 grid-rows-1 place-items-center justify-center w-[37.45px] h-[37.45px]",
+    "grid grid-cols-1 grid-rows-1 place-items-center justify-center w-[37.45px] h-[37.45px] font-bold",
     {
     variants: {
       status: {
