@@ -196,6 +196,14 @@
     letter-spacing: var(--tracking-tight);
   }
 
+  .text-sub2 {
+    font-family: var(--font-sans);
+    font-size: var(--text-sub2-size);
+    line-height: var(--text-sub2-line);
+    font-weight: var(--text-sub2-weight);
+    letter-spacing: var(--tracking-tight);
+  }
+
   .text-body1 {
     font-family: var(--font-sans);
     font-size: var(--text-body1-size);
@@ -220,11 +228,27 @@
     letter-spacing: var(--tracking-tight);
   }
 
+  .text-caption2 {
+    font-family: var(--font-sans);
+    font-size: var(--text-caption2-size);
+    line-height: var(--text-caption2-line);
+    font-weight: var(--text-caption2-weight);
+    letter-spacing: var(--tracking-tight);
+  }
+
   .text-button1 {
     font-family: var(--font-sans);
     font-size: var(--text-button1-size);
     line-height: var(--text-button1-line);
     font-weight: var(--text-button1-weight);
+    letter-spacing: var(--tracking-tight);
+  }
+
+  .text-button2 {
+    font-family: var(--font-sans);
+    font-size: var(--text-button2-size);
+    line-height: var(--text-button2-line);
+    font-weight: var(--text-button2-weight);
     letter-spacing: var(--tracking-tight);
   }
 }
