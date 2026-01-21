@@ -11,7 +11,7 @@ export function CalendarHeader() {
       </span>
 
       {/* 화살표 영역 */}
-      <div className="flex gap-[12px]">
+      <div className="flex gap-3">
         <button className="w-8 h-8 flex items-center justify-center">
           <ArrowBack />
         </button>
