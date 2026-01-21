@@ -12,11 +12,11 @@ export function CalendarHeader() {
 
       {/* 화살표 영역 */}
       <div className="flex gap-[12px]">
-        <button className="w-[32px] h-[32px] flex items-center justify-center">
+        <button className="w-8 h-8 flex items-center justify-center">
           <ArrowBack />
         </button>
 
-        <button className="w-[32px] h-[32px] flex items-center justify-center">
+        <button className="w-8 h-8 flex items-center justify-center">
           <ArrowForward />
         </button>
       </div>
