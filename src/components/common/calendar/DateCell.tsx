@@ -29,7 +29,7 @@ export function DateCell({ day, isSelected, dayOfWeek, onClick }: DateCellProps)
         ? "selected" 
         : (dayOfWeek === 0 || dayOfWeek === 6 ? "weekend" : "default");
 
-    return <div className="w-[37.45px] h-[37.45px]" onClick={onClick}>
+    return <button type="button" className="w-[37.45px] h-[37.45px]" onClick={onClick}>
     <div className="grid grid-cols-1 grid-rows-1 place-items-center justify-center w-[37.45px] h-[37.45px]">
         {isSelected && <div className="w-[37.45px] h-[37.45px] rounded-full bg-[#A8A6FF] row-start-1 col-start-1"></div>}
         <div className={clsx(
@@ -40,5 +40,5 @@ export function DateCell({ day, isSelected, dayOfWeek, onClick }: DateCellProps)
             {day}
         </div>
     </div>
-</div>;
+</button>;
 }
