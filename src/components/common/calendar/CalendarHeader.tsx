@@ -1,5 +1,7 @@
 import { ArrowForward } from "../icons/ArrowForward";
 import { ArrowBack } from "../icons/ArrowBack";
+import { Reset } from "../icons/Reset";
+
 type CalendarHeaderProps = {
     year: number;
     month: number; // 0~11
@@ -24,6 +26,9 @@ export function CalendarHeader({ year, month, onPrev, onNext }: CalendarHeaderPr
 
         <button onClick={onNext} className="w-8 h-8 flex items-center justify-center">
           <ArrowForward />
+        </button>
+        <button className="w-8 h-8 flex items-center justify-center">
+          <Reset />
         </button>
       </div>
     </div>
