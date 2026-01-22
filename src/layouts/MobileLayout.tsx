@@ -11,7 +11,6 @@ export default function MobileLayout() {
           onImgClick={() => {}}
           showButton={true}
         />
-
         <Outlet />
       </div>
     </main>

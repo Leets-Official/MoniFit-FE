@@ -1,5 +1,6 @@
 import { CalendarIcon, ReportIcon } from "@/assets/icons";
 import { Button, ExpenseRecordModal, LiquidSphere } from "@/components";
+import { ModalWrapper } from "@/components/modal/ModalWrapper";
 import { Canvas } from "@react-three/fiber";
 import { useState } from "react";
 
@@ -64,7 +65,7 @@ export const MainPage = () => {
         </div>
         <div className="absolute -bottom-30 left-1/2 flex -translate-x-1/2 flex-col items-center">
           <span className="text-body2 text-[#8A8A8A]">남은 금액</span>
-          <span className="text-h1 text-gray-0 flex items-center gap-2">
+          <span className="text-h1 text-gray-0 flex max-w-70 items-center gap-2 overflow-x-scroll">
             <span>₩</span>
             <span>{(TOTAL_AMOUNT - spent).toLocaleString()}</span>
           </span>
@@ -100,10 +101,12 @@ export const MainPage = () => {
         </Button>
       </section>
       {showModal && (
-        <ExpenseRecordModal
-          onClose={() => setShowModal(false)}
-          onSave={handleSaveExpense}
-        />
+        <ModalWrapper onClose={() => setShowModal(false)}>
+          <ExpenseRecordModal
+            onClose={() => setShowModal(false)}
+            onSave={handleSaveExpense}
+          />
+        </ModalWrapper>
       )}
     </main>
   );
