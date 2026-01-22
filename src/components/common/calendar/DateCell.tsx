@@ -2,7 +2,7 @@ import {cva} from "class-variance-authority";
 import {clsx} from "clsx";
 
 const dateCellVariants = cva(
-  "row-start-1 col-start-1 transition-colors cursor-pointer select-none flex items-center justify-center w-full h-full",
+  "row-start-1 col-start-1 transition-colors cursor-pointer select-none flex items-center justify-center w-full h-full font-bold",
   {
     variants: {
       status: {
