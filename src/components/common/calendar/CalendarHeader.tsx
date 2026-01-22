@@ -7,7 +7,7 @@ type CalendarHeaderProps = {
     onNext: () => void; 
 };
 
-export function CalendarHeader({ year, month }: CalendarHeaderProps) {
+export function CalendarHeader({ year, month, onPrev, onNext }: CalendarHeaderProps) {
   return (
     <div className="flex items-center justify-between w-[276.74px]">
       
@@ -18,11 +18,11 @@ export function CalendarHeader({ year, month }: CalendarHeaderProps) {
 
       {/* 화살표 영역 */}
       <div className="flex gap-3">
-        <button className="w-8 h-8 flex items-center justify-center">
+        <button onClick={onPrev} className="w-8 h-8 flex items-center justify-center">
           <ArrowBack />
         </button>
 
-        <button className="w-8 h-8 flex items-center justify-center">
+        <button onClick={onNext} className="w-8 h-8 flex items-center justify-center">
           <ArrowForward />
         </button>
       </div>
