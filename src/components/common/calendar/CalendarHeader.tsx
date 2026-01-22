@@ -1,13 +1,19 @@
 import { ArrowForward } from "../icons/ArrowForward";
 import { ArrowBack } from "../icons/ArrowBack";
+type CalendarHeaderProps = {
+    year: number;
+    month: number; // 0~11
+    onPrev: () => void;
+    onNext: () => void; 
+};
 
-export function CalendarHeader() {
+export function CalendarHeader({ year, month }: CalendarHeaderProps) {
   return (
     <div className="flex items-center justify-between w-[276.74px]">
       
       {/* 년/월 */}
       <span className="font-semibold text-lg text-[#EAEAEA]">
-        2026년 10월
+        {year}년 {month + 1}월 {/* month는 0부터 시작하므로 +1 */}
       </span>
 
       {/* 화살표 영역 */}
