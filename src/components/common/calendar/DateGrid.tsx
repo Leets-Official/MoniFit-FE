@@ -31,6 +31,16 @@ export function DateGrid({ year, month }: DateGridProps) {
         isCurrentMonth: true,
     }));
 
+    // 7. 다음 달 날짜 생성 (그리드 빈 칸 채우기)
+    // 총 42칸(7열 x 6행) 혹은 35칸 기준에서 남은 칸을 계산합니다.
+    const totalFilled = prevMonthDates.length + currentMonthDates.length;
+    const nextMonthLength = totalFilled > 35 ? 42 - totalFilled : 35 - totalFilled;
+
+    const nextMonthDates = Array.from({ length: nextMonthLength }, (_, index) => ({
+        day: index + 1,
+        isCurrentMonth: false,
+    }));
+
     return (
         <div className="grid grid-cols-7 gap-x-[2.34px] gap-y-[9.36px] w-[276.2px]">
             {/* 이전 달 날짜들: 회색으로 표시됨 */}
@@ -58,6 +68,19 @@ export function DateGrid({ year, month }: DateGridProps) {
                         isSelected={selectedDate === item.day}
                         onClick={() => setSelectedDate(item.day)}
                     />  
+                );
+            })}
+            {/* 다음 달 */}
+            {nextMonthDates.map((item, index) => {
+                const dayOfWeek = (totalFilled + index) % 7;
+                return (
+                    <DateCell
+                        key={`next-${item.day}`}
+                        day={item.day}
+                        dayOfWeek={dayOfWeek}
+                        isCurrentMonth={false}
+                        isSelected={false}
+                    />
                 );
             })}
         </div>
