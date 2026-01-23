@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import MobileLayout from "@/layouts/MobileLayout";
 import CalendarTestPage from "@/pages/test/CalendarTestPage";
+import CategoryTestPage from "@/pages/test/CategoryTestPage";
 
 import {
   TestForButtonPage,
@@ -24,6 +25,7 @@ function App() {
             <Route path="/" element={<MainPage />} />
             {/* 테스트 페이지용 라우팅 */}
             <Route path="/test/calendar" element={<CalendarTestPage />} />
+            <Route path="/test/category" element={<CategoryTestPage />} />
             <Route path="/test/button" element={<TestForButtonPage />} />
             <Route path="/test/input" element={<TestForInputPage />} />
             <Route
