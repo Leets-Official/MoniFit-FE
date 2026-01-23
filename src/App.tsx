@@ -11,6 +11,7 @@ import {
   TestForExpenseRecordModalPage,
   TestForInputPage,
   TestForLiquidSpherePage,
+  TestForSideSheetPage,
 } from "./pages/test";
 
 import { MainPage } from "./pages";
@@ -38,6 +39,7 @@ function App() {
               path="/test/sphere/liquid-sphere"
               element={<TestForLiquidSpherePage />}
             />
+            <Route path="/test/side-sheet" element={<TestForSideSheetPage />} />
           </Route>
         </Routes>
       </BrowserRouter>
