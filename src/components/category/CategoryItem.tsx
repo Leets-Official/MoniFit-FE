@@ -11,8 +11,10 @@ const CategoryItem = () => {
   return (
     <div className="flex gap-4 w-full px-4">
       {/* 1. 보라색 선: 높이가 자동으로 늘어남 */}
-      <div className="self-stretch">
+      <div className="self-stretch flex items-start">
+        <div className='h-full w-[5px]'>
           <VerticalIndicator />
+        </div>
       </div>
 
       <div className="flex-1">
