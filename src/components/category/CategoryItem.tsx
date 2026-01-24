@@ -5,16 +5,14 @@ import FoodIcon from '@/assets/icons/colored/colored_food.svg'
 // import StarIcon from '@/assets/icons/colored/colored_star.svg'
 import VerticalIndicator from '../common/icons/VerticalIndicator';
 import ChevronRightIcon from '@/assets/icons/general/chevron-right.svg';
-import ExpenseInput from './ExpenseInput';
+import ExpenseDetail from './ExpenseDetail';
 
 const CategoryItem = () => {
   return (
-    <div className="flex gap-4 w-full bg-[#121212] px-4">
+    <div className="flex gap-4 w-full px-4">
       {/* 1. 보라색 선: 높이가 자동으로 늘어남 */}
-      <div className="self-stretch flex items-start">
-        <div className='h-full w-[5px]'>
+      <div className="self-stretch">
           <VerticalIndicator />
-        </div>
       </div>
 
       <div className="flex-1">
@@ -31,16 +29,8 @@ const CategoryItem = () => {
         </div>
 
         {/* 3. 상세 내역 영역 */}
-        <div className="flex flex-col gap-4 pb-6">
-          <div className="flex justify-between items-center text-gray-10">
-            <span className="text-[14px]">12,000원</span>
-            <div className="flex gap-3 text-[12px]">
-              <button>수정</button>
-              <button>삭제</button>
-            </div>
-          </div>
-          
-          <ExpenseInput />
+        <div>
+            <ExpenseDetail />
         </div>
       </div>
     </div>
