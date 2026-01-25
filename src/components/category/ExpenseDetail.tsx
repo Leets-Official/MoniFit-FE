@@ -5,9 +5,10 @@ import type { ExpenseItem } from "./types";
 interface ExpenseDetailProps {
     items: ExpenseItem[];
     onAddItem?: (amount: number) => void;
+    onDeleteItem?: (id: string) => void;
 }
 
-const ExpenseDetail = ({ items, onAddItem }: ExpenseDetailProps) => {
+const ExpenseDetail = ({ items, onAddItem, onDeleteItem }: ExpenseDetailProps) => {
   const [isAdding, setIsAdding] = useState(false);
 
   const handleAddItem = (amount: number) => {
@@ -24,7 +25,7 @@ const ExpenseDetail = ({ items, onAddItem }: ExpenseDetailProps) => {
           <span className="text-[14px] font-medium">{item.amount.toLocaleString()}원</span>
           <div className="flex gap-3 text-[12px]">
             <button className="hover:text-white">수정</button>
-            <button className="hover:text-white">삭제</button>
+            <button onClick={() => onDeleteItem?.(item.id)} className="hover:text-white">삭제</button>
           </div>
         </div>
       ))}

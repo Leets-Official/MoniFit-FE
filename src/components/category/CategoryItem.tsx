@@ -42,6 +42,10 @@ const CategoryItem = ({ data }: CategoryItemProps) => {
         };
         setItems([...items, newItem]);
     };
+    const handleDeleteItem = (id: string) => { 
+        const updatedItems = items.filter(item => item.id !== id);
+        setItems(updatedItems);
+    };
     const currentIcon = categoryIcons[type] || StarIcon;
     const currentName = categoryNames[type] || '기타';
   return (
@@ -65,7 +69,10 @@ const CategoryItem = ({ data }: CategoryItemProps) => {
         </div>
         {isOpen && (
         <div>
-          <ExpenseDetail items={items} onAddItem={handleAddItem} />
+          <ExpenseDetail 
+          items={items} 
+          onAddItem={handleAddItem}
+          onDeleteItem={handleDeleteItem} />
         </div>
         )}
       </div>
