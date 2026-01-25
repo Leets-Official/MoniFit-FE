@@ -46,6 +46,9 @@ const CategoryItem = ({ data }: CategoryItemProps) => {
         const updatedItems = items.filter(item => item.id !== id);
         setItems(updatedItems);
     };
+    const handleUpdateItem = (id: string, newAmount: number) => {
+        setItems((prev) => prev.map(item => item.id === id ? { ...item, amount: newAmount } : item));
+    };
     const currentIcon = categoryIcons[type] || StarIcon;
     const currentName = categoryNames[type] || '기타';
   return (
@@ -72,7 +75,8 @@ const CategoryItem = ({ data }: CategoryItemProps) => {
           <ExpenseDetail 
           items={items} 
           onAddItem={handleAddItem}
-          onDeleteItem={handleDeleteItem} />
+          onDeleteItem={handleDeleteItem}
+          onUpdateItem={handleUpdateItem} />
         </div>
         )}
       </div>
