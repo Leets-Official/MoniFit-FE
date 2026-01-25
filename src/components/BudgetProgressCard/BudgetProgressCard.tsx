@@ -34,10 +34,13 @@ function ProgressBar({ ratio, fillFromRight }: BarProps) {
   return (
     <div className="relative h-2 w-68 overflow-hidden rounded-full bg-(--gray-20)">
       {!fillFromRight ? (
-        <div className="h-full bg-(--primary-50)" style={{ width: `${r * 100}%` }} />
+        <div
+          className="h-full rounded-full bg-(--primary-50)"
+          style={{ width: `${r * 100}%` }}
+        />
       ) : (
         <div
-          className="absolute right-0 top-0 h-full bg-(--primary-50)"
+          className="absolute right-0 top-0 h-full rounded-full bg-(--primary-50)"
           style={{ width: `${r * 100}%` }}
         />
       )}
