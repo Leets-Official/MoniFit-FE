@@ -30,9 +30,18 @@ const categoryNames: Record<string, string> = {
 };
 
 const CategoryItem = ({ data }: CategoryItemProps) => {
-    const {type, totalAmount, items} = data;
+    const {type, items: initialitems} = data;
     const [isOpen, setIsOpen] = useState(false);
+    const [items, setItems] = useState(initialitems);
     const toggleAccordion = () => setIsOpen(!isOpen);
+    const totalAmount = items.reduce((acc, cur) => acc + cur.amount, 0);
+    const handleAddItem = (amount: number) => {
+        const newItem = {
+            id: Date.now().toString(),
+            amount,
+        };
+        setItems([...items, newItem]);
+    };
     const currentIcon = categoryIcons[type] || StarIcon;
     const currentName = categoryNames[type] || '기타';
   return (
@@ -46,19 +55,17 @@ const CategoryItem = ({ data }: CategoryItemProps) => {
       <div className="flex-1">
         <div className="flex justify-between items-center py-5 cursor-pointer" onClick={toggleAccordion}>
           <div className="flex items-center gap-[7px]">
-            {/* 고정된 FoodIcon 대신 currentIcon 적용 */}
             <img src={currentIcon} alt="icon" />
             <span className="text-gray-10 font-medium text-[15px]">{currentName}</span>
           </div>
           <div className="flex items-center gap-2">
-            {/* 고정된 금액 대신 totalAmount 적용 */}
             <span className="text-gray-10 font-medium text-[14px]">{totalAmount.toLocaleString()}원</span>
             <img src={ChevronRightIcon} alt="icon" className={`transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
           </div>
         </div>
         {isOpen && (
         <div>
-          <ExpenseDetail initialitems={items} />
+          <ExpenseDetail items={items} onAddItem={handleAddItem} />
         </div>
         )}
       </div>

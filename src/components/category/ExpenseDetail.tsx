@@ -3,21 +3,18 @@ import ExpenseInput from "./ExpenseInput";
 import type { ExpenseItem } from "./types";
 
 interface ExpenseDetailProps {
-    initialitems?: ExpenseItem[];
+    items: ExpenseItem[];
+    onAddItem?: (amount: number) => void;
 }
 
-const ExpenseDetail = ({ initialitems }: ExpenseDetailProps) => {
-  const [items, setItems] = useState<ExpenseItem[]>(initialitems || []); 
+const ExpenseDetail = ({ items, onAddItem }: ExpenseDetailProps) => {
   const [isAdding, setIsAdding] = useState(false);
 
   const handleAddItem = (amount: number) => {
-    const newItem: ExpenseItem = {
-      id: Date.now().toString(), // 간단한 ID 생성 로직
-      amount,
+        onAddItem?.(amount);
+        setIsAdding(false); 
     };
-    setItems([...items, newItem]); // 새로운 항목 추가
-    setIsAdding(false); // 입력창 닫기
-  };
+
 
   return (
     <div className="flex flex-col gap-4 pb-6 mt-2">
@@ -45,7 +42,9 @@ const ExpenseDetail = ({ initialitems }: ExpenseDetailProps) => {
       ) : (
         <div className="mt-2">
           {/* 3. 입력창 영역 */}
-          <ExpenseInput onCancel={() => setIsAdding(false)} onAdd={handleAddItem}/>
+          <ExpenseInput 
+          onCancel={() => setIsAdding(false)} 
+          onAdd={handleAddItem}/>
         </div>
       )}
     </div>
