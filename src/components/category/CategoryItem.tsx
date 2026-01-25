@@ -58,7 +58,7 @@ const CategoryItem = ({ data }: CategoryItemProps) => {
         </div>
         {isOpen && (
         <div>
-          <ExpenseDetail items={items} />
+          <ExpenseDetail initialitems={items} />
         </div>
         )}
       </div>
