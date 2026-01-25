@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import FoodIcon from '@/assets/icons/colored/colored_food.svg';
 import HospitalIcon from '@/assets/icons/colored/colored_hospital.svg';
 import ShopIcon from '@/assets/icons/colored/colored_shoping.svg';
@@ -29,8 +30,10 @@ const categoryNames: Record<string, string> = {
 };
 
 const CategoryItem = ({ categoryType, totalAmount }: CategoryItemProps) => {
-  const currentIcon = categoryIcons[categoryType] || StarIcon;
-  const currentName = categoryNames[categoryType] || '기타';
+    const [isOpen, setIsOpen] = useState(false);
+    const toggleAccordion = () => setIsOpen(!isOpen);
+    const currentIcon = categoryIcons[categoryType] || StarIcon;
+    const currentName = categoryNames[categoryType] || '기타';
 
   return (
     <div className="flex gap-4 w-full px-4">
@@ -41,7 +44,7 @@ const CategoryItem = ({ categoryType, totalAmount }: CategoryItemProps) => {
       </div>
 
       <div className="flex-1">
-        <div className="flex justify-between items-center py-5">
+        <div className="flex justify-between items-center py-5 cursor-pointer" onClick={toggleAccordion}>
           <div className="flex items-center gap-[7px]">
             {/* 고정된 FoodIcon 대신 currentIcon 적용 */}
             <img src={currentIcon} alt="icon" />
@@ -50,13 +53,14 @@ const CategoryItem = ({ categoryType, totalAmount }: CategoryItemProps) => {
           <div className="flex items-center gap-2">
             {/* 고정된 금액 대신 totalAmount 적용 */}
             <span className="text-gray-10 font-medium text-[14px]">{totalAmount}</span>
-            <img src={ChevronRightIcon} alt="icon" />
+            <img src={ChevronRightIcon} alt="icon" className={`transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
           </div>
         </div>
-
+        {isOpen && (
         <div>
           <ExpenseDetail />
         </div>
+        )}
       </div>
     </div>
   );
