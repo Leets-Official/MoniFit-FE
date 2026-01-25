@@ -1,7 +1,10 @@
+import { useState } from "react";
 import ExpenseInput from "./ExpenseInput";
 
 const ExpenseDetail = () => {
-  // UI 확인을 위한 임시 더미 데이터 (나중에 Props로 받을 예정)
+  // 입력 모드인지 확인
+  const [isAdding, setIsAdding] = useState(false);
+  // 더미 데이터
   const dummyItems = [
     { id: '1', amount: '12,000원' },
     { id: '2', amount: '20,000원' },
@@ -21,14 +24,21 @@ const ExpenseDetail = () => {
       ))}
 
       {/* 2. 금액 추가하기 버튼 (디자인에 따라 조건부 노출) */}
-      <div className="flex justify-center">
-      <button className="text-gray-10 text-[15px] hover:text-white w-fit">
-        + 금액 추가하기
-      </button>
-      </div>
-
-      {/* 3. 입력창 영역 */}
-      <ExpenseInput />
+      {!isAdding ? (
+        <div className="flex justify-center">
+          <button 
+            onClick={() => setIsAdding(true)} 
+            className="text-gray-10 text-[15px] hover:text-white w-fit"
+          >
+            + 금액 추가하기
+          </button>
+        </div>
+      ) : (
+        <div className="mt-2">
+          {/* 3. 입력창 영역 */}
+          <ExpenseInput onCancel={() => setIsAdding(false)} />
+        </div>
+      )}
     </div>
   );
 };
