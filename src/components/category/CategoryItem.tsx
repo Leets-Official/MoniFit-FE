@@ -7,10 +7,10 @@ import StarIcon from '@/assets/icons/colored/colored-star.svg';
 import VerticalIndicator from '../common/icons/VerticalIndicator';
 import ChevronRightIcon from '@/assets/icons/general/chevron-right.svg';
 import ExpenseDetail from './ExpenseDetail';
+import type { CategoryData } from './types';
 
 interface CategoryItemProps {
-  categoryType: string; 
-  totalAmount: string; 
+  data: CategoryData;
 }
 
 const categoryIcons: Record<string, string> = {
@@ -29,12 +29,12 @@ const categoryNames: Record<string, string> = {
   etc: '기타',
 };
 
-const CategoryItem = ({ categoryType, totalAmount }: CategoryItemProps) => {
+const CategoryItem = ({ data }: CategoryItemProps) => {
+    const {type, totalAmount, items} = data;
     const [isOpen, setIsOpen] = useState(false);
     const toggleAccordion = () => setIsOpen(!isOpen);
-    const currentIcon = categoryIcons[categoryType] || StarIcon;
-    const currentName = categoryNames[categoryType] || '기타';
-
+    const currentIcon = categoryIcons[type] || StarIcon;
+    const currentName = categoryNames[type] || '기타';
   return (
     <div className="flex gap-4 w-full px-4">
       <div className="self-stretch flex items-start">
@@ -52,13 +52,13 @@ const CategoryItem = ({ categoryType, totalAmount }: CategoryItemProps) => {
           </div>
           <div className="flex items-center gap-2">
             {/* 고정된 금액 대신 totalAmount 적용 */}
-            <span className="text-gray-10 font-medium text-[14px]">{totalAmount}</span>
+            <span className="text-gray-10 font-medium text-[14px]">{totalAmount.toLocaleString()}원</span>
             <img src={ChevronRightIcon} alt="icon" className={`transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
           </div>
         </div>
         {isOpen && (
         <div>
-          <ExpenseDetail />
+          <ExpenseDetail items={items} />
         </div>
         )}
       </div>

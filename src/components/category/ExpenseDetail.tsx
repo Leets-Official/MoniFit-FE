@@ -1,21 +1,21 @@
 import { useState } from "react";
 import ExpenseInput from "./ExpenseInput";
+import type { ExpenseItem } from "./types";
 
-const ExpenseDetail = () => {
+interface ExpenseDetailProps {
+    items?: ExpenseItem[];
+}
+
+const ExpenseDetail = ({ items }: ExpenseDetailProps) => {
   // 입력 모드인지 확인
   const [isAdding, setIsAdding] = useState(false);
-  // 더미 데이터
-  const dummyItems = [
-    { id: '1', amount: '12,000원' },
-    { id: '2', amount: '20,000원' },
-  ];
 
   return (
     <div className="flex flex-col gap-4 pb-6 mt-2">
       {/* 1. 저장된 금액 리스트 */}
-      {dummyItems.map((item) => (
+      {items?.map((item) => (
         <div key={item.id} className="flex justify-between items-center text-gray-10">
-          <span className="text-[14px] font-medium">{item.amount}</span>
+          <span className="text-[14px] font-medium">{item.amount.toLocaleString()}원</span>
           <div className="flex gap-3 text-[12px]">
             <button className="hover:text-white">수정</button>
             <button className="hover:text-white">삭제</button>
