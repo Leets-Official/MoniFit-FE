@@ -24,23 +24,23 @@ export const CalendarPage = () => {
             )}
 
             <div className="fixed bottom-8 w-[375px] flex justify-between items-center px-6">
-                 <div className="flex bg-primary-opacity-50 rounded-full p-1 border border-white/10">
+                 <div className="flex bg-primary-opacity-50 rounded-full p-1 border-white/10">
                     <Button 
-                        width="sm" 
-                        height="sm" 
-                        bgColor="none" 
-                        fontColor="default"
-                        className="bg-white text-black"
+                        width={"sm"}
+                        borderColor={"outline"}
+                        bgColor={"none"}
+                        className="flex gap-2 bg-white"
                     >
-                    <CalendarIcon className="!text-gray-90"/>
+                    <CalendarIcon />
                         달력
                     </Button>
 
                     <Button 
-                        width="sm" 
-                        height="sm" 
-                        bgColor="none" 
-                        fontColor="white"
+                        width={"md"}
+                        borderColor={"outline"}
+                        bgColor={"none"}
+                        className="flex gap-2"
+                        fontColor={"white"}
                     >
                     <ReportIcon />
                         리포트
