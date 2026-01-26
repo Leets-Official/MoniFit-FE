@@ -23,7 +23,7 @@ export const CalendarPage = ({ onClose }: CalendarPageProps) => {
             </section>
 
             {isDetailOpen && (
-                <section className="w-[375px] h-[252px] flex-1 overflow-y-auto mt-4 px-4 pb-20 bg-[#121212]">
+                <section className="w-[375px] h-[252px] flex-1 overflow-y-auto px-4 pb-20 bg-[#121212]">
                     <CategoryList/>
                 </section>
             )}
