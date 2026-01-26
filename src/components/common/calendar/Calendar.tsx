@@ -28,7 +28,7 @@ export function Calendar() {
     };
 
     return (
-        <div className="flex flex-col items-center justify-center w-full py-10">
+        <div className="flex flex-col items-center justify-center w-full">
             <div className="flex flex-col w-[276.2px]"> 
                 <CalendarHeader 
                 year={currentYear} 
