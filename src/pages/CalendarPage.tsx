@@ -1,4 +1,5 @@
 import {useState} from "react";
+import { useNavigate } from "react-router-dom";
 import { Calendar } from "@/components/common/calendar/Calendar";
 import CategoryList from "@/components/category/CategoryList";
 import { Button } from "@/components/common/Button";
@@ -7,6 +8,7 @@ import { CalendarIcon } from "@/assets/icons/general/CalendarIcon";
 
 export const CalendarPage = () => {
     const [isDetailOpen, setIsDetailOpen] = useState(false);
+    const navigate = useNavigate();
 
     return (
         <div className="relative flex h-screen w-full flex-col items-center">
@@ -46,7 +48,10 @@ export const CalendarPage = () => {
                         리포트
                     </Button>
                 </div>
-                 <div className="cursor-pointer">
+                 <div className="cursor-pointer"
+                 onClick={() => {
+                    navigate('/');
+                 }}>
                     <HomeIcon className="w-[52px] h-[52px]" />
                  </div>
             </div>
