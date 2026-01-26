@@ -18,6 +18,7 @@ import {
 } from "./pages/test";
 
 import { MainPage } from "./pages";
+import CalendarPage from "./pages/CalendarPage";
 
 export default function App() {
   return (
@@ -26,6 +27,7 @@ export default function App() {
         <Route path="/" element={<MobileLayout />}>
           {/* 메인 페이지 */}
           <Route path="/" element={<MainPage />} />
+          <Route path="/calendar" element={<CalendarPage />} />
 
           {/* 테스트 페이지용 라우팅 (하나의 리스트로 병합) */}
           <Route path="/test/calendar" element={<CalendarTestPage />} />
