@@ -24,7 +24,7 @@ export default function CommonCard({
         // 고정 width 309
         "w-77.25",
         "border-[0.5px] border-primary-60",
-        "rounded-2xl bg-(--color-surface-card)]",
+        "overflow-hidden rounded-[14px] bg-transparent",
         "px-5 py-4",
         className,
       ].join(" ")}
@@ -32,7 +32,7 @@ export default function CommonCard({
       {title ? (
         <h2
           className={[
-            "text-base font-semibold text(--color-text-primary)",
+            "text-sub1-size font-semibold text-gray-10",
             titleClassName,
           ].join(" ")}
         >
