@@ -2,7 +2,8 @@ import {useState} from "react";
 import { Calendar } from "@/components/common/calendar/Calendar";
 import CategoryList from "@/components/category/CategoryList";
 import { Button } from "@/components/common/Button";
-import { HomeIcon, CalendarIcon, ReportIcon } from "@/assets/icons";
+import { HomeIcon, ReportIcon } from "@/assets/icons";
+import { CalendarIcon } from "@/assets/icons/general/CalendarIcon";
 
 export const CalendarPage = () => {
     const [isDetailOpen, setIsDetailOpen] = useState(false);
@@ -27,10 +28,11 @@ export const CalendarPage = () => {
                     <Button 
                         width="sm" 
                         height="sm" 
-                        bgColor="default" 
+                        bgColor="none" 
                         fontColor="default"
+                        className="bg-white text-black"
                     >
-                    <CalendarIcon />
+                    <CalendarIcon className="!text-gray-90"/>
                         달력
                     </Button>
 
