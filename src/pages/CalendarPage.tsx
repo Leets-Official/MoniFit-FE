@@ -1,26 +1,29 @@
 import {useState} from "react";
-import { useNavigate } from "react-router-dom";
 import { Calendar } from "@/components/common/calendar/Calendar";
 import CategoryList from "@/components/category/CategoryList";
 import { Button } from "@/components/common/Button";
 import { HomeIcon, ReportIcon } from "@/assets/icons";
 import { CalendarIcon } from "@/assets/icons/general/CalendarIcon";
 
-export const CalendarPage = () => {
+interface CalendarPageProps {
+    onClose?: () => void;
+}
+
+
+export const CalendarPage = ({ onClose }: CalendarPageProps) => {
     const [isDetailOpen, setIsDetailOpen] = useState(false);
-    const navigate = useNavigate();
 
     return (
-        <div className="relative flex h-screen w-full flex-col items-center">
+        <div className="relative flex z-50 h-screen w-full flex-col items-center bg-transparent pt-[80px]">
             <section 
-            className="w-[375px] h-[295px] bg-[#3A3A3C]/20 flex-shrink-0"
+            className="w-[375px] h-[295px] bg-[#3A3A3C] flex-shrink-0"
             onClick={() => setIsDetailOpen(true)}
             >
                 <Calendar />   
             </section>
 
             {isDetailOpen && (
-                <section className="w-[375px] h-[252px] flex-1 overflow-y-auto mt-4 px-4 pb-20">
+                <section className="w-[375px] h-[252px] flex-1 overflow-y-auto mt-4 px-4 pb-20 bg-[#121212]">
                     <CategoryList/>
                 </section>
             )}
@@ -50,7 +53,7 @@ export const CalendarPage = () => {
                 </div>
                  <div className="cursor-pointer"
                  onClick={() => {
-                    navigate('/');
+                    onClose?.();
                  }}>
                     <HomeIcon className="w-[52px] h-[52px]" />
                  </div>
