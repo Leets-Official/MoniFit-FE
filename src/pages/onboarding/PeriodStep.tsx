@@ -18,8 +18,10 @@ const PeriodStep = ({ onNext, isFirstLogin = true }: PeriodStepProps) => {
           오늘부터 30일 동안<br />
           예산을 관리해볼까요?
         </h1>
-        <Calendar />
+        <div className="mt-15">
+        <Calendar isRangeMode={true} />
         </div>
+      </div>
       <div className="flex-1 flex items-center justify-center text-gray-500">
         
       </div>
