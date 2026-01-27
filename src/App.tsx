@@ -2,6 +2,7 @@ import "@/App.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import MobileLayout from "@/layouts/MobileLayout";
+import BudgetSettingPage from "./pages/onboarding/BudgetSettingPage";
 import CalendarTestPage from "@/pages/test/CalendarTestPage";
 import CategoryTestPage from "@/pages/test/CategoryTestPage";
 import DonutChartTestPage from "@/pages/DonutChartTestPage";
@@ -26,6 +27,7 @@ export default function App() {
         <Route path="/" element={<MobileLayout />}>
           {/* 메인 페이지 */}
           <Route path="/" element={<MainPage />} />
+          <Route path="/onboarding/budget-setting" element={<BudgetSettingPage />} />
 
           {/* 테스트 페이지용 라우팅 (하나의 리스트로 병합) */}
           <Route path="/test/calendar" element={<CalendarTestPage />} />
