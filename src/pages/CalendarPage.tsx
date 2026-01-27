@@ -16,7 +16,7 @@ export const CalendarPage = ({ onClose }: CalendarPageProps) => {
     return (
         <div className="relative flex z-50 h-screen w-full flex-col items-center bg-transparent pt-[80px]">
             <section 
-            className="w-[375px] h-[295px] bg-[#3A3A3C] flex-shrink-0"
+            className="w-[375px] h-[812px] bg-[#3A3A3C] flex-shrink-0"
             onClick={() => setIsDetailOpen(true)}
             >
                 <Calendar />   
