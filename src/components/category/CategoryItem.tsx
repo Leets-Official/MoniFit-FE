@@ -52,15 +52,22 @@ const CategoryItem = ({ data }: CategoryItemProps) => {
     const currentIcon = categoryIcons[type] || StarIcon;
     const currentName = categoryNames[type] || '기타';
   return (
-    <div className="flex gap-4 w-full px-4">
-      <div className="self-stretch flex items-start">
-        <div className='h-full w-[5px]'>
-          <VerticalIndicator />
+    <div className="flex gap-[18px] w-full px-[18px]"> 
+      
+      <div className="flex flex-col items-center self-stretch">
+        <div 
+          className="w-[5px] bg-primary-40 rounded-[20px] transition-all duration-300"
+          style={{ 
+            minHeight: '45px', 
+            height: '100%'   
+          }}
+        >
+          <VerticalIndicator /> 
         </div>
       </div>
 
       <div className="flex-1">
-        <div className="flex justify-between items-center py-5 cursor-pointer" onClick={toggleAccordion}>
+        <div className="flex justify-between items-center py-2 cursor-pointer" onClick={toggleAccordion}>
           <div className="flex items-center gap-[7px]">
             <img src={currentIcon} alt="icon" />
             <span className="text-gray-10 font-medium text-[15px]">{currentName}</span>
