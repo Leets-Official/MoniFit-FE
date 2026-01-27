@@ -14,7 +14,7 @@ const BudgetSettingPage = () => {
   return (
     <div className="min-h-screen text-white flex flex-col">
       {/* 1. 상단 헤더 영역 */}
-      <header className="pt-6 px-6">
+      <header>
         <StepIndicator step={step} />
       </header>
 
