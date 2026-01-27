@@ -11,7 +11,7 @@ const PeriodStep = ({ onNext, isFirstLogin = true }: PeriodStepProps) => {
       <div className=" mb-8 items-center justify-center text-center">
         {/* 최초 로그인일 때만 환영 문구 표시 */}
         {isFirstLogin && (
-          <p className="text-[#EAEAEA] text-[24px] font-semibold mb-1"><span className="text-[#6E76AD]">모니핏</span>에 온 걸 환영해요!</p>
+          <p className="text-[#EAEAEA] text-[24px] font-semibold"><span className="text-[#6E76AD]">모니핏</span>에 온 걸 환영해요!</p>
         )}
         <h1 className="text-[#EAEAEA] font-semibold leading-snug text-[20px]">
           오늘부터 30일 동안<br />
