@@ -22,12 +22,14 @@ const PeriodStep = ({ onNext, isFirstLogin = true }: PeriodStepProps) => {
         <Calendar isRangeMode={true} />
         </div>
       </div>
-      <div className="flex-1 flex items-center justify-center text-gray-500">
-        
+      <div className="flex items-center justify-center text-[#9FA0A0] text-[14px]">
+        <p>기간은 오늘 날짜부터 1개월로 자동 설정됩니다.</p>
       </div>
+      <div className="py-10 items-center justify-center text-center">
       <Button width={"lg"} onClick={onNext} className="mb-10">
         다음
         </Button>
+        </div>
     </div>
   );
 };

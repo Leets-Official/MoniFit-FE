@@ -19,7 +19,7 @@ const BudgetSettingPage = () => {
       </header>
 
       {/* 2. 단계별 컨텐츠 영역 */}
-      <main className="flex-1 flex flex-col px-6">
+      <main className="flex-1 flex flex-col">
         {step === 1 ? (
           <PeriodStep onNext={() => setStep(2)} />
         ) : (
