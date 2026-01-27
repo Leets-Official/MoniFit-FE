@@ -28,11 +28,8 @@ export function Calendar() {
     };
 
     return (
-        <div className="flex flex-col items-center justify-center w-full py-10">
+        <div className="flex flex-col items-center justify-center w-full">
             <div className="flex flex-col w-[276.2px]"> 
-                    <h2 className="font-semibold text-lg text-[#EAEAEA]">
-                        날짜를 선택해주세요.
-                    </h2>
                 <CalendarHeader 
                 year={currentYear} 
                 month={currentMonth}

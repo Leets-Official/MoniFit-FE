@@ -2,7 +2,7 @@ import CategoryItem from "./CategoryItem";
 
 const CategoryList = () => {
   return (
-    <div className="flex flex-col bg-[#121212]">
+    <div className="flex flex-col">
         <CategoryItem
             data={{
                 type: 'food',
