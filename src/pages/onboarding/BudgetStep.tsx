@@ -24,17 +24,17 @@ const BudgetStep = ({ onNext }: BudgetStepProps) => {
   const isInputted = customAmount.length > 0;
 
   return (
-    <div className="flex flex-col h-full px-6 text-white">
+    <div className="flex flex-col h-full px-6">
       {/* 타이틀: 입력 전후에 따라 문구 변경 */}
       <h1 className="text-[20px] font-semibold mt-12 mb-20 text-center">
         {isInputted ? "목표 금액" : "얼마를 목표로 할까요?"}
       </h1>
 
-      <div className="flex-1 flex flex-col items-center justify-center">
+      <div className="flex-1 flex-col items-center justify-center py-5">
         <div className="w-full flex flex-col items-center">
-          <div className="flex items-end text-[32px] font-bold pb-2 border-b-2 border-[#A8A6FF]">
+          <div className="flex items-end text-[32px] font-bold pb-2">
             {/* 입력 전에는 ₩ 기호 표시, 입력 후에는 뒤에 '원' 표시 */}
-            {!isInputted && <span className="mr-2 text-[#A8A6FF]">₩</span>}
+            {!isInputted && <span className="mr-2 text-[#EAEAEA]">₩</span>}
             <input
               type="text"
               placeholder="0"
@@ -54,11 +54,12 @@ const BudgetStep = ({ onNext }: BudgetStepProps) => {
       </div>
 
       {/* 하단 버튼: 입력 전에는 '다음', 입력 후에는 '확인'으로 변경 */}
-      <div className="mb-10 w-full">
+      <div className="pb-10 w-full flex justify-center">
         <Button
           width="lg"
           onClick={() => onNext(Number(customAmount.replace(/,/g, "")))}
           disabled={!isInputted} // 미입력 시 비활성화 가능
+          className="w-[285px] h-[63px] px-3 py-2 gap-2 rounded-full bg-[#A8A6FF]"
         >
           {isInputted ? "확인" : "다음"}
         </Button>
