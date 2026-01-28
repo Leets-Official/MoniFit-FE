@@ -3,11 +3,13 @@ import { Button, ExpenseRecordModal, LiquidSphere } from "@/components";
 import { ModalWrapper } from "@/components/modal/ModalWrapper";
 import { Canvas } from "@react-three/fiber";
 import { useState } from "react";
+import CalendarPage from "./CalendarPage";
 
 // TODO : MOCK_DATA
 const TOTAL_AMOUNT = 1000000;
 
 export const MainPage = () => {
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [percent, setPercent] = useState(100);
   const [spent, setSpent] = useState(0);
@@ -85,6 +87,7 @@ export const MainPage = () => {
           bgColor={"none"}
           className="flex gap-2"
           fontColor={"white"}
+          onClick={() => setIsCalendarOpen(true)}
         >
           <CalendarIcon />
           <span>달력</span>
@@ -100,6 +103,11 @@ export const MainPage = () => {
           <span>리포트</span>
         </Button>
       </section>
+      {isCalendarOpen && (
+        <div className="fixed inset-0 z-50 bg-transparent">
+          <CalendarPage onClose={() => setIsCalendarOpen(false)} />
+        </div>
+      )}
       {showModal && (
         <ModalWrapper onClose={() => setShowModal(false)}>
           <ExpenseRecordModal
