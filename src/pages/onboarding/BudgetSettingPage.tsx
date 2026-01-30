@@ -2,13 +2,14 @@ import { useState } from "react";
 import StepIndicator from "./StepIndicator";
 import PeriodStep from "./PeriodStep"; 
 import BudgetStep from "./BudgetStep";
+import { useNavigate } from "react-router-dom";
 
 const BudgetSettingPage = () => {
   const [step, setStep] = useState(1);
-
+  const navigate = useNavigate();
   const handleFinalSubmit = (amount: number) => {
     console.log("최종 설정 금액:", amount);
-    // 이후 메인 페이지로 이동하는 로직 추가
+    navigate("/");
   };
 
   return (
