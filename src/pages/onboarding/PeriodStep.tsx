@@ -25,8 +25,8 @@ const PeriodStep = ({ onNext, isFirstLogin = true }: PeriodStepProps) => {
       <div className="flex items-center justify-center text-[#9FA0A0] text-[14px]">
         <p>기간은 오늘 날짜부터 1개월로 자동 설정됩니다.</p>
       </div>
-      <div className="py-10 items-center justify-center text-center">
-      <Button width={"lg"} onClick={onNext} className="mb-10">
+      <div className="mt-[45px] w-full flex justify-center">
+      <Button width={"lg"} onClick={onNext} className="w-[285px] h-[63px] px-3 py-2 gap-2 rounded-full bg-[#A8A6FF]">
         다음
         </Button>
         </div>
