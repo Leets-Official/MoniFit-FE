@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import type { ChangeEvent } from "react";
 import { Button } from "@/components/common/Button";
 
@@ -6,13 +6,39 @@ interface BudgetStepProps {
   onNext: (amount: number) => void;
 }
 
-const BudgetStep = ({ onNext }: BudgetStepProps) => {
-    const [isInputMode, setIsInputMode] = useState(false); // 입력 모드 전환 상태
-  const [selectedAmount, setSelectedAmount] = useState(40); // 기본 선택값 (40만원)
-  const [customAmount, setCustomAmount] = useState<string>("");
-  const budgetOptions = [10, 20, 30, 40, 50, 60, 70];
+const BUDGET_OPTIONS = [10, 20, 30, 40, 50, 60, 70];
+const ITEM_HEIGHT = 56;
 
-  // 천 단위 콤마 포맷팅 함수
+const BudgetStep = ({ onNext }: BudgetStepProps) => {
+  const [isInputMode, setIsInputMode] = useState(false);
+  const [selectedAmount, setSelectedAmount] = useState(40);
+  const [customAmount, setCustomAmount] = useState<string>("");
+  
+  const pickerRef = useRef<HTMLDivElement>(null);
+  const isInitialMount = useRef(true);
+
+  // 초기 마운트 시 40만원 위치로 스크롤
+  useEffect(() => {
+    if (pickerRef.current && isInitialMount.current && !isInputMode) {
+      const index = BUDGET_OPTIONS.indexOf(40);
+      // 중앙 정렬을 위한 정확한 스크롤 위치 계산
+      const scrollPosition = index * ITEM_HEIGHT - (pickerRef.current.clientHeight / 2 - ITEM_HEIGHT / 2);
+      pickerRef.current.scrollTop = scrollPosition;
+      isInitialMount.current = false;
+    }
+  }, [isInputMode]);
+
+  const handleScroll = () => {
+    if (pickerRef.current) {
+      const container = pickerRef.current;
+      const containerCenter = container.scrollTop + container.clientHeight / 2;
+      // 상단 패딩을 고려한 인덱스 계산
+      const index = Math.round((containerCenter - ITEM_HEIGHT / 2) / ITEM_HEIGHT) - 2;
+      const clampedIndex = Math.max(0, Math.min(index, BUDGET_OPTIONS.length - 1));
+      setSelectedAmount(BUDGET_OPTIONS[clampedIndex]);
+    }
+  };
+
   const formatNumber = (num: string) => {
     const value = num.replace(/,/g, "");
     return value.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -23,75 +49,95 @@ const BudgetStep = ({ onNext }: BudgetStepProps) => {
     setCustomAmount(formatNumber(rawValue));
   };
 
-  // 금액 입력 여부에 따른 상태 분기
   const isInputted = customAmount.length > 0;
 
   return (
     <div className="flex flex-col h-full px-6">
-      {/* 타이틀: 입력 전후에 따라 문구 변경 */}
-      <h1 className="text-[20px] font-semibold mt-12 mb-20 text-center">
+      <h1 className="text-[24px] font-semibold mt-12 text-center">
         {isInputted ? "목표 금액" : "얼마를 목표로 할까요?"}
       </h1>
 
       <div className="flex-col items-center justify-center py-5">
         {!isInputMode ? (
-          /* 모드 1: 리스트 선택 UI (Wheel 스타일) */
-          <div className="flex flex-col items-center gap-4">
-            {budgetOptions.map((amount) => (
-              <button
-                key={amount}
-                onClick={() => setSelectedAmount(amount)}
-                className={`text-[18px] transition-all ${
-                  selectedAmount === amount 
-                    ? "text-white font-bold bg-[#1E1E1E] px-10 py-2 rounded-lg" 
-                    : "text-gray-500"
-                }`}
-              >
-                {amount}만원
-              </button>
-            ))}
+          <div className="relative h-[280px] flex items-center justify-center">
+            {/* 선택 영역 하이라이트 */}
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[250px] h-[56px] bg-[#363638]/30 rounded-xl pointer-events-none z-10" />
+            
+            {/* 스크롤 가능한 피커 */}
+            <div
+              ref={pickerRef}
+              onScroll={handleScroll}
+              className="overflow-y-scroll h-full w-full snap-y snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+            >
+              {/* 상단 패딩 */}
+              <div style={{ height: ITEM_HEIGHT * 2 }} />
+              
+              {BUDGET_OPTIONS.map((amount) => {
+                const isSelected = selectedAmount === amount;
+                return (
+                  <div
+                    key={amount}
+                    className="snap-center flex items-center justify-center transition-all duration-200"
+                    style={{ height: ITEM_HEIGHT }}
+                  >
+                    <span
+                      className={`text-[18px] transition-all duration-200 ${
+                        isSelected 
+                          ? "text-white font-semibold scale-110" 
+                          : "text-gray-500 scale-100"
+                      }`}
+                    >
+                      {amount}만원
+                    </span>
+                  </div>
+                );
+              })}
+            
+            </div>
           </div>
         ) : (
-        <div className="w-full flex flex-col items-center">
-          <div className="flex items-end text-[32px] font-bold pb-2">
-            {/* 입력 전에는 ₩ 기호 표시, 입력 후에는 뒤에 '원' 표시 */}
-            {!isInputted && <span className="mr-2 text-[#EAEAEA]">₩</span>}
-            <input
-              type="text"
-              placeholder="0"
-              value={customAmount}
-              onChange={handleInputChange}
-              className="bg-transparent outline-none w-48 text-center"
-              autoFocus
-            />
-            {isInputted && <span className="ml-1 text-[24px]">원</span>}
+          <div className="w-full flex flex-col items-center">
+            <div className="flex items-end text-[32px] font-bold pb-2">
+              {!isInputted && <span className="mr-2 text-[#EAEAEA]">₩</span>}
+              <input
+                type="text"
+                placeholder="0"
+                value={customAmount}
+                onChange={handleInputChange}
+                className="bg-transparent outline-none w-48 text-center"
+                autoFocus
+              />
+              {isInputted && <span className="ml-1 text-[24px]">원</span>}
+            </div>
+            
+            <p className="mt-[170px] text-gray-400 text-sm">
+              {isInputted ? "맞으면 확인 버튼을 눌러주세요" : "원하는 금액을 입력해 주세요"}
+            </p>
           </div>
-          
-          {/* 하단 안내 문구 변경 */}
-          <p className="mt-[170px] text-gray-400 text-sm">
-            {isInputted ? "맞으면 확인 버튼을 눌러주세요" : "원하는 금액을 입력해 주세요"}
-          </p>
-        </div>
         )}
       </div>
 
-      {/* 하단 버튼: 입력 전에는 '다음', 입력 후에는 '확인'으로 변경 */}
-      <div className="mt-[69px] pb-10 w-full flex justify-center">
+      <div className="pb-10 mt-10 w-full flex flex-col items-center gap-6">
         {!isInputMode && (
           <button 
             onClick={() => setIsInputMode(true)}
-            className="text-gray-400 text-sm underline decoration-gray-600 underline-offset-4"
+            className="text-gray-400 text-sm underline"
           >
             더 다양한 목표금액을 설정하고 싶어요
           </button>
         )}
         <Button
           width="lg"
-          onClick={() => onNext(Number(customAmount.replace(/,/g, "")))}
-          disabled={!isInputted} // 미입력 시 비활성화 가능
-          className="w-[285px] h-[63px] px-3 py-2 gap-2 rounded-full bg-[#A8A6FF]"
+          onClick={() => {
+            if (!isInputMode) {
+              onNext(selectedAmount * 10000);
+            } else {
+              onNext(Number(customAmount.replace(/,/g, "")));
+            }
+          }}
+          className="w-[285px] h-[63px] px-3 py-2 gap-2 mt-10 rounded-full bg-[#A8A6FF]"
         >
-          {isInputted ? "확인" : "다음"}
+          {isInputMode ? (isInputted ? "확인" : "다음") : "확인"}
         </Button>
       </div>
     </div>
