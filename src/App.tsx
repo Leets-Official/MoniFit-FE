@@ -6,6 +6,7 @@ import BudgetSettingPage from "./pages/onboarding/BudgetSettingPage";
 import CalendarTestPage from "@/pages/test/CalendarTestPage";
 import DonutChartTestPage from "@/pages/DonutChartTestPage";
 
+import SplashPage from "./pages/auth/SplashPage";
 import CalendarPage from "./pages/CalendarPage";
 import { MainPage } from "./pages";
 import { MyPageMainPage, MyPageNoticePage, MyPageProfilePage } from "./pages/mypage";
@@ -26,7 +27,8 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<MobileLayout />}>
-          <Route path="/" element={<MainPage />} />
+          <Route index element={<SplashPage />} />
+          <Route path="/main" element={<MainPage />} />
           <Route path="/onboarding/budget-setting" element={<BudgetSettingPage />} />
           <Route path="/calendar" element={<CalendarPage />} />
 
