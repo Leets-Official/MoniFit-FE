@@ -83,9 +83,10 @@ export default function BudgetProgressCard({
   const amount = state.isOver ? state.overAmount : state.savedAmount;
 
   return (
-    <CommonCard className="h-51.75 px-5 py-5">
+    <CommonCard className="h-58 px-5 py-5">
       <div className="flex flex-col gap-1">
-        <h3 className="text-sub1 text-gray-10">{title}</h3>
+        <h3 className="text-sub1-size font-semibold text-gray-10">{title}</h3>
+
         <p className="text-caption2 text-gray-60">
           {formatDotDate(startDate)} - {formatDotDate(endDate)}
         </p>
@@ -101,10 +102,11 @@ export default function BudgetProgressCard({
       </div>
 
       <div className="mt-5">
-        <p className="text-sub1 text-gray-10">
+        <p className="text-sub1-size font-semibold text-gray-10">
           지금까지 {formatCurrencyKRW(amount)}원을{" "}
           <span className="text-primary-50">{keyword}</span>했어요
         </p>
+
         <p className="mt-1 text-caption2 text-gray-60">
           목표 예산 {formatCurrencyKRW(targetBudget)}원에서{" "}
           {formatCurrencyKRW(spentAmount)}원 사용
@@ -122,9 +124,7 @@ export default function BudgetProgressCard({
             className="absolute -top-7 flex -translate-x-1/2 flex-col items-center"
             style={{ left: `${state.indicatorLeftPercent}%` }}
           >
-            <span className="text-[10px] text-primary-50">
-              {state.badgeText}
-            </span>
+            <span className="text-[10px] text-primary-50">{state.badgeText}</span>
             <img src={ChevronDown} alt="" className="mt-pt h-2.5 w-2.5" />
           </div>
         </div>
