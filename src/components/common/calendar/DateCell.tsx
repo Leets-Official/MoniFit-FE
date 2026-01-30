@@ -7,7 +7,8 @@ const dateCellVariants = cva(
     variants: {
       status: {
         default: "text-white",     
-        selected: "text-black",       
+        selected: "text-black",  
+        inRange: "text-white"     
       },
       isCurrentMonth: {
         true: "",          
@@ -24,36 +25,59 @@ const dateCellVariants = cva(
 type DateCellProps = {
     day: number;
     isSelected: boolean;
+    isRangeStart?: boolean;
+    isRangeEnd?: boolean;
+    isBetween?: boolean;
+    isRangeMode?: boolean;
+    isCurrentMonth?: boolean;
     dayOfWeek?: number; // 0~6 (일~토)
     onClick?: () => void;
 };
+
 export function DateCell({ 
   day, 
   isSelected, 
-  isCurrentMonth = true, // 기본값을 true로 설정
+  isCurrentMonth = true,
+  isRangeStart,
+  isRangeEnd,
+  isBetween,
+  isRangeMode,
   onClick 
 }: DateCellProps & { isCurrentMonth?: boolean }) {
 
   // 1. 상태 결정
-  const currentStatus = isSelected 
+  const currentStatus = (isSelected || isRangeStart || isRangeEnd)
     ? "selected" 
-    : "default";
+    : isBetween 
+        ? "inRange" 
+        : "default";
 
   return (
-    <button type="button" className="w-[37.45px] h-[37.45px]" onClick={onClick}>
+    <button type="button" className="w-[37.45px] h-[37.45px] relative" onClick={onClick} disabled={isRangeMode}> 
       <div className="grid grid-cols-1 grid-rows-1 place-items-center w-full h-full">
-        {/* 선택 시 보라색 배경 */}
-        {isSelected && (
-          <div className="w-[37.45px] h-[37.45px] rounded-full bg-[#A8A6FF] row-start-1 col-start-1" />
+        {/* 30일 범위 배경 */}
+        {(isRangeStart || isRangeEnd || isBetween) && isRangeMode && (
+          <div className={clsx(
+            "absolute top-0 bottom-0 bg-[#A8A6FF]/25 z-0",
+            isRangeStart && !isRangeEnd && "left-1/2 right-0",
+            isRangeEnd && !isRangeStart && "left-0 right-1/2",
+            isBetween && "left-0 right-0",
+            isRangeStart && isRangeEnd && "left-1/2 right-1/2" // 같은 날인 경우
+          )} />
+        )}
+        
+        {/* 선택 시 보라색 원 배경 */}
+        {(isRangeStart || isRangeEnd || (!isRangeMode && isSelected)) && (
+          <div className="w-[37.45px] h-[37.45px] rounded-full bg-[#A8A6FF] row-start-1 col-start-1 shadow-sm z-10" />
         )}
         
         {/* 날짜 텍스트 */}
         <div className={clsx(
           dateCellVariants({ 
             status: currentStatus, 
-            // 선택된 상태가 아닐 때만 '현재 달 아님' 스타일 적용
-            isCurrentMonth: isSelected ? true : isCurrentMonth 
-          })
+            isCurrentMonth: (isRangeStart || isRangeEnd || isBetween) ? true : isCurrentMonth
+          }),
+          "z-20"
         )}>
           {day}
         </div>
