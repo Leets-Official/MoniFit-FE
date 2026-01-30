@@ -30,7 +30,7 @@ const BudgetStep = ({ onNext }: BudgetStepProps) => {
         {isInputted ? "목표 금액" : "얼마를 목표로 할까요?"}
       </h1>
 
-      <div className="flex-1 flex-col items-center justify-center py-5">
+      <div className="flex-col items-center justify-center py-5">
         <div className="w-full flex flex-col items-center">
           <div className="flex items-end text-[32px] font-bold pb-2">
             {/* 입력 전에는 ₩ 기호 표시, 입력 후에는 뒤에 '원' 표시 */}
@@ -47,14 +47,14 @@ const BudgetStep = ({ onNext }: BudgetStepProps) => {
           </div>
           
           {/* 하단 안내 문구 변경 */}
-          <p className="mt-10 text-gray-400 text-sm">
+          <p className="mt-[170px] text-gray-400 text-sm">
             {isInputted ? "맞으면 확인 버튼을 눌러주세요" : "원하는 금액을 입력해 주세요"}
           </p>
         </div>
       </div>
 
       {/* 하단 버튼: 입력 전에는 '다음', 입력 후에는 '확인'으로 변경 */}
-      <div className="pb-10 w-full flex justify-center">
+      <div className="mt-[69px] pb-10 w-full flex justify-center">
         <Button
           width="lg"
           onClick={() => onNext(Number(customAmount.replace(/,/g, "")))}
