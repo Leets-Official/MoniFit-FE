@@ -3,10 +3,14 @@ import { DateGrid } from "./DateGrid";
 import { WeekdayHeader } from "./WeekdayHeader";
 import { CalendarHeader } from "./CalendarHeader";
 
-export function Calendar() {
+export function Calendar({ isRangeMode = false }) {
     const now = new Date();
     const [currentYear, setCurrentYear] = useState(now.getFullYear());
     const [currentMonth, setCurrentMonth] = useState(now.getMonth()); // 0~11
+
+// 온보딩 모드일 때만 30일 기간 계산
+    const rangeStart = isRangeMode ? new Date(now.getFullYear(), now.getMonth(), now.getDate()) : null;
+    const rangeEnd = isRangeMode ? new Date(now.getFullYear(), now.getMonth(), now.getDate() + 30) : null;
 
     // 에러 방지용: 이전 달/다음 달로 이동하는 함수
     const handlePrevMonth = () => {
@@ -37,7 +41,13 @@ export function Calendar() {
                 onNext={handleNextMonth}
                 />
                 <WeekdayHeader />
-                <DateGrid year={currentYear} month={currentMonth} />
+                <DateGrid 
+                year={currentYear} 
+                month={currentMonth}
+                // 온보딩 모드일 때만 범위 데이터를 넘겨줌
+                rangeStart={rangeStart}
+                rangeEnd={rangeEnd}
+                isRangeMode={isRangeMode} />
             </div>
         </div>
     );

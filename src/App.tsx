@@ -2,6 +2,7 @@ import "@/App.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import MobileLayout from "@/layouts/MobileLayout";
+import BudgetSettingPage from "./pages/onboarding/BudgetSettingPage";
 import CalendarTestPage from "@/pages/test/CalendarTestPage";
 import DonutChartTestPage from "@/pages/DonutChartTestPage";
 
@@ -26,6 +27,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<MobileLayout />}>
           <Route path="/" element={<MainPage />} />
+          <Route path="/onboarding/budget-setting" element={<BudgetSettingPage />} />
           <Route path="/calendar" element={<CalendarPage />} />
 
           <Route path="/mypage" element={<MyPageMainPage />} />
