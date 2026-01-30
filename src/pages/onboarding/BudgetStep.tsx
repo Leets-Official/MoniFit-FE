@@ -7,7 +7,10 @@ interface BudgetStepProps {
 }
 
 const BudgetStep = ({ onNext }: BudgetStepProps) => {
+    const [isInputMode, setIsInputMode] = useState(false); // 입력 모드 전환 상태
+  const [selectedAmount, setSelectedAmount] = useState(40); // 기본 선택값 (40만원)
   const [customAmount, setCustomAmount] = useState<string>("");
+  const budgetOptions = [10, 20, 30, 40, 50, 60, 70];
 
   // 천 단위 콤마 포맷팅 함수
   const formatNumber = (num: string) => {
@@ -31,6 +34,24 @@ const BudgetStep = ({ onNext }: BudgetStepProps) => {
       </h1>
 
       <div className="flex-col items-center justify-center py-5">
+        {!isInputMode ? (
+          /* 모드 1: 리스트 선택 UI (Wheel 스타일) */
+          <div className="flex flex-col items-center gap-4">
+            {budgetOptions.map((amount) => (
+              <button
+                key={amount}
+                onClick={() => setSelectedAmount(amount)}
+                className={`text-[18px] transition-all ${
+                  selectedAmount === amount 
+                    ? "text-white font-bold bg-[#1E1E1E] px-10 py-2 rounded-lg" 
+                    : "text-gray-500"
+                }`}
+              >
+                {amount}만원
+              </button>
+            ))}
+          </div>
+        ) : (
         <div className="w-full flex flex-col items-center">
           <div className="flex items-end text-[32px] font-bold pb-2">
             {/* 입력 전에는 ₩ 기호 표시, 입력 후에는 뒤에 '원' 표시 */}
@@ -51,10 +72,19 @@ const BudgetStep = ({ onNext }: BudgetStepProps) => {
             {isInputted ? "맞으면 확인 버튼을 눌러주세요" : "원하는 금액을 입력해 주세요"}
           </p>
         </div>
+        )}
       </div>
 
       {/* 하단 버튼: 입력 전에는 '다음', 입력 후에는 '확인'으로 변경 */}
       <div className="mt-[69px] pb-10 w-full flex justify-center">
+        {!isInputMode && (
+          <button 
+            onClick={() => setIsInputMode(true)}
+            className="text-gray-400 text-sm underline decoration-gray-600 underline-offset-4"
+          >
+            더 다양한 목표금액을 설정하고 싶어요
+          </button>
+        )}
         <Button
           width="lg"
           onClick={() => onNext(Number(customAmount.replace(/,/g, "")))}
