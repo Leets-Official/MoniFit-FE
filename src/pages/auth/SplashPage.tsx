@@ -7,7 +7,7 @@ const SplashPage = () => {
   useEffect(() => {
     // 2초 뒤에 로그인 페이지로 이동
     const timer = setTimeout(() => {
-      navigate('/auth/login');
+      navigate('/login');
     }, 2000);
 
     return () => clearTimeout(timer);
