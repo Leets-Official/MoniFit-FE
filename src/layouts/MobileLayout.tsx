@@ -5,11 +5,14 @@ export default function MobileLayout() {
 
   const location = useLocation();
   const isMyPageRoute = location.pathname.startsWith("/mypage");
+  const isAuthPage = location.pathname === "/" || location.pathname === "/login";
 
   return (
     <main className="flex h-full w-full items-center justify-center bg-[#1f1f1f]">
-      <div className="flex h-203 w-93.75 flex-col border border-white px-4 py-6">
-       {!isMyPageRoute && (
+      <div className={`flex h-203 w-93.75 flex-col border border-white overflow-hidden ${
+        isAuthPage ? "p-0" : "px-4 py-6"
+      }`}>
+       {!isMyPageRoute && !isAuthPage && (
         <Header
           onStampClick={() => {}}
           onImgClick={() => {}}
