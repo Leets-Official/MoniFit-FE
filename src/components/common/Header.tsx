@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 interface HeaderProps {
   src?: string;
-  onStampClick: () => void;
+  onStampClick?: () => void;
   showStampButton?: boolean;
 }
 
