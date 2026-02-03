@@ -16,7 +16,7 @@ const REST_API_KEY = import.meta.env.VITE_KAKAO_CLIENT_ID;
         playsInline
         className="absolute inset-0 h-full w-full object-cover opacity-60"
       >
-        <source src="/src/public/login-video.mp4" type="video/mp4" />
+        <source src="/login-video.mp4" type="video/mp4" />
       </video>
 
     <div className="relative z-10 flex w-full items-center justify-center mb-12">

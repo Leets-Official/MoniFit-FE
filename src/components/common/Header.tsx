@@ -14,9 +14,9 @@ export const Header = ({
 }: HeaderProps) => {
   const navigate = useNavigate();
   return (
-    <header className="flex h-13 w-full items-center justify-between px-4 py-2">
+    <header className="flex items-center justify-between w-full px-4 py-2 h-13">
       <button onClick={() => navigate("/main")}>
-        <img src={"/src/public/banner.png"} alt="banner" />
+        <img src={"/banner.png"} alt="banner" />
       </button>
 
       {showStampButton && (
@@ -30,10 +30,10 @@ export const Header = ({
 
       <button
         onClick={() => navigate("/mypage")}
-        className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full"
+        className="flex items-center justify-center overflow-hidden rounded-full h-9 w-9"
       >
         {src ? (
-          <img src={src} alt="avatar" className="h-full w-full object-cover" />
+          <img src={src} alt="avatar" className="object-cover w-full h-full" />
         ) : (
           <AvartarIcon />
         )}
