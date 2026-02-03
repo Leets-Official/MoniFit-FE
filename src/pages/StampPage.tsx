@@ -1,0 +1,1 @@
+export const StampPage =() => {return <></>}

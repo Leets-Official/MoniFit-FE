@@ -53,7 +53,7 @@ export const MainPage = () => {
     <main className="relative flex flex-col items-center w-full h-full">
       <Header 
       showStampButton={true} 
-      onStampClick={() => navigate("/main")} // TODO : 임시로 라우팅 '/main'으로 설정. 추후 스탬프 페이지로 연결
+      onStampClick={() => navigate("/stamp")} // TODO : 임시로 라우팅 '/main'으로 설정. 추후 스탬프 페이지로 연결
       /> 
 
       <section className="mt-6.25 flex h-fit w-full justify-center">
