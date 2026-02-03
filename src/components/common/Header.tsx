@@ -4,15 +4,13 @@ import { useNavigate } from "react-router-dom";
 interface HeaderProps {
   src?: string;
   onStampClick: () => void;
-  onImgClick: () => void;
-  showButton: boolean;
+  showStampButton?: boolean;
 }
 
 export const Header = ({
   src,
-  showButton = true,
+  showStampButton = false,
   onStampClick,
-  onImgClick,
 }: HeaderProps) => {
   const navigate = useNavigate();
   return (
@@ -21,7 +19,7 @@ export const Header = ({
         <img src={"/src/public/banner.png"} alt="banner" />
       </button>
 
-      {showButton && (
+      {showStampButton && (
         <button
           onClick={onStampClick}
           className="text-body2 h-8 w-35 rounded-[60px] border border-[#7976FF80] text-[#DCDCDC]"
@@ -31,7 +29,7 @@ export const Header = ({
       )}
 
       <button
-        onClick={onImgClick}
+        onClick={() => navigate("/mypage")}
         className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full"
       >
         {src ? (
