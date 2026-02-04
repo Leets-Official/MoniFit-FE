@@ -10,6 +10,31 @@ import {
 
 export const StampPage = () => {
   const navigate = useNavigate();
+
+  const stamps = useMemo(() => {
+    const START = new Date(2026, 5, 12);
+    const TOTAL = 30;
+
+    const recordedIndexSet = new Set([
+      0, 1, 2, 5, 6, 10, 11, 15, 18, 22, 23, 27, 29,
+    ]);
+
+    return Array.from({ length: TOTAL }, (_, i) => {
+      const d = new Date(START);
+      d.setDate(d.getDate() + i);
+
+      const yy = String(d.getFullYear()).slice(2);
+      const mm = String(d.getMonth() + 1).padStart(2, "0");
+      const dd = String(d.getDate()).padStart(2, "0");
+
+      return {
+        id: `${yy}/${mm}/${dd}`,
+        label: `${yy}/${mm}/${dd}`,
+        isRecorded: recordedIndexSet.has(i),
+      };
+    });
+  }, []);
+
   return (
     <>
       <Header />
@@ -42,29 +67,7 @@ export const StampPage = () => {
             <div className="mt-4 w-full border border-gray-50"></div>
           </div>
           <div className="mt-7 grid w-full grid-cols-5 gap-3">
-            {useMemo(() => {
-              const START = new Date(2026, 5, 12);
-              const TOTAL = 30;
-
-              const recordedIndexSet = new Set([
-                0, 1, 2, 5, 6, 10, 11, 15, 18, 22, 23, 27, 30,
-              ]);
-
-              return Array.from({ length: TOTAL }, (_, i) => {
-                const d = new Date(START);
-                d.setDate(d.getDate() + i);
-
-                const yy = String(d.getFullYear()).slice(2);
-                const mm = String(d.getMonth() + 1).padStart(2, "0");
-                const dd = String(d.getDate()).padStart(2, "0");
-
-                return {
-                  id: `${yy}/${mm}/${dd}`,
-                  label: `${yy}/${mm}/${dd}`,
-                  isRecorded: recordedIndexSet.has(i),
-                };
-              });
-            }, []).map(({ id, label, isRecorded }) => (
+            {stamps.map(({ id, label, isRecorded }) => (
               <Stamp key={id} label={label} isRecorded={isRecorded} />
             ))}
           </div>
