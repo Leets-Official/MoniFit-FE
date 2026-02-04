@@ -35,15 +35,9 @@ function ProgressBar({ ratio, fillFromRight }: BarProps) {
   return (
     <div className="relative h-2 w-68 overflow-hidden rounded-full bg-gray-20">
       {!fillFromRight ? (
-        <div
-          className="h-full rounded-full bg-primary-50"
-          style={{ width: `${r * 100}%` }}
-        />
+        <div className="h-full rounded-full bg-primary-50" style={{ width: `${r * 100}%` }} />
       ) : (
-        <div
-          className="absolute right-0 top-0 h-full rounded-full bg-primary-50"
-          style={{ width: `${r * 100}%` }}
-        />
+        <div className="absolute right-0 top-0 h-full rounded-full bg-primary-50" style={{ width: `${r * 100}%` }} />
       )}
     </div>
   );
@@ -58,20 +52,24 @@ export default function BudgetProgressCard({
   spentAmount,
   rightBottomLabel = "총 목표 예산",
 }: BudgetProgressCardProps) {
-  const timeRatio = useMemo(
-    () => calcTimeRatio(startDate, endDate, currentDate),
-    [startDate, endDate, currentDate]
-  );
+  const timeRatio = useMemo(() => calcTimeRatio(startDate, endDate, currentDate), [startDate, endDate, currentDate]);
 
-  const midDate = useMemo(
-    () => calcMidDateCompact(startDate, endDate),
-    [startDate, endDate]
-  );
+  const midDate = useMemo(() => calcMidDateCompact(startDate, endDate), [startDate, endDate]);
 
-  const state = useMemo(
-    () => calcBudgetState(targetBudget, spentAmount),
-    [targetBudget, spentAmount]
-  );
+  const state = useMemo(() => {
+    if (targetBudget <= 0) {
+      return {
+        isOver: false,
+        overAmount: 0,
+        savedAmount: 0,
+        overRatio: 0,
+        savingRatio: 0,
+        indicatorLeftPercent: 100,
+        badgeText: "0%",
+      };
+    }
+    return calcBudgetState(targetBudget, spentAmount);
+  }, [targetBudget, spentAmount]);
 
   const timeStartLabel = formatDotDate(startDate);
   const timeMidLabel = midDate
@@ -85,8 +83,7 @@ export default function BudgetProgressCard({
   return (
     <CommonCard className="h-58 px-5 py-5">
       <div className="flex flex-col gap-1">
-        <h3 className="text-sub1-size font-semibold text-gray-10">{title}</h3>
-
+        <h3 className="text-sub1 text-gray-10">{title}</h3>
         <p className="text-caption2 text-gray-60">
           {formatDotDate(startDate)} - {formatDotDate(endDate)}
         </p>
@@ -102,23 +99,18 @@ export default function BudgetProgressCard({
       </div>
 
       <div className="mt-5">
-        <p className="text-sub1-size font-semibold text-gray-10">
-          지금까지 {formatCurrencyKRW(amount)}원을{" "}
-          <span className="text-primary-50">{keyword}</span>했어요
+        <p className="text-sub1 text-gray-10">
+          지금까지 {formatCurrencyKRW(amount)}원을 <span className="text-primary-50">{keyword}</span>했어요
         </p>
 
         <p className="mt-1 text-caption2 text-gray-60">
-          목표 예산 {formatCurrencyKRW(targetBudget)}원에서{" "}
-          {formatCurrencyKRW(spentAmount)}원 사용
+          목표 예산 {formatCurrencyKRW(targetBudget)}원에서 {formatCurrencyKRW(spentAmount)}원 사용
         </p>
       </div>
 
       <div className="mt-4">
         <div className="relative w-68">
-          <ProgressBar
-            ratio={state.isOver ? state.overRatio : state.savingRatio}
-            fillFromRight={state.isOver}
-          />
+          <ProgressBar ratio={state.isOver ? state.overRatio : state.savingRatio} fillFromRight={state.isOver} />
 
           <div
             className="absolute -top-7 flex -translate-x-1/2 flex-col items-center"
