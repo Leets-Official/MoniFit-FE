@@ -1,56 +1,72 @@
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import api from "@/api/auth";
+import axios from 'axios';
 
-export default function CallbackPage() {
-  const navigate = useNavigate();
+const api = axios.create({
+  baseURL: '/api/v1', 
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
 
-  useEffect(() => {
-    const handleLogin = async () => {
-      // 1. 카카오가 넘겨준 인가 코드 추출
-      const code = new URL(window.location.href).searchParams.get("code");
+// Request 인터셉터 - 모든 요청에 Access Token 자동 추가
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('accessToken');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
-      if (code) {
-        try {
-          // 2. Swagger 명세대로 POST 요청 전송
-          // { "authorizationCode": "..." } 형태의 Body
-          const response = await api.post('/auth/kakao/login', {
-            authorizationCode: code,
-          });
+// Response 인터셉터 - 401 에러 시 토큰 자동 재발급
+api.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  async (error) => {
+    const originalRequest = error.config;
 
-          // 3. 성공 응답에서 데이터 추출 (Swagger 구조 참고)
-          const { accessToken, refreshToken, hasEverSetBudget } = response.data.data;
+    // 401 에러이고, 재시도가 아닌 경우에만 토큰 재발급 시도
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
 
-          // 4. 로컬 스토리지에 토큰 저장 (자동 로그인 및 인증 유지용)
-          localStorage.setItem('accessToken', accessToken);
-          localStorage.setItem('refreshToken', refreshToken);
-
-          // 5. 요구사항 정의서에 따른 페이지 분기
-          if (hasEverSetBudget) {
-            // 기존 유저라면 메인으로
-            navigate("/main");
-          } else {
-            // 신규 유저나 예산 설정이 안 된 경우 온보딩으로
-            navigate("/onboarding/budget-setting");
-          }
-        } catch (error) {
-          console.error("로그인 중 서버 오류 발생:", error);
-          alert("로그인 처리 중 문제가 발생했습니다. 다시 시도해주세요.");
-          navigate("/login");
+      try {
+        const refreshToken = localStorage.getItem('refreshToken');
+        
+        if (!refreshToken) {
+          localStorage.clear();
+          window.location.href = '/login';
+          return Promise.reject(error);
         }
+
+        // API 명세서대로 토큰 재발급 요청
+        const response = await axios.post('/api/v1/auth/reissue', {
+          refreshToken: refreshToken
+        });
+
+        const { accessToken, refreshToken: newRefreshToken } = response.data.data;
+
+        // 새 토큰 저장
+        localStorage.setItem('accessToken', accessToken);
+        localStorage.setItem('refreshToken', newRefreshToken);
+
+        // 실패했던 원래 요청에 새 토큰을 넣어서 재시도
+        originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+        return api(originalRequest);
+
+      } catch (refreshError) {
+        console.error('토큰 재발급 실패:', refreshError);
+        localStorage.clear();
+        window.location.href = '/login';
+        return Promise.reject(refreshError);
       }
-    };
+    }
 
-    handleLogin();
-  }, [navigate]);
+    return Promise.reject(error);
+  }
+);
 
-  return (
-    <div className="flex h-full w-full items-center justify-center bg-black">
-      <div className="text-center">
-        {/* 간단한 로딩 스피너 */}
-        <div className="mb-4 h-12 w-12 animate-spin rounded-full border-4 border-[#FEE500] border-t-transparent mx-auto"></div>
-        <p className="text-white font-medium italic">로그인 정보를 확인하고 있어요...</p>
-      </div>
-    </div>
-  );
-}
+export default api;
