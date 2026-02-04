@@ -1,5 +1,12 @@
 import type { DonutItem } from "./utils";
-import { buildSlices, clamp, donutArcPath, formatWon, polarToCartesian, sumValue } from "./utils";
+import {
+  buildSlices,
+  clamp,
+  donutArcPath,
+  formatWon,
+  polarToCartesian,
+  sumValue,
+} from "./utils";
 
 type Props = {
   items: DonutItem[];
@@ -72,14 +79,21 @@ export default function DonutChart({
 
   const ratios = items.map((it) => clamp((it.value ?? 0) / safeTotal, 0, 1));
   const thicknessByIndex = ratios.map((r) =>
-    clamp(minThickness + (maxThickness - minThickness) * r, minThickness, maxThickness)
+    clamp(
+      minThickness + (maxThickness - minThickness) * r,
+      minThickness,
+      maxThickness,
+    ),
   );
 
   const hasLinear = items.some((it) => it.color === "linear");
   const linearId = "donutLinearFill";
 
   return (
-    <div className={className ?? ""} style={{ width: size, height: size, position: "relative" }}>
+    <div
+      className={className ?? ""}
+      style={{ width: size, height: size, position: "relative" }}
+    >
       <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
         {hasLinear && (
           <defs>
@@ -97,7 +111,14 @@ export default function DonutChart({
           const thickness = idx >= 0 ? thicknessByIndex[idx] : minThickness;
           const rOuter = innerRadius + thickness;
 
-          const path = donutArcPath(cx, cy, rOuter, innerRadius, s.startRad, s.endRad);
+          const path = donutArcPath(
+            cx,
+            cy,
+            rOuter,
+            innerRadius,
+            s.startRad,
+            s.endRad,
+          );
 
           const contentR = innerRadius + thickness * 0.58;
           const p = polarToCartesian(cx, cy, contentR, s.midRad);
@@ -107,14 +128,17 @@ export default function DonutChart({
           const fill = it.color === "linear" ? `url(#${linearId})` : it.color;
 
           const iconCenterY = p.y - (labelGap / 2 + labelFontSize / 2);
-          const labelY = iconCenterY + iconSize / 2 + labelGap + labelFontSize / 2;
+          const labelY =
+            iconCenterY + iconSize / 2 + labelGap + labelFontSize / 2;
 
           return (
             <g key={it.id}>
               <path d={path} fill={fill} />
 
               {Icon && (
-                <g transform={`translate(${p.x - iconSize / 2}, ${iconCenterY - iconSize / 2})`}>
+                <g
+                  transform={`translate(${p.x - iconSize / 2}, ${iconCenterY - iconSize / 2})`}
+                >
                   <Icon width={iconSize} height={iconSize} color={labelColor} />
                 </g>
               )}

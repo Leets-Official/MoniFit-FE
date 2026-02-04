@@ -50,11 +50,8 @@ export const MainPage = () => {
   };
 
   return (
-    <main className="relative flex flex-col items-center w-full h-full">
-      <Header 
-      showStampButton={true} 
-      onStampClick={() => navigate("/main")} // TODO : 임시로 라우팅 '/main'으로 설정. 추후 스탬프 페이지로 연결
-      /> 
+    <main className="relative flex h-full w-full flex-col items-center">
+      <Header showStampButton={true} onStampClick={() => navigate("/stamp")} />
 
       <section className="mt-6.25 flex h-fit w-full justify-center">
         <div className="text-body2 flex h-8 w-fit items-center gap-1 rounded-[60px] bg-[#7976FF80] px-3 py-1.5 text-[#DCDCDC]">
@@ -78,9 +75,9 @@ export const MainPage = () => {
           </Canvas>
         </div>
 
-        <div className="absolute flex flex-col items-center -translate-x-1/2 -bottom-30 left-1/2">
+        <div className="absolute -bottom-30 left-1/2 flex -translate-x-1/2 flex-col items-center">
           <span className="text-body2 text-[#8A8A8A]">남은 금액</span>
-          <span className="flex items-center gap-2 overflow-x-scroll text-h1 text-gray-0 max-w-70">
+          <span className="text-h1 text-gray-0 flex max-w-70 items-center gap-2 overflow-x-scroll">
             <span>₩</span>
             <span>{(TOTAL_AMOUNT - spent).toLocaleString()}</span>
           </span>
@@ -94,7 +91,7 @@ export const MainPage = () => {
         </div>
       </section>
 
-      <section className="absolute flex items-center justify-center w-full gap-3 bottom-20">
+      <section className="absolute bottom-20 flex w-full items-center justify-center gap-3">
         <Button
           width={"sm"}
           borderColor={"outline"}

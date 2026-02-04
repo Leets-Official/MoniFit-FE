@@ -39,7 +39,9 @@ export default function MyPageNoticePage() {
             <p className="text-sub1 text-primary-40">
               {idx + 1}. {item.q}
             </p>
-            <p className="text-body11 text-gray-0 whitespace-pre-line">{item.a}</p>
+            <p className="text-body11 text-gray-0 whitespace-pre-line">
+              {item.a}
+            </p>
           </div>
         ))}
       </section>

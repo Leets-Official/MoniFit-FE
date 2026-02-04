@@ -30,7 +30,7 @@ export default function PeriodSideSheet({
       open={open}
       onClose={onClose}
       width={158}
-      side="left" 
+      side="left"
       ariaLabel="period select side sheet"
     >
       {/* 상단 닫기 버튼: 왼쪽 시트니까 "오른쪽"에 두는 게 자연스러움 */}
@@ -77,7 +77,13 @@ export default function PeriodSideSheet({
                   {/* clock icon */}
                   <div className="mt-[2px] shrink-0">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                      <circle cx="12" cy="12" r="9" stroke="#3B82F6" strokeWidth="2" />
+                      <circle
+                        cx="12"
+                        cy="12"
+                        r="9"
+                        stroke="#3B82F6"
+                        strokeWidth="2"
+                      />
                       <path
                         d="M12 8v5l3 2"
                         stroke="#3B82F6"
@@ -89,8 +95,12 @@ export default function PeriodSideSheet({
                   </div>
 
                   <div className="flex flex-col leading-tight">
-                    <span className="text-[12px] text-white/90">{opt.primary}</span>
-                    <span className="mt-1 text-[12px] text-white/70">{opt.secondary}</span>
+                    <span className="text-[12px] text-white/90">
+                      {opt.primary}
+                    </span>
+                    <span className="mt-1 text-[12px] text-white/70">
+                      {opt.secondary}
+                    </span>
                   </div>
                 </button>
               </li>

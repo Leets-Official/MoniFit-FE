@@ -1,6 +1,8 @@
 import type { ComponentType, SVGProps } from "react";
 
-export type DonutIcon = ComponentType<SVGProps<SVGSVGElement> & { color?: string }>;
+export type DonutIcon = ComponentType<
+  SVGProps<SVGSVGElement> & { color?: string }
+>;
 
 export type DonutItem = {
   id: string;
@@ -31,7 +33,12 @@ export function formatWon(n: number) {
   return n.toLocaleString("ko-KR");
 }
 
-export function polarToCartesian(cx: number, cy: number, r: number, angleRad: number) {
+export function polarToCartesian(
+  cx: number,
+  cy: number,
+  r: number,
+  angleRad: number,
+) {
   return {
     x: cx + r * Math.cos(angleRad),
     y: cy + r * Math.sin(angleRad),
@@ -44,7 +51,7 @@ export function donutArcPath(
   outerR: number,
   innerR: number,
   startRad: number,
-  endRad: number
+  endRad: number,
 ) {
   const startOuter = polarToCartesian(cx, cy, outerR, startRad);
   const endOuter = polarToCartesian(cx, cy, outerR, endRad);

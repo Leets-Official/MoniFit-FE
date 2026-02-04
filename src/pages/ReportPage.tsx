@@ -37,7 +37,7 @@ export const ReportPage = ({ onClose }: ReportPageProps) => {
       { id: "p2", primary: "25.12.01 - 25.12.31", secondary: "지난 달" },
       { id: "p3", primary: "25.11.01 - 25.11.30", secondary: "2개월 전" },
     ],
-    []
+    [],
   );
 
   const donutItems: DonutItem[] = useMemo(
@@ -83,12 +83,12 @@ export const ReportPage = ({ onClose }: ReportPageProps) => {
         icon: TintedStarIcon,
       },
     ],
-    []
+    [],
   );
 
   const totalValue = useMemo(
     () => donutItems.reduce((acc, it) => acc + (it.value ?? 0), 0),
-    [donutItems]
+    [donutItems],
   );
 
   return (
@@ -140,8 +140,19 @@ export const ReportPage = ({ onClose }: ReportPageProps) => {
                     ].join(" ")}
                   >
                     <div className="mt-0.5 shrink-0">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                        <circle cx="12" cy="12" r="9" stroke="#3B82F6" strokeWidth="2" />
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                      >
+                        <circle
+                          cx="12"
+                          cy="12"
+                          r="9"
+                          stroke="#3B82F6"
+                          strokeWidth="2"
+                        />
                         <path
                           d="M12 8v5l3 2"
                           stroke="#3B82F6"
@@ -153,8 +164,12 @@ export const ReportPage = ({ onClose }: ReportPageProps) => {
                     </div>
 
                     <div className="flex flex-col leading-tight">
-                      <span className="text-[12px] text-white/90">{opt.primary}</span>
-                      <span className="mt-1 text-[12px] text-white/70">{opt.secondary}</span>
+                      <span className="text-[12px] text-white/90">
+                        {opt.primary}
+                      </span>
+                      <span className="mt-1 text-[12px] text-white/70">
+                        {opt.secondary}
+                      </span>
                     </div>
                   </button>
                 </li>
@@ -207,7 +222,7 @@ export const ReportPage = ({ onClose }: ReportPageProps) => {
 
       <div className="fixed bottom-8 w-93.75 px-6">
         <div className="flex items-center justify-between">
-          <div className="flex rounded-full border border-white/10 bg-primary-opacity-50 p-1">
+          <div className="bg-primary-opacity-50 flex rounded-full border border-white/10 p-1">
             <Button
               width={"sm"}
               borderColor={"outline"}
