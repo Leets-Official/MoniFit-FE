@@ -33,7 +33,9 @@ function SummaryCard({ saved, over }: { saved: number; over: number }) {
             <span className="text-primary-50">절약</span>
             <span className="text-gray-10">한 기간</span>
           </p>
-          <p className="mt-1 text-[15px] font-semibold text-gray-10">{saved}회</p>
+          <p className="text-gray-10 mt-1 text-[15px] font-semibold">
+            {saved}회
+          </p>
         </div>
 
         <div className="text-right">
@@ -41,7 +43,9 @@ function SummaryCard({ saved, over }: { saved: number; over: number }) {
             <span className="text-primary-50">초과</span>
             <span className="text-gray-10">한 기간</span>
           </p>
-          <p className="mt-1 text-[15px] font-semibold text-gray-10">{over}회</p>
+          <p className="text-gray-10 mt-1 text-[15px] font-semibold">
+            {over}회
+          </p>
         </div>
       </div>
     </CommonCard>
@@ -64,27 +68,12 @@ function formatYMD(d: Date) {
 export default function MyPageMainPage() {
   const navigate = useNavigate();
 
-<<<<<<< feat/StampPage-#51
-  const currentRecord: CurrentRecord | null = useMemo(
-    () => ({
-      startDate: "2026-01-01",
-      endDate: "2026-01-31",
-      targetBudget: 250000,
-      spentAmount: 15000,
-    }),
-    [],
-  );
+  const currentRecord: CurrentRecord | null = useMemo(() => null, []);
 
   const summary: { saved: number; over: number } | null = useMemo(
     () => ({ saved: 6, over: 4 }),
     [],
   );
-=======
-const currentRecord: CurrentRecord | null = useMemo(() => null, []);
-
-
-  const summary: { saved: number; over: number } | null = useMemo(() => ({ saved: 6, over: 4 }), []);
->>>>>>> develop
 
   const user = {
     name: "길동",
@@ -135,11 +124,7 @@ const currentRecord: CurrentRecord | null = useMemo(() => null, []);
         </div>
       </section>
 
-<<<<<<< feat/StampPage-#51
       <div className="mt-6 -ml-4 h-px w-[calc(100%+32px)] bg-gray-50" />
-=======
-      <div className="mt-6 h-px w-[calc(100%+32px)] -ml-4 bg-gray-50" />
->>>>>>> develop
 
       <section className="mt-6 px-4">
         <p className="text-sub2 text-gray-10">
@@ -160,7 +145,11 @@ const currentRecord: CurrentRecord | null = useMemo(() => null, []);
           spentAmount={progressProps.spentAmount}
         />
 
-        {summary ? <SummaryCard saved={summary.saved} over={summary.over} /> : <EmptySmallCard message="완료한 지출 기록이 없습니다" />}
+        {summary ? (
+          <SummaryCard saved={summary.saved} over={summary.over} />
+        ) : (
+          <EmptySmallCard message="완료한 지출 기록이 없습니다" />
+        )}
       </section>
 
       <div className="mt-auto w-full">
