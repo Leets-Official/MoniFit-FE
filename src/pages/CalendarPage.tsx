@@ -12,7 +12,7 @@ export const CalendarPage = () => {
         <div className="min-h-screen w-full flex flex-col bg-[#121212]">
             {/* 캘린더 섹션 */}
             <section 
-                className="w-full bg-[#3A3A3C] flex-shrink-0"
+                className="w-full bg-gray-70/20 flex-shrink-0"
                 onClick={() => setIsDetailOpen(true)}
             >
                 <Calendar />   
@@ -20,7 +20,7 @@ export const CalendarPage = () => {
 
             {/* 카테고리 리스트 섹션 */}
             {isDetailOpen && (
-                <section className="w-full flex-1 overflow-y-auto px-4 pb-24 bg-[#121212]">
+                <section className="w-full flex-1 overflow-y-auto px-4 pb-24 bg-[#1F1F1F]">
                     <CategoryList/>
                 </section>
             )}
