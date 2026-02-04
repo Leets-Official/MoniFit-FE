@@ -7,7 +7,6 @@ import HomeIcon from "@/assets/icons/general/home.svg";
 import { CommonCard } from "@/components";
 import { AvartarIcon, ChevronRightIcon } from "@/assets/icons";
 
-
 type CurrentRecord = {
   startDate: string;
   endDate: string;
@@ -45,7 +44,9 @@ function SummaryCard({ saved, over }: { saved: number; over: number }) {
             <span className="text-gray-10">한 기간</span>
           </p>
 
-          <p className="mt-1 text-[15px] font-semibold text-gray-10">{saved}회</p>
+          <p className="text-gray-10 mt-1 text-[15px] font-semibold">
+            {saved}회
+          </p>
         </div>
 
         <div className="text-right">
@@ -54,7 +55,9 @@ function SummaryCard({ saved, over }: { saved: number; over: number }) {
             <span className="text-gray-10">한 기간</span>
           </p>
 
-          <p className="mt-1 text-[15px] font-semibold text-gray-10">{over}회</p>
+          <p className="text-gray-10 mt-1 text-[15px] font-semibold">
+            {over}회
+          </p>
         </div>
       </div>
     </CommonCard>
@@ -71,12 +74,12 @@ export default function MyPageMainPage() {
       targetBudget: 250000,
       spentAmount: 15000,
     }),
-    []
+    [],
   );
 
   const summary: { saved: number; over: number } | null = useMemo(
     () => ({ saved: 6, over: 4 }),
-    []
+    [],
   );
 
   const user = {
@@ -93,7 +96,7 @@ export default function MyPageMainPage() {
       <section className="mt-1 px-4">
         <div className="flex items-center gap-3">
           <div className="flex h-13 w-13 items-center justify-center rounded-full">
-             <AvartarIcon />
+            <AvartarIcon />
           </div>
 
           <button
@@ -112,15 +115,16 @@ export default function MyPageMainPage() {
         </div>
       </section>
 
-   <div className="mt-6 h-px w-[calc(100%+32px)] -ml-4 bg-gray-50" />
+      <div className="mt-6 -ml-4 h-px w-[calc(100%+32px)] bg-gray-50" />
 
       <section className="mt-6 px-4">
         <p className="text-sub2 text-gray-10">
           {user.name}님은
           <br />
-          <span className="text-primary-50">모니핏</span>을 {user.used} 사용했어요
+          <span className="text-primary-50">모니핏</span>을 {user.used}{" "}
+          사용했어요
         </p>
-        <p className="mt-2 text-caption2 text-gray-60">{user.startText}</p>
+        <p className="text-caption2 text-gray-60 mt-2">{user.startText}</p>
       </section>
 
       <section className="mt-6 flex flex-col items-center gap-5 px-4">
@@ -144,7 +148,7 @@ export default function MyPageMainPage() {
       </section>
 
       <div className="mt-auto w-full">
-        <div className="mt-6 h-px w-[calc(100%+32px)] -ml-4 bg-gray-50" />
+        <div className="mt-6 -ml-4 h-px w-[calc(100%+32px)] bg-gray-50" />
 
         <div className="flex items-center justify-between px-4 py-5">
           <button

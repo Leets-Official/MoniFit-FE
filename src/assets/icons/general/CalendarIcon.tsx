@@ -3,7 +3,10 @@ interface IconProps {
   fill?: string;
 }
 
-export const CalendarIcon = ({ className, fill = "currentColor" }: IconProps) => {
+export const CalendarIcon = ({
+  className,
+  fill = "currentColor",
+}: IconProps) => {
   return (
     <svg
       width="20"

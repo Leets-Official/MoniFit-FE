@@ -23,7 +23,7 @@ export default function CommonCard({
       className={[
         // 고정 width 309
         "w-77.25",
-        "border-[0.5px] border-primary-60",
+        "border-primary-60 border-[0.5px]",
         "overflow-hidden rounded-[14px] bg-transparent",
         "px-5 py-4",
         className,
@@ -32,7 +32,7 @@ export default function CommonCard({
       {title ? (
         <h2
           className={[
-            "text-sub1-size font-semibold text-gray-10",
+            "text-sub1-size text-gray-10 font-semibold",
             titleClassName,
           ].join(" ")}
         >

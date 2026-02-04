@@ -33,15 +33,15 @@ function ProgressBar({ ratio, fillFromRight }: BarProps) {
   const r = clamp01(ratio);
 
   return (
-    <div className="relative h-2 w-68 overflow-hidden rounded-full bg-gray-20">
+    <div className="bg-gray-20 relative h-2 w-68 overflow-hidden rounded-full">
       {!fillFromRight ? (
         <div
-          className="h-full rounded-full bg-primary-50"
+          className="bg-primary-50 h-full rounded-full"
           style={{ width: `${r * 100}%` }}
         />
       ) : (
         <div
-          className="absolute right-0 top-0 h-full rounded-full bg-primary-50"
+          className="bg-primary-50 absolute top-0 right-0 h-full rounded-full"
           style={{ width: `${r * 100}%` }}
         />
       )}
@@ -60,17 +60,17 @@ export default function BudgetProgressCard({
 }: BudgetProgressCardProps) {
   const timeRatio = useMemo(
     () => calcTimeRatio(startDate, endDate, currentDate),
-    [startDate, endDate, currentDate]
+    [startDate, endDate, currentDate],
   );
 
   const midDate = useMemo(
     () => calcMidDateCompact(startDate, endDate),
-    [startDate, endDate]
+    [startDate, endDate],
   );
 
   const state = useMemo(
     () => calcBudgetState(targetBudget, spentAmount),
-    [targetBudget, spentAmount]
+    [targetBudget, spentAmount],
   );
 
   const timeStartLabel = formatDotDate(startDate);
@@ -85,7 +85,7 @@ export default function BudgetProgressCard({
   return (
     <CommonCard className="h-58 px-5 py-5">
       <div className="flex flex-col gap-1">
-        <h3 className="text-sub1-size font-semibold text-gray-10">{title}</h3>
+        <h3 className="text-sub1-size text-gray-10 font-semibold">{title}</h3>
 
         <p className="text-caption2 text-gray-60">
           {formatDotDate(startDate)} - {formatDotDate(endDate)}
@@ -102,12 +102,12 @@ export default function BudgetProgressCard({
       </div>
 
       <div className="mt-5">
-        <p className="text-sub1-size font-semibold text-gray-10">
+        <p className="text-sub1-size text-gray-10 font-semibold">
           지금까지 {formatCurrencyKRW(amount)}원을{" "}
           <span className="text-primary-50">{keyword}</span>했어요
         </p>
 
-        <p className="mt-1 text-caption2 text-gray-60">
+        <p className="text-caption2 text-gray-60 mt-1">
           목표 예산 {formatCurrencyKRW(targetBudget)}원에서{" "}
           {formatCurrencyKRW(spentAmount)}원 사용
         </p>
@@ -124,13 +124,15 @@ export default function BudgetProgressCard({
             className="absolute -top-7 flex -translate-x-1/2 flex-col items-center"
             style={{ left: `${state.indicatorLeftPercent}%` }}
           >
-            <span className="text-[10px] text-primary-50">{state.badgeText}</span>
+            <span className="text-primary-50 text-[10px]">
+              {state.badgeText}
+            </span>
             <img src={ChevronDown} alt="" className="mt-pt h-2.5 w-2.5" />
           </div>
         </div>
 
         <div className="mt-2 flex w-68 items-center justify-end">
-          <span className="text-[6px] text-gray-30">{rightBottomLabel}</span>
+          <span className="text-gray-30 text-[6px]">{rightBottomLabel}</span>
         </div>
       </div>
     </CommonCard>

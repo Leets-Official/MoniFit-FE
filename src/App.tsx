@@ -11,7 +11,11 @@ import LoginPage from "./pages/auth/LoginPage";
 import CalendarPage from "./pages/CalendarPage";
 import { MainPage } from "./pages";
 import { StampPage } from "./pages";
-import { MyPageMainPage, MyPageNoticePage, MyPageProfilePage } from "./pages/mypage";
+import {
+  MyPageMainPage,
+  MyPageNoticePage,
+  MyPageProfilePage,
+} from "./pages/mypage";
 
 import {
   TestForButtonPage,
@@ -33,7 +37,10 @@ export default function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/main" element={<MainPage />} />
           <Route path="/stamp" element={<StampPage />} />
-          <Route path="/onboarding/budget-setting" element={<BudgetSettingPage />} />
+          <Route
+            path="/onboarding/budget-setting"
+            element={<BudgetSettingPage />}
+          />
           <Route path="/calendar" element={<CalendarPage />} />
 
           <Route path="/mypage" element={<MyPageMainPage />} />
@@ -44,11 +51,23 @@ export default function App() {
           <Route path="/test/donut-chart" element={<DonutChartTestPage />} />
           <Route path="/test/button" element={<TestForButtonPage />} />
           <Route path="/test/input" element={<TestForInputPage />} />
-          <Route path="/test/category-button" element={<TestForCategoryButtonPage />} />
-          <Route path="/test/modal/expense-record" element={<TestForExpenseRecordModalPage />} />
-          <Route path="/test/sphere/liquid-sphere" element={<TestForLiquidSpherePage />} />
+          <Route
+            path="/test/category-button"
+            element={<TestForCategoryButtonPage />}
+          />
+          <Route
+            path="/test/modal/expense-record"
+            element={<TestForExpenseRecordModalPage />}
+          />
+          <Route
+            path="/test/sphere/liquid-sphere"
+            element={<TestForLiquidSpherePage />}
+          />
           <Route path="/test/side-sheet" element={<TestForSideSheetPage />} />
-          <Route path="/test/budget-progress-card" element={<TestForBudgetProgressCardPage />} />
+          <Route
+            path="/test/budget-progress-card"
+            element={<TestForBudgetProgressCardPage />}
+          />
           <Route path="/test/common-card" element={<TestForCommonCardPage />} />
         </Route>
       </Routes>

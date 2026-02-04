@@ -54,7 +54,7 @@ const items: DonutItem[] = [
 
 export default function DonutChartTestPage() {
   return (
-    <div className="min-h-dvh bg-black flex items-center justify-center">
+    <div className="flex min-h-dvh items-center justify-center bg-black">
       <DonutChart
         items={items}
         totalValue={362000}

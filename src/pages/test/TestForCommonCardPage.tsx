@@ -2,10 +2,10 @@ import { CommonCard } from "@/components";
 
 export default function CommonCardTestPage() {
   return (
-    <div className="min-h-screen bg-surface-background p-6">
+    <div className="bg-surface-background min-h-screen p-6">
       <div className="mx-auto flex max-w-90 flex-col items-center gap-6">
         {/* 1) Empty State 카드 */}
-        <CommonCard className="h-36.5 flex items-center justify-center">
+        <CommonCard className="flex h-36.5 items-center justify-center">
           <p className="text-sub1-size font-medium text-gray-50">
             현재 진행 중인 지출 기록이 없습니다
           </p>
@@ -23,7 +23,7 @@ export default function CommonCardTestPage() {
                 <span className="text-gray-10">한 기간</span>
               </p>
 
-              <p className="mt-1 text-[15px] font-semibold text-gray-10">6회</p>
+              <p className="text-gray-10 mt-1 text-[15px] font-semibold">6회</p>
             </div>
 
             <div className="text-right">
@@ -32,7 +32,7 @@ export default function CommonCardTestPage() {
                 <span className="text-gray-10">한 기간</span>
               </p>
 
-              <p className="mt-1 text-[15px] font-semibold text-gray-10">4회</p>
+              <p className="text-gray-10 mt-1 text-[15px] font-semibold">4회</p>
             </div>
           </div>
         </CommonCard>

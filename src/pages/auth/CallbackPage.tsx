@@ -14,16 +14,17 @@ export default function CallbackPage() {
         try {
           // 2. Swagger 명세대로 POST 요청 전송
           // { "authorizationCode": "..." } 형태의 Body
-          const response = await api.post('/auth/kakao/login', {
+          const response = await api.post("/auth/kakao/login", {
             authorizationCode: code,
           });
 
           // 3. 성공 응답에서 데이터 추출 (Swagger 구조 참고)
-          const { accessToken, refreshToken, hasEverSetBudget } = response.data.data;
+          const { accessToken, refreshToken, hasEverSetBudget } =
+            response.data.data;
 
           // 4. 로컬 스토리지에 토큰 저장 (자동 로그인 및 인증 유지용)
-          localStorage.setItem('accessToken', accessToken);
-          localStorage.setItem('refreshToken', refreshToken);
+          localStorage.setItem("accessToken", accessToken);
+          localStorage.setItem("refreshToken", refreshToken);
 
           // 5. 요구사항 정의서에 따른 페이지 분기
           if (hasEverSetBudget) {
@@ -48,8 +49,10 @@ export default function CallbackPage() {
     <div className="flex h-full w-full items-center justify-center bg-black">
       <div className="text-center">
         {/* 간단한 로딩 스피너 */}
-        <div className="mb-4 h-12 w-12 animate-spin rounded-full border-4 border-[#FEE500] border-t-transparent mx-auto"></div>
-        <p className="text-white font-medium italic">로그인 정보를 확인하고 있어요...</p>
+        <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-4 border-[#FEE500] border-t-transparent"></div>
+        <p className="font-medium text-white italic">
+          로그인 정보를 확인하고 있어요...
+        </p>
       </div>
     </div>
   );

@@ -7,4 +7,3 @@ export { ExpenseRecordModal } from "./modal/ExpenseRecordModal";
 
 export { LiquidSphere } from "./sphere/LiquidSphere";
 export * from "./common/CommonCard";
-
