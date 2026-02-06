@@ -33,15 +33,12 @@ function ProgressBar({ ratio, fillFromRight }: BarProps) {
   const r = clamp01(ratio);
 
   return (
-    <div className="bg-gray-20 relative h-2 w-68 overflow-hidden rounded-full">
+    <div className="relative h-2 w-68 overflow-hidden rounded-full bg-gray-20">
       {!fillFromRight ? (
-        <div
-          className="bg-primary-50 h-full rounded-full"
-          style={{ width: `${r * 100}%` }}
-        />
+        <div className="h-full rounded-full bg-primary-50" style={{ width: `${r * 100}%` }} />
       ) : (
         <div
-          className="bg-primary-50 absolute top-0 right-0 h-full rounded-full"
+          className="absolute right-0 top-0 h-full rounded-full bg-primary-50"
           style={{ width: `${r * 100}%` }}
         />
       )}
@@ -60,13 +57,18 @@ export default function BudgetProgressCard({
 }: BudgetProgressCardProps) {
   const timeRatio = useMemo(
     () => calcTimeRatio(startDate, endDate, currentDate),
-    [startDate, endDate, currentDate],
+    [startDate, endDate, currentDate]
   );
 
-  const midDate = useMemo(
-    () => calcMidDateCompact(startDate, endDate),
-    [startDate, endDate],
-  );
+  const midDate = useMemo(() => calcMidDateCompact(startDate, endDate), [startDate, endDate]);
+
+  const timeStartLabel = formatDotDate(startDate);
+  const timeMidLabel = midDate
+    ? `${midDate.slice(0, 4)}.${midDate.slice(4, 6)}.${midDate.slice(6, 8)}`
+    : "";
+  const timeEndLabel = formatDotDate(endDate);
+
+  const isNoSpent = spentAmount <= 0;
 
   const state = useMemo(() => {
     if (targetBudget <= 0) {
@@ -82,12 +84,6 @@ export default function BudgetProgressCard({
     }
     return calcBudgetState(targetBudget, spentAmount);
   }, [targetBudget, spentAmount]);
-
-  const timeStartLabel = formatDotDate(startDate);
-  const timeMidLabel = midDate
-    ? `${midDate.slice(0, 4)}.${midDate.slice(4, 6)}.${midDate.slice(6, 8)}`
-    : "";
-  const timeEndLabel = formatDotDate(endDate);
 
   const keyword = state.isOver ? "초과" : "절약";
   const amount = state.isOver ? state.overAmount : state.savedAmount;
@@ -110,40 +106,47 @@ export default function BudgetProgressCard({
         </div>
       </div>
 
-      <div className="mt-5">
-        <p className="text-sub1 text-gray-10">
-          지금까지 {formatCurrencyKRW(amount)}원을{" "}
-          <span className="text-primary-50">{keyword}</span>했어요
-        </p>
+      {isNoSpent ? (
+        <div className="mt-6">
+          <p className="text-body2 text-gray-50 whitespace-pre-line">
+            아직 지출 기록이 없어요{"\n"}지출을 입력하면 금액이 표시 돼요
+          </p>
+        </div>
+      ) : (
+        <>
+          <div className="mt-5">
+            <p className="text-sub1 text-gray-10">
+              지금까지 {formatCurrencyKRW(amount)}원을{" "}
+              <span className="text-primary-50">{keyword}</span>했어요
+            </p>
 
-        <p className="text-caption2 text-gray-60 mt-1">
-          목표 예산 {formatCurrencyKRW(targetBudget)}원에서{" "}
-          {formatCurrencyKRW(spentAmount)}원 사용
-        </p>
-      </div>
-
-      <div className="mt-4">
-        <div className="relative w-68">
-          <ProgressBar
-            ratio={state.isOver ? state.overRatio : state.savingRatio}
-            fillFromRight={state.isOver}
-          />
-
-          <div
-            className="absolute -top-7 flex -translate-x-1/2 flex-col items-center"
-            style={{ left: `${state.indicatorLeftPercent}%` }}
-          >
-            <span className="text-primary-50 text-[10px]">
-              {state.badgeText}
-            </span>
-            <img src={ChevronDown} alt="" className="mt-pt h-2.5 w-2.5" />
+            <p className="mt-1 text-caption2 text-gray-60">
+              목표 예산 {formatCurrencyKRW(targetBudget)}원에서 {formatCurrencyKRW(spentAmount)}원 사용
+            </p>
           </div>
-        </div>
 
-        <div className="mt-2 flex w-68 items-center justify-end">
-          <span className="text-gray-30 text-[6px]">{rightBottomLabel}</span>
-        </div>
-      </div>
+          <div className="mt-4">
+            <div className="relative w-68">
+              <ProgressBar
+                ratio={state.isOver ? state.overRatio : state.savingRatio}
+                fillFromRight={state.isOver}
+              />
+
+              <div
+                className="absolute -top-7 flex -translate-x-1/2 flex-col items-center"
+                style={{ left: `${state.indicatorLeftPercent}%` }}
+              >
+                <span className="text-[10px] text-primary-50">{state.badgeText}</span>
+                <img src={ChevronDown} alt="" className="mt-pt h-2.5 w-2.5" />
+              </div>
+            </div>
+
+            <div className="mt-2 flex w-68 items-center justify-end">
+              <span className="text-[6px] text-gray-30">{rightBottomLabel}</span>
+            </div>
+          </div>
+        </>
+      )}
     </CommonCard>
   );
 }
