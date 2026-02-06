@@ -33,9 +33,7 @@ function SummaryCard({ saved, over }: { saved: number; over: number }) {
             <span className="text-primary-50">절약</span>
             <span className="text-gray-10">한 기간</span>
           </p>
-          <p className="text-gray-10 mt-1 text-[15px] font-semibold">
-            {saved}회
-          </p>
+          <p className="mt-1 text-[15px] font-semibold text-gray-10">{saved}회</p>
         </div>
 
         <div className="text-right">
@@ -43,9 +41,7 @@ function SummaryCard({ saved, over }: { saved: number; over: number }) {
             <span className="text-primary-50">초과</span>
             <span className="text-gray-10">한 기간</span>
           </p>
-          <p className="text-gray-10 mt-1 text-[15px] font-semibold">
-            {over}회
-          </p>
+          <p className="mt-1 text-[15px] font-semibold text-gray-10">{over}회</p>
         </div>
       </div>
     </CommonCard>
@@ -72,7 +68,7 @@ export default function MyPageMainPage() {
 
   const summary: { saved: number; over: number } | null = useMemo(
     () => ({ saved: 6, over: 4 }),
-    [],
+    []
   );
 
   const user = {
@@ -96,7 +92,7 @@ export default function MyPageMainPage() {
       targetBudget: 0,
       spentAmount: 0,
     };
-  }, [currentRecord, emptyPeriod.endDate, emptyPeriod.startDate]);
+  }, [currentRecord, emptyPeriod.startDate, emptyPeriod.endDate]);
 
   return (
     <main className="flex h-full w-full flex-col">
@@ -130,10 +126,9 @@ export default function MyPageMainPage() {
         <p className="text-sub2 text-gray-10">
           {user.name}님은
           <br />
-          <span className="text-primary-50">모니핏</span>을 {user.used}{" "}
-          사용했어요
+          <span className="text-primary-50">모니핏</span>을 {user.used} 사용했어요
         </p>
-        <p className="text-caption2 text-gray-60 mt-2">{user.startText}</p>
+        <p className="mt-2 text-caption2 text-gray-60">{user.startText}</p>
       </section>
 
       <section className="mt-6 flex flex-col items-center gap-5 px-4">
