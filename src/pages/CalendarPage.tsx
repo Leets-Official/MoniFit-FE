@@ -7,6 +7,11 @@ import { CalendarIcon } from "@/assets/icons/general/CalendarIcon";
 
 export const CalendarPage = () => {
     const [isDetailOpen, setIsDetailOpen] = useState(false);
+    // 예산 기간 state (나중에 사용자가 선택한 기간으로 업데이트)
+    const [budgetPeriod] = useState({
+        start: new Date(2026, 0, 1), // 2026년 1월 1일
+        end: new Date(2026, 0, 31)    // 2026년 1월 31일
+    });
 
     return (
         <div className="min-h-screen w-full flex flex-col bg-[#121212]">
@@ -15,7 +20,10 @@ export const CalendarPage = () => {
                 className="w-full bg-gray-70/20 flex-shrink-0"
                 onClick={() => setIsDetailOpen(true)}
             >
-                <Calendar />   
+                <Calendar 
+                    budgetStart={budgetPeriod.start}
+                    budgetEnd={budgetPeriod.end}
+                />   
             </section>
 
             {/* 카테고리 리스트 섹션 */}

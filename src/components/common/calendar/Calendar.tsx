@@ -3,7 +3,13 @@ import { DateGrid } from "./DateGrid";
 import { WeekdayHeader } from "./WeekdayHeader";
 import { CalendarHeader } from "./CalendarHeader";
 
-export function Calendar({ isRangeMode = false }) {
+type CalendarProps = {
+    isRangeMode?: boolean;
+    budgetStart?: Date;
+    budgetEnd?: Date;
+}
+
+export function Calendar({ isRangeMode = false, budgetStart, budgetEnd }: CalendarProps) {
     const now = new Date();
     const [currentYear, setCurrentYear] = useState(now.getFullYear());
     const [currentMonth, setCurrentMonth] = useState(now.getMonth()); // 0~11
@@ -47,7 +53,10 @@ export function Calendar({ isRangeMode = false }) {
                 // 온보딩 모드일 때만 범위 데이터를 넘겨줌
                 rangeStart={rangeStart}
                 rangeEnd={rangeEnd}
-                isRangeMode={isRangeMode} />
+                isRangeMode={isRangeMode}
+                budgetStart={budgetStart}
+                budgetEnd={budgetEnd}
+                />
             </div>
         </div>
     );
