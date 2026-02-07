@@ -3,10 +3,16 @@ import { DateGrid } from "./DateGrid";
 import { WeekdayHeader } from "./WeekdayHeader";
 import { CalendarHeader } from "./CalendarHeader";
 
-export function Calendar({ isRangeMode = false }) {
-  const now = new Date();
-  const [currentYear, setCurrentYear] = useState(now.getFullYear());
-  const [currentMonth, setCurrentMonth] = useState(now.getMonth()); // 0~11
+type CalendarProps = {
+    isRangeMode?: boolean;
+    budgetStart?: Date;
+    budgetEnd?: Date;
+}
+
+export function Calendar({ isRangeMode = false, budgetStart, budgetEnd }: CalendarProps) {
+    const now = new Date();
+    const [currentYear, setCurrentYear] = useState(now.getFullYear());
+    const [currentMonth, setCurrentMonth] = useState(now.getMonth()); // 0~11
 
   // 온보딩 모드일 때만 30일 기간 계산
   const rangeStart = isRangeMode
@@ -35,25 +41,27 @@ export function Calendar({ isRangeMode = false }) {
     }
   };
 
-  return (
-    <div className="flex w-full flex-col items-center justify-center">
-      <div className="flex w-[276.2px] flex-col">
-        <CalendarHeader
-          year={currentYear}
-          month={currentMonth}
-          onPrev={handlePrevMonth}
-          onNext={handleNextMonth}
-        />
-        <WeekdayHeader />
-        <DateGrid
-          year={currentYear}
-          month={currentMonth}
-          // 온보딩 모드일 때만 범위 데이터를 넘겨줌
-          rangeStart={rangeStart}
-          rangeEnd={rangeEnd}
-          isRangeMode={isRangeMode}
-        />
-      </div>
-    </div>
-  );
+    return (
+        <div className="flex flex-col items-center justify-center w-full">
+            <div className="flex flex-col w-[276.2px]"> 
+                <CalendarHeader 
+                year={currentYear} 
+                month={currentMonth}
+                onPrev={handlePrevMonth}
+                onNext={handleNextMonth}
+                />
+                <WeekdayHeader />
+                <DateGrid 
+                year={currentYear} 
+                month={currentMonth}
+                // 온보딩 모드일 때만 범위 데이터를 넘겨줌
+                rangeStart={rangeStart}
+                rangeEnd={rangeEnd}
+                isRangeMode={isRangeMode}
+                budgetStart={budgetStart}
+                budgetEnd={budgetEnd}
+                />
+            </div>
+        </div>
+    );
 }

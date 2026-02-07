@@ -5,14 +5,15 @@ import { Canvas } from "@react-three/fiber";
 import { CalendarIcon, ReportIcon } from "@/assets/icons";
 import { Button, ExpenseRecordModal, Header, LiquidSphere } from "@/components";
 import { ModalWrapper } from "@/components/modal/ModalWrapper";
-
-import { CalendarPage } from "@/pages";
-import { ReportPage } from "@/pages";
+import { Canvas } from "@react-three/fiber";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import ReportPage from "./ReportPage";
 
 const TOTAL_AMOUNT = 1000000;
 
 export const MainPage = () => {
-  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+  const navigate = useNavigate();
   const [isReportOpen, setIsReportOpen] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [percent, setPercent] = useState(100);
@@ -98,10 +99,7 @@ export const MainPage = () => {
           bgColor={"none"}
           className="flex gap-2"
           fontColor={"white"}
-          onClick={() => {
-            setIsCalendarOpen(true);
-            setIsReportOpen(false);
-          }}
+          onClick={() => navigate("/calendar")}
         >
           <CalendarIcon />
           <span>달력</span>
@@ -115,19 +113,12 @@ export const MainPage = () => {
           fontColor={"white"}
           onClick={() => {
             setIsReportOpen(true);
-            setIsCalendarOpen(false);
           }}
         >
           <ReportIcon />
           <span>리포트</span>
         </Button>
       </section>
-
-      {isCalendarOpen && (
-        <div className="fixed inset-0 z-50 bg-transparent">
-          <CalendarPage onClose={() => setIsCalendarOpen(false)} />
-        </div>
-      )}
 
       {isReportOpen && (
         <div className="fixed inset-0 z-50 bg-transparent">

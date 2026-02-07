@@ -6,13 +6,14 @@ const dateCellVariants = cva(
   {
     variants: {
       status: {
-        default: "text-white",
-        selected: "text-black",
+        default: "text-white",     
+        selected: "text-black",  
         inRange: "text-white",
+        outsideBudget: "text-gray-20" // 예산 기간 외: 짙은 회색
       },
       isCurrentMonth: {
-        true: "",
-        false: "text-[#CCCCCC] opacity-40",
+        true: "",          
+        false: "text-[#CCCCCC]", 
       },
     },
     defaultVariants: {
@@ -23,15 +24,16 @@ const dateCellVariants = cva(
 );
 
 type DateCellProps = {
-  day: number;
-  isSelected: boolean;
-  isRangeStart?: boolean;
-  isRangeEnd?: boolean;
-  isBetween?: boolean;
-  isRangeMode?: boolean;
-  isCurrentMonth?: boolean;
-  dayOfWeek?: number; // 0~6 (일~토)
-  onClick?: () => void;
+    day: number;
+    isSelected: boolean;
+    isRangeStart?: boolean;
+    isRangeEnd?: boolean;
+    isBetween?: boolean;
+    isRangeMode?: boolean;
+    isCurrentMonth?: boolean;
+    dayOfWeek?: number;
+    onClick?: () => void;
+    isInBudgetPeriod?: boolean; // 추가
 };
 
 export function DateCell({
@@ -43,34 +45,35 @@ export function DateCell({
   isBetween,
   isRangeMode,
   onClick,
-}: DateCellProps & { isCurrentMonth?: boolean }) {
-  // 1. 상태 결정
-  const currentStatus =
-    isSelected || isRangeStart || isRangeEnd
-      ? "selected"
-      : isBetween
-        ? "inRange"
+  isInBudgetPeriod = true // 추가
+}: DateCellProps) {
+
+  // 상태 결정 - 예산 기간 체크 추가
+  const currentStatus = !isInBudgetPeriod 
+    ? "outsideBudget"
+    : (isSelected || isRangeStart || isRangeEnd)
+      ? "selected" 
+      : isBetween 
+        ? "inRange" 
         : "default";
 
   return (
-    <button
-      type="button"
-      className="relative h-[37.45px] w-[37.45px]"
-      onClick={onClick}
+    <button 
+      type="button" 
+      className="w-[37.45px] h-[37.45px] relative" 
+      onClick={onClick} 
       disabled={isRangeMode}
-    >
-      <div className="grid h-full w-full grid-cols-1 grid-rows-1 place-items-center">
+    > 
+      <div className="grid grid-cols-1 grid-rows-1 place-items-center w-full h-full">
         {/* 30일 범위 배경 */}
         {(isRangeStart || isRangeEnd || isBetween) && isRangeMode && (
-          <div
-            className={clsx(
-              "absolute top-0 bottom-0 z-0 bg-[#A8A6FF]/25",
-              isRangeStart && !isRangeEnd && "right-0 left-1/2",
-              isRangeEnd && !isRangeStart && "right-1/2 left-0",
-              isBetween && "right-0 left-0",
-              isRangeStart && isRangeEnd && "right-1/2 left-1/2", // 같은 날인 경우
-            )}
-          />
+          <div className={clsx(
+            "absolute top-0 bottom-0 bg-[#A8A6FF]/25 z-0",
+            isRangeStart && !isRangeEnd && "left-1/2 right-0",
+            isRangeEnd && !isRangeStart && "left-0 right-1/2",
+            isBetween && "left-0 right-0",
+            isRangeStart && isRangeEnd && "left-1/2 right-1/2"
+          )} />
         )}
 
         {/* 선택 시 보라색 원 배경 */}
@@ -79,16 +82,13 @@ export function DateCell({
         )}
 
         {/* 날짜 텍스트 */}
-        <div
-          className={clsx(
-            dateCellVariants({
-              status: currentStatus,
-              isCurrentMonth:
-                isRangeStart || isRangeEnd || isBetween ? true : isCurrentMonth,
-            }),
-            "z-20",
-          )}
-        >
+        <div className={clsx(
+          dateCellVariants({ 
+            status: currentStatus, 
+            isCurrentMonth: isInBudgetPeriod ? isCurrentMonth : true // 예산 외 날짜는 흐릿하게 처리 안함
+          }),
+          "z-20"
+        )}>
           {day}
         </div>
       </div>
