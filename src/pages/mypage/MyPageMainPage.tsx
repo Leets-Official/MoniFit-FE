@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import MyPageTopBar from "./_components/MyPageTopBar";
@@ -6,6 +6,8 @@ import BudgetProgressCard from "@/components/BudgetProgressCard/BudgetProgressCa
 import HomeIcon from "@/assets/icons/general/home.svg";
 import { CommonCard } from "@/components";
 import { AvartarIcon, ChevronRightIcon } from "@/assets/icons";
+
+import { getMemberMe } from "@/api/members";
 
 type CurrentRecord = {
   startDate: string;
@@ -61,22 +63,33 @@ function formatYMD(d: Date) {
   return `${y}-${m}-${day}`;
 }
 
+function formatDotYMD(s: string) {
+  const [y, m, d] = s.split("-");
+  if (!y || !m || !d) return s;
+  return `${y}.${m}.${d}`;
+}
+
+function usageText(years?: number, months?: number) {
+  const y = years ?? 0;
+  const mo = months ?? 0;
+  if (y > 0 && mo > 0) return `${y}년 ${mo}개월`;
+  if (y > 0) return `${y}년`;
+  return `${mo}개월`;
+}
+
 export default function MyPageMainPage() {
   const navigate = useNavigate();
 
   const currentRecord: CurrentRecord | null = useMemo(() => null, []);
-
-  const summary: { saved: number; over: number } | null = useMemo(
-    () => ({ saved: 6, over: 4 }),
-    []
-  );
-
-  const user = {
-    name: "길동",
-    email: "gachonLeets@kakao.com",
-    used: "2년 6개월",
-    startText: "2026.01.26 시작",
-  };
+  const [me, setMe] = useState<{
+    name: string;
+    email: string;
+    usageStartDate: string;
+    years: number;
+    months: number;
+    summarySaved: number;
+    summaryOver: number;
+  } | null>(null);
 
   const emptyPeriod = useMemo(() => {
     const start = new Date();
@@ -93,6 +106,49 @@ export default function MyPageMainPage() {
       spentAmount: 0,
     };
   }, [currentRecord, emptyPeriod.startDate, emptyPeriod.endDate]);
+
+  useEffect(() => {
+    let mounted = true;
+
+    (async () => {
+      try {
+        const res = await getMemberMe();
+        if (!mounted) return;
+
+        if (res?.success && res.data) {
+          setMe({
+            name: res.data.name,
+            email: res.data.email,
+            usageStartDate: res.data.usage.startDate,
+            years: res.data.usage.years,
+            months: res.data.usage.months,
+            summarySaved: res.data.summary.savedPeriodCount,
+            summaryOver: res.data.summary.exceededPeriodCount,
+          });
+        } else {
+          setMe(null);
+        }
+      } catch {
+        if (!mounted) return;
+        setMe(null);
+      }
+    })();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const userName = me?.name ?? "길동";
+  const userEmail = me?.email ?? "user@kakao.com";
+  const usedText = me ? usageText(me.years, me.months) : "0개월";
+  const startText = me
+    ? `${formatDotYMD(me.usageStartDate)} 시작`
+    : `${formatDotYMD(formatYMD(new Date()))} 시작`;
+
+  const hasSummary = me !== null;
+  const summarySaved = me?.summarySaved ?? 0;
+  const summaryOver = me?.summaryOver ?? 0;
 
   return (
     <main className="flex h-full w-full flex-col">
@@ -111,10 +167,10 @@ export default function MyPageMainPage() {
           >
             <div className="flex flex-col items-start">
               <div className="flex items-center gap-1">
-                <span className="text-sub1 text-gray-10">{user.name}</span>
+                <span className="text-sub1 text-gray-10">{userName}</span>
                 <ChevronRightIcon className="h-4 w-4" />
               </div>
-              <span className="text-caption2 text-gray-50">{user.email}</span>
+              <span className="text-caption2 text-gray-50">{userEmail}</span>
             </div>
           </button>
         </div>
@@ -124,11 +180,11 @@ export default function MyPageMainPage() {
 
       <section className="mt-6 px-4">
         <p className="text-sub2 text-gray-10">
-          {user.name}님은
+          {userName}님은
           <br />
-          <span className="text-primary-50">모니핏</span>을 {user.used} 사용했어요
+          <span className="text-primary-50">모니핏</span>을 {usedText} 사용했어요
         </p>
-        <p className="mt-2 text-caption2 text-gray-60">{user.startText}</p>
+        <p className="mt-2 text-caption2 text-gray-60">{startText}</p>
       </section>
 
       <section className="mt-6 flex flex-col items-center gap-5 px-4">
@@ -140,8 +196,8 @@ export default function MyPageMainPage() {
           spentAmount={progressProps.spentAmount}
         />
 
-        {summary ? (
-          <SummaryCard saved={summary.saved} over={summary.over} />
+        {hasSummary ? (
+          <SummaryCard saved={summarySaved} over={summaryOver} />
         ) : (
           <EmptySmallCard message="완료한 지출 기록이 없습니다" />
         )}
