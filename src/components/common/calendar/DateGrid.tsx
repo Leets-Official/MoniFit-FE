@@ -174,4 +174,135 @@ export function DateGrid({
             })}
         </div>
     );
+    const end = new Date(
+      rangeEnd.getFullYear(),
+      rangeEnd.getMonth(),
+      rangeEnd.getDate(),
+    );
+
+    return currentTarget > start && currentTarget < end;
+  };
+
+  // 5. 이전 달 날짜 데이터 생성 (isCurrentMonth: false)
+  const prevMonthDates = Array.from({ length: firstdayIndex }, (_, index) => ({
+    day: prevMonthLastDate - firstdayIndex + index + 1,
+    isCurrentMonth: false,
+  }));
+
+  // 6. 이번 달 날짜 데이터 생성 (isCurrentMonth: true)
+  const currentMonthDates = Array.from({ length: lastDate }, (_, index) => ({
+    day: index + 1,
+    isCurrentMonth: true,
+  }));
+
+  // 7. 다음 달 날짜 생성 (그리드 빈 칸 채우기)
+  const totalFilled = prevMonthDates.length + currentMonthDates.length;
+  const nextMonthLength =
+    totalFilled > 35 ? 42 - totalFilled : 35 - totalFilled;
+
+  const nextMonthDates = Array.from(
+    { length: nextMonthLength },
+    (_, index) => ({
+      day: index + 1,
+      isCurrentMonth: false,
+    }),
+  );
+
+  return (
+    <div className="grid w-[276.2px] grid-cols-7 gap-x-[2.34px] gap-y-[9.36px]">
+      {/* 이전 달 날짜들: 회색으로 표시됨 */}
+      {prevMonthDates.map((item, index) => {
+        // 이전 달 날짜도 범위에 포함될 수 있음
+        const prevMonthYear = month === 0 ? year - 1 : year;
+        const prevMonth = month === 0 ? 11 : month - 1;
+        const prevDate = new Date(prevMonthYear, prevMonth, item.day);
+
+        const isStart = rangeStart && isSameDate(prevDate, rangeStart);
+        const isEnd = rangeEnd && isSameDate(prevDate, rangeEnd);
+        const isBetween =
+          rangeStart &&
+          rangeEnd &&
+          prevDate > rangeStart &&
+          prevDate < rangeEnd;
+
+        return (
+          <DateCell
+            key={`prev-${item.day}`}
+            day={item.day}
+            dayOfWeek={index}
+            isCurrentMonth={item.isCurrentMonth}
+            isSelected={false}
+            isRangeMode={isRangeMode}
+            isRangeStart={isStart || false}
+            isRangeEnd={isEnd || false}
+            isBetween={isBetween || false}
+          />
+        );
+      })}
+
+      {/* 이번 달 날짜들 */}
+      {currentMonthDates.map((item, index) => {
+        const dayOfWeek = (firstdayIndex + index) % 7;
+
+        if (isRangeMode) {
+          return (
+            <DateCell
+              key={`curr-${item.day}`}
+              day={item.day}
+              dayOfWeek={dayOfWeek}
+              isCurrentMonth={item.isCurrentMonth}
+              isSelected={false}
+              isRangeMode={isRangeMode}
+              isRangeStart={isRangeStartDate(item.day)}
+              isRangeEnd={isRangeEndDate(item.day)}
+              isBetween={isBetweenRange(item.day)}
+            />
+          );
+        } else {
+          return (
+            <DateCell
+              key={`curr-${item.day}`}
+              day={item.day}
+              dayOfWeek={dayOfWeek}
+              isCurrentMonth={item.isCurrentMonth}
+              isSelected={selectedDate === item.day}
+              onClick={() => setSelectedDate(item.day)}
+            />
+          );
+        }
+      })}
+
+      {/* 다음 달 날짜들 */}
+      {nextMonthDates.map((item, index) => {
+        const dayOfWeek = (totalFilled + index) % 7;
+
+        // 다음 달 날짜도 범위에 포함될 수 있음
+        const nextMonthYear = month === 11 ? year + 1 : year;
+        const nextMonth = month === 11 ? 0 : month + 1;
+        const nextDate = new Date(nextMonthYear, nextMonth, item.day);
+
+        const isStart = rangeStart && isSameDate(nextDate, rangeStart);
+        const isEnd = rangeEnd && isSameDate(nextDate, rangeEnd);
+        const isBetween =
+          rangeStart &&
+          rangeEnd &&
+          nextDate > rangeStart &&
+          nextDate < rangeEnd;
+
+        return (
+          <DateCell
+            key={`next-${item.day}`}
+            day={item.day}
+            dayOfWeek={dayOfWeek}
+            isCurrentMonth={false}
+            isSelected={false}
+            isRangeMode={isRangeMode}
+            isRangeStart={isStart || false}
+            isRangeEnd={isEnd || false}
+            isBetween={isBetween || false}
+          />
+        );
+      })}
+    </div>
+  );
 }

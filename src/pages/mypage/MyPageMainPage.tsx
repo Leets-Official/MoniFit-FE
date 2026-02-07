@@ -7,23 +7,12 @@ import HomeIcon from "@/assets/icons/general/home.svg";
 import { CommonCard } from "@/components";
 import { AvartarIcon, ChevronRightIcon } from "@/assets/icons";
 
-
 type CurrentRecord = {
   startDate: string;
   endDate: string;
   targetBudget: number;
   spentAmount: number;
 };
-
-function EmptyLargeCard({ message }: { message: string }) {
-  return (
-    <CommonCard className="h-51.75 px-5 py-5">
-      <div className="flex h-full items-center justify-center">
-        <p className="text-body2 text-gray-50">{message}</p>
-      </div>
-    </CommonCard>
-  );
-}
 
 function EmptySmallCard({ message }: { message: string }) {
   return (
@@ -44,7 +33,6 @@ function SummaryCard({ saved, over }: { saved: number; over: number }) {
             <span className="text-primary-50">절약</span>
             <span className="text-gray-10">한 기간</span>
           </p>
-
           <p className="mt-1 text-[15px] font-semibold text-gray-10">{saved}회</p>
         </div>
 
@@ -53,7 +41,6 @@ function SummaryCard({ saved, over }: { saved: number; over: number }) {
             <span className="text-primary-50">초과</span>
             <span className="text-gray-10">한 기간</span>
           </p>
-
           <p className="mt-1 text-[15px] font-semibold text-gray-10">{over}회</p>
         </div>
       </div>
@@ -61,18 +48,23 @@ function SummaryCard({ saved, over }: { saved: number; over: number }) {
   );
 }
 
+function addDays(d: Date, days: number) {
+  const nd = new Date(d);
+  nd.setDate(nd.getDate() + days);
+  return nd;
+}
+
+function formatYMD(d: Date) {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
 export default function MyPageMainPage() {
   const navigate = useNavigate();
 
-  const currentRecord: CurrentRecord | null = useMemo(
-    () => ({
-      startDate: "2026-01-01",
-      endDate: "2026-01-31",
-      targetBudget: 250000,
-      spentAmount: 15000,
-    }),
-    []
-  );
+  const currentRecord: CurrentRecord | null = useMemo(() => null, []);
 
   const summary: { saved: number; over: number } | null = useMemo(
     () => ({ saved: 6, over: 4 }),
@@ -86,6 +78,22 @@ export default function MyPageMainPage() {
     startText: "2026.01.26 시작",
   };
 
+  const emptyPeriod = useMemo(() => {
+    const start = new Date();
+    const end = addDays(start, 29);
+    return { startDate: formatYMD(start), endDate: formatYMD(end) };
+  }, []);
+
+  const progressProps: CurrentRecord = useMemo(() => {
+    if (currentRecord) return currentRecord;
+    return {
+      startDate: emptyPeriod.startDate,
+      endDate: emptyPeriod.endDate,
+      targetBudget: 0,
+      spentAmount: 0,
+    };
+  }, [currentRecord, emptyPeriod.startDate, emptyPeriod.endDate]);
+
   return (
     <main className="flex h-full w-full flex-col">
       <MyPageTopBar />
@@ -93,7 +101,7 @@ export default function MyPageMainPage() {
       <section className="mt-1 px-4">
         <div className="flex items-center gap-3">
           <div className="flex h-13 w-13 items-center justify-center rounded-full">
-             <AvartarIcon />
+            <AvartarIcon />
           </div>
 
           <button
@@ -112,7 +120,7 @@ export default function MyPageMainPage() {
         </div>
       </section>
 
-   <div className="mt-6 h-px w-[calc(100%+32px)] -ml-4 bg-gray-50" />
+      <div className="mt-6 -ml-4 h-px w-[calc(100%+32px)] bg-gray-50" />
 
       <section className="mt-6 px-4">
         <p className="text-sub2 text-gray-10">
@@ -124,17 +132,13 @@ export default function MyPageMainPage() {
       </section>
 
       <section className="mt-6 flex flex-col items-center gap-5 px-4">
-        {currentRecord ? (
-          <BudgetProgressCard
-            title="현재 진행 중인 지출 기록"
-            startDate={currentRecord.startDate}
-            endDate={currentRecord.endDate}
-            targetBudget={currentRecord.targetBudget}
-            spentAmount={currentRecord.spentAmount}
-          />
-        ) : (
-          <EmptyLargeCard message="현재 진행 중인 지출 기록이 없습니다" />
-        )}
+        <BudgetProgressCard
+          title="현재 진행 중인 지출 기록"
+          startDate={progressProps.startDate}
+          endDate={progressProps.endDate}
+          targetBudget={progressProps.targetBudget}
+          spentAmount={progressProps.spentAmount}
+        />
 
         {summary ? (
           <SummaryCard saved={summary.saved} over={summary.over} />
@@ -144,7 +148,7 @@ export default function MyPageMainPage() {
       </section>
 
       <div className="mt-auto w-full">
-        <div className="mt-6 h-px w-[calc(100%+32px)] -ml-4 bg-gray-50" />
+        <div className="mt-6 -ml-4 h-px w-[calc(100%+32px)] bg-gray-50" />
 
         <div className="flex items-center justify-between px-4 py-5">
           <button

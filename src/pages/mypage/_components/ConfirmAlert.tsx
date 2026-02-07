@@ -7,7 +7,12 @@ type Props = {
   onConfirm: () => void;
 };
 
-export default function ConfirmAlert({ title, desc, onClose, onConfirm }: Props) {
+export default function ConfirmAlert({
+  title,
+  desc,
+  onClose,
+  onConfirm,
+}: Props) {
   useEffect(() => {
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -26,17 +31,17 @@ export default function ConfirmAlert({ title, desc, onClose, onConfirm }: Props)
       />
 
       <div
-        className="absolute left-1/2 top-1/2 h-32 w-67.5 -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-3xl"
+        className="absolute top-1/2 left-1/2 h-32 w-67.5 -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-3xl"
         style={{ backgroundColor: "rgba(30, 30, 30)" }}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex h-21 flex-col items-center justify-center px-5 text-center">
-          <p className="text-[19px] font-semibold leading-tight text-gray-0">
+          <p className="text-gray-0 text-[19px] leading-tight font-semibold">
             {title}
           </p>
 
           {desc ? (
-            <p className="mt-2 text-[14px] font-bold leading-tight text-gray-0">
+            <p className="text-gray-0 mt-2 text-[14px] leading-tight font-bold">
               {desc}
             </p>
           ) : null}
@@ -47,7 +52,7 @@ export default function ConfirmAlert({ title, desc, onClose, onConfirm }: Props)
         <div className="flex h-11">
           <button
             type="button"
-            className="flex-1 text-[17px] font-normal leading-none text-[#007AFF]"
+            className="flex-1 text-[17px] leading-none font-normal text-[#007AFF]"
             onClick={onClose}
           >
             아니요
@@ -57,7 +62,7 @@ export default function ConfirmAlert({ title, desc, onClose, onConfirm }: Props)
 
           <button
             type="button"
-            className="flex-1 text-[17px] font-normal leading-none text-[#007AFF]"
+            className="flex-1 text-[17px] leading-none font-normal text-[#007AFF]"
             onClick={onConfirm}
           >
             네

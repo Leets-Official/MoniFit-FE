@@ -1,5 +1,5 @@
-import {cva} from "class-variance-authority";
-import {clsx} from "clsx";
+import { cva } from "class-variance-authority";
+import { clsx } from "clsx";
 
 const dateCellVariants = cva(
   "row-start-1 col-start-1 transition-colors cursor-pointer select-none flex items-center justify-center w-full h-full font-bold",
@@ -20,7 +20,7 @@ const dateCellVariants = cva(
       status: "default",
       isCurrentMonth: true,
     },
-  }
+  },
 );
 
 type DateCellProps = {
@@ -36,9 +36,9 @@ type DateCellProps = {
     isInBudgetPeriod?: boolean; // 추가
 };
 
-export function DateCell({ 
-  day, 
-  isSelected, 
+export function DateCell({
+  day,
+  isSelected,
   isCurrentMonth = true,
   isRangeStart,
   isRangeEnd,
@@ -75,12 +75,12 @@ export function DateCell({
             isRangeStart && isRangeEnd && "left-1/2 right-1/2"
           )} />
         )}
-        
+
         {/* 선택 시 보라색 원 배경 */}
         {(isRangeStart || isRangeEnd || (!isRangeMode && isSelected)) && (
-          <div className="w-[37.45px] h-[37.45px] rounded-full bg-[#A8A6FF] row-start-1 col-start-1 shadow-sm z-10" />
+          <div className="z-10 col-start-1 row-start-1 h-[37.45px] w-[37.45px] rounded-full bg-[#A8A6FF] shadow-sm" />
         )}
-        
+
         {/* 날짜 텍스트 */}
         <div className={clsx(
           dateCellVariants({ 

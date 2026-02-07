@@ -40,7 +40,7 @@ export default function SideSheet({
   open,
   onClose,
   width = 158,
-  side = "left", 
+  side = "left",
   closeOnBackdrop = true,
   closeOnEsc = true,
   zIndex = 50,
