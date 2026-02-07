@@ -9,11 +9,11 @@ const dateCellVariants = cva(
         default: "text-white",     
         selected: "text-black",  
         inRange: "text-white",
-        outsideBudget: "text-[#666666]" // 예산 기간 외: 짙은 회색
+        outsideBudget: "text-gray-20" // 예산 기간 외: 짙은 회색
       },
       isCurrentMonth: {
         true: "",          
-        false: "text-[#CCCCCC] opacity-40", 
+        false: "text-[#CCCCCC]", 
       },
     },
     defaultVariants: {

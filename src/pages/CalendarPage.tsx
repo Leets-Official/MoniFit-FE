@@ -14,7 +14,7 @@ export const CalendarPage = () => {
     });
 
     return (
-        <div className="min-h-screen w-full flex flex-col bg-[#121212]">
+        <div className="h-screen w-full flex flex-col">
             {/* 캘린더 섹션 */}
             <section 
                 className="w-full bg-gray-70/20 flex-shrink-0"
@@ -28,13 +28,11 @@ export const CalendarPage = () => {
 
             {/* 카테고리 리스트 섹션 */}
             {isDetailOpen && (
-                <section className="w-full flex-1 overflow-y-auto px-4 pb-24 bg-[#1F1F1F]">
+                <section className="w-full flex-1 overflow-y-auto px-4 min-h-0 bg-[#1F1F1F]">
                     <CategoryList/>
                 </section>
             )}
-
-            {/* 하단 네비게이션 */}
-            <div className="fixed bottom-0 left-0 right-0 bg-[#121212] border-t border-white/10 py-4">
+            <div className="w-full flex-shrink-0 bg-[#1F1F1F] py-4 border-t border-white/10">
                 <div className="max-w-md mx-auto w-full flex justify-between items-center px-6">
                     <div className="flex bg-primary-opacity-50 rounded-full p-1 border-white/10">
                         <Button 
