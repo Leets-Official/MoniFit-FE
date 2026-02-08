@@ -16,6 +16,7 @@ export const MainPage = () => {
   const [showModal, setShowModal] = useState(false);
   const [percent, setPercent] = useState(100);
   const [spent, setSpent] = useState(0);
+  const fillRatio = Math.min(1, Math.max(0, percent / 100));
 
   const mixColor = (from: string, to: string, t: number) => {
     const f = parseInt(from.replace("#", ""), 16);
