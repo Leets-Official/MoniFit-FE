@@ -8,6 +8,7 @@ import { CommonCard } from "@/components";
 import { AvartarIcon, ChevronRightIcon } from "@/assets/icons";
 
 import { getMemberMe } from "@/api/members";
+import { addDays, formatDotYMD, formatYMD, usageText } from "./mypage.utils";
 
 type CurrentRecord = {
   startDate: string;
@@ -50,46 +51,21 @@ function SummaryCard({ saved, over }: { saved: number; over: number }) {
   );
 }
 
-function addDays(d: Date, days: number) {
-  const nd = new Date(d);
-  nd.setDate(nd.getDate() + days);
-  return nd;
-}
-
-function formatYMD(d: Date) {
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
-  return `${y}-${m}-${day}`;
-}
-
-function formatDotYMD(s: string) {
-  const [y, m, d] = s.split("-");
-  if (!y || !m || !d) return s;
-  return `${y}.${m}.${d}`;
-}
-
-function usageText(years?: number, months?: number) {
-  const y = years ?? 0;
-  const mo = months ?? 0;
-  if (y > 0 && mo > 0) return `${y}년 ${mo}개월`;
-  if (y > 0) return `${y}년`;
-  return `${mo}개월`;
-}
+type MeState = {
+  name: string;
+  email: string;
+  usageStartDate: string;
+  years: number;
+  months: number;
+  summarySaved: number;
+  summaryOver: number;
+} | null;
 
 export default function MyPageMainPage() {
   const navigate = useNavigate();
 
   const currentRecord: CurrentRecord | null = useMemo(() => null, []);
-  const [me, setMe] = useState<{
-    name: string;
-    email: string;
-    usageStartDate: string;
-    years: number;
-    months: number;
-    summarySaved: number;
-    summaryOver: number;
-  } | null>(null);
+  const [me, setMe] = useState<MeState>(null);
 
   const emptyPeriod = useMemo(() => {
     const start = new Date();
@@ -125,9 +101,10 @@ export default function MyPageMainPage() {
             summarySaved: res.data.summary.savedPeriodCount,
             summaryOver: res.data.summary.exceededPeriodCount,
           });
-        } else {
-          setMe(null);
+          return;
         }
+
+        setMe(null);
       } catch {
         if (!mounted) return;
         setMe(null);

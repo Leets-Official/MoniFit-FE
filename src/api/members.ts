@@ -1,3 +1,4 @@
+import axios from "axios";
 import api from "./auth";
 
 export type MemberMeResponse = {
@@ -25,7 +26,36 @@ export type MemberMeResponse = {
   };
 };
 
+function isRecord(v: unknown): v is Record<string, unknown> {
+  return typeof v === "object" && v !== null;
+}
+
+function pickServerMessage(data: unknown): string | undefined {
+  if (!isRecord(data)) return undefined;
+
+  const err = data.error;
+  if (isRecord(err) && typeof err.message === "string") return err.message;
+
+  if (typeof data.message === "string") return data.message;
+
+  return undefined;
+}
+
+function getAxiosErrorMessage(error: unknown): string {
+  if (!axios.isAxiosError(error)) return "Unknown error";
+
+  const status = error.response?.status;
+  const serverMessage = pickServerMessage(error.response?.data);
+
+  return `[${status ?? "NO_STATUS"}] ${serverMessage ?? error.message}`;
+}
+
 export async function getMemberMe() {
-  const { data } = await api.get<MemberMeResponse>("/members/me");
-  return data;
+  try {
+    const { data } = await api.get<MemberMeResponse>("/members/me");
+    return data;
+  } catch (error) {
+    console.error("Failed to fetch member info:", getAxiosErrorMessage(error));
+    throw error;
+  }
 }
