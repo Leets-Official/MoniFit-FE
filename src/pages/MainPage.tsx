@@ -13,8 +13,10 @@ export const MainPage = () => {
   const navigate = useNavigate();
   const [isReportOpen, setIsReportOpen] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [percent, setPercent] = useState(100);
-  const [spent, setSpent] = useState(0);
+  const [percent] = useState(100);
+  const [spent] = useState(0);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [alertData, setAlertData] = useState<any>(null);
   const fillRatio = Math.min(1, Math.max(0, percent / 100));
 
   const mixColor = (from: string, to: string, t: number) => {
@@ -32,17 +34,21 @@ export const MainPage = () => {
 
   const gradientCenter = mixColor("#7976FF", "#1F1F1F", 1 - fillRatio);
 
-  const handleSaveExpense = (expense: number) => {
-    setSpent((prev) => prev + expense);
-
-    const nextSpent = spent + expense;
-    const nextPercent = Math.min(
-      100,
-      ((TOTAL_AMOUNT - nextSpent) / TOTAL_AMOUNT) * 100,
-    );
-
-    setPercent(nextPercent);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleSaveExpense = (alerts: any) => {
+    setAlertData(alerts);
     setShowModal(false);
+
+    // TODO: 알림 표시 로직
+    // - alerts.expenseInput: 지출 입력 완료 알림
+    // - alerts.showStamp && alerts.stamp: 스탬프 획득 알림
+    // - alerts.showWarning && alerts.warning: 예산 초과 경고
+    // - alerts.showOverBudget && alerts.overBudget: 예산 초과 알림
+
+    // TODO: 메인 페이지 데이터 재조회
+    // fetchMainPageData();
+
+    console.log("알림 데이터:", alertData);
   };
 
   return (

@@ -11,6 +11,8 @@ import { CategoryButton } from "../CategoryButton";
 import { Input } from "../common/Input";
 import { Button } from "../common/Button";
 import clsx from "clsx";
+import { createExpense } from "@/api/expense";
+import type { ExpenseCreateRequest } from "@/types/expense";
 
 const CATEGORIES = [
   { key: "food", label: "식비", icon: <ColoredFoodIcon /> },
@@ -22,7 +24,8 @@ const CATEGORIES = [
 
 interface ExpenseRecordModalProps {
   onClose: () => void;
-  onSave: (expense: number, category: string) => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  onSave: (alerts: any) => void;
 }
 
 export const ExpenseRecordModal = ({
@@ -33,6 +36,8 @@ export const ExpenseRecordModal = ({
   const [expense, setExpense] = useState<number | "">("");
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     setTimeout(() => setIsVisible(true), 0);
@@ -51,12 +56,37 @@ export const ExpenseRecordModal = ({
     setSelected(null);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     setIsSubmitted(true);
 
     if (!selected || expense === "") return;
 
-    onSave(expense, selected);
+    try {
+      setIsSubmitting(true);
+      setError(null);
+
+      // 오늘 날짜 생성 (YYYY-MM-DD)
+      const today = new Date().toISOString().split("T")[0];
+
+      // API 요청 데이터 (key 값 그대로 전송)
+      const request: ExpenseCreateRequest = {
+        category: selected, // "food", "shopping" 등
+        amount: Number(expense),
+        spentDate: today,
+      };
+
+      // API 호출
+      const response = await createExpense(request);
+
+      // 성공 시 부모에게 알림 데이터 전달 후 모달 닫기
+      onSave(response.alerts);
+      handleClose();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "지출 등록에 실패했습니다");
+      console.error("지출 등록 에러:", err);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -124,6 +154,11 @@ export const ExpenseRecordModal = ({
               금액을 입력하세요
             </span>
           )}
+          {error && (
+            <span className="text-body2 absolute -bottom-10 left-2 text-[#CA0111]">
+              {error}
+            </span>
+          )}
         </div>
         <div className="relative mt-21.25 flex h-40 w-full gap-4.5">
           <Button
@@ -136,8 +171,8 @@ export const ExpenseRecordModal = ({
           >
             지우기
           </Button>
-          <Button type={"submit"} width={"lg"}>
-            저장하기
+          <Button type={"submit"} width={"lg"} disabled={isSubmitting}>
+            {isSubmitting ? "저장 중..." : "저장하기"}
           </Button>
         </div>
       </form>
