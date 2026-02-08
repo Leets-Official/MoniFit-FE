@@ -5,9 +5,6 @@ import { Canvas } from "@react-three/fiber";
 import { CalendarIcon, ReportIcon } from "@/assets/icons";
 import { Button, ExpenseRecordModal, Header, LiquidSphere } from "@/components";
 import { ModalWrapper } from "@/components/modal/ModalWrapper";
-import { Canvas } from "@react-three/fiber";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import ReportPage from "./ReportPage";
 
 const TOTAL_AMOUNT = 1000000;
@@ -19,8 +16,6 @@ export const MainPage = () => {
   const [percent, setPercent] = useState(100);
   const [spent, setSpent] = useState(0);
   const fillRatio = Math.min(1, Math.max(0, percent / 100));
-
-  const navigate = useNavigate();
 
   const mixColor = (from: string, to: string, t: number) => {
     const f = parseInt(from.replace("#", ""), 16);
