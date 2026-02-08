@@ -25,7 +25,7 @@ const CATEGORIES = [
 interface ExpenseRecordModalProps {
   onClose: () => void;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onSave: (alerts: any) => void;
+  onSave: (response: any) => void;
 }
 
 export const ExpenseRecordModal = ({
@@ -78,8 +78,8 @@ export const ExpenseRecordModal = ({
       // API 호출
       const response = await createExpense(request);
 
-      // 성공 시 부모에게 알림 데이터 전달 후 모달 닫기
-      onSave(response.alerts);
+      // 성공 시 부모에게 전체 응답 데이터 전달 후 모달 닫기
+      onSave(response);
       handleClose();
     } catch (err) {
       setError(err instanceof Error ? err.message : "지출 등록에 실패했습니다");

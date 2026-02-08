@@ -3,7 +3,13 @@ import { useNavigate } from "react-router-dom";
 import { Canvas } from "@react-three/fiber";
 
 import { CalendarIcon, ReportIcon } from "@/assets/icons";
-import { Button, ExpenseRecordModal, Header, LiquidSphere } from "@/components";
+import {
+  Button,
+  ExpenseRecordModal,
+  Header,
+  LiquidSphere,
+} from "@/components";
+import { AlertModal } from "@/components/modal/AlertModal";
 import { ModalWrapper } from "@/components/modal/ModalWrapper";
 import ReportPage from "./ReportPage";
 
@@ -15,8 +21,9 @@ export const MainPage = () => {
   const [showModal, setShowModal] = useState(false);
   const [percent] = useState(100);
   const [spent] = useState(0);
+  const [showAlert, setShowAlert] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [alertData, setAlertData] = useState<any>(null);
+  const [expenseData, setExpenseData] = useState<any>(null);
   const fillRatio = Math.min(1, Math.max(0, percent / 100));
 
   const mixColor = (from: string, to: string, t: number) => {
@@ -35,20 +42,15 @@ export const MainPage = () => {
   const gradientCenter = mixColor("#7976FF", "#1F1F1F", 1 - fillRatio);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleSaveExpense = (alerts: any) => {
-    setAlertData(alerts);
+  const handleSaveExpense = (response: any) => {
+    setExpenseData(response);
     setShowModal(false);
-
-    // TODO: 알림 표시 로직
-    // - alerts.expenseInput: 지출 입력 완료 알림
-    // - alerts.showStamp && alerts.stamp: 스탬프 획득 알림
-    // - alerts.showWarning && alerts.warning: 예산 초과 경고
-    // - alerts.showOverBudget && alerts.overBudget: 예산 초과 알림
+    setShowAlert(true);
 
     // TODO: 메인 페이지 데이터 재조회
     // fetchMainPageData();
 
-    console.log("알림 데이터:", alertData);
+    console.log("지출 등록 완료:", response);
   };
 
   return (
@@ -134,6 +136,19 @@ export const MainPage = () => {
             onSave={handleSaveExpense}
           />
         </ModalWrapper>
+      )}
+
+      {showAlert && expenseData && (
+        <div className="fixed top-4 left-1/2 z-50 -translate-x-1/2">
+          <AlertModal
+            type={
+              expenseData.alerts?.expenseInput?.showStamp ? "스탬프" : "지출"
+            }
+            value={expenseData.expense?.categoryName}
+            expense={expenseData.expense?.amount}
+            onClose={() => setShowAlert(false)}
+          />
+        </div>
       )}
     </main>
   );
