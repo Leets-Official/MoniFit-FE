@@ -21,9 +21,10 @@ export const MainPage = () => {
   const [showModal, setShowModal] = useState(false);
   const [percent] = useState(100);
   const [spent] = useState(0);
-  const [showAlert, setShowAlert] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [expenseData, setExpenseData] = useState<any>(null);
+  const [alertQueue, setAlertQueue] = useState<any[]>([]);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [currentAlert, setCurrentAlert] = useState<any>(null);
   const fillRatio = Math.min(1, Math.max(0, percent / 100));
 
   const mixColor = (from: string, to: string, t: number) => {
@@ -43,14 +44,50 @@ export const MainPage = () => {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleSaveExpense = (response: any) => {
-    setExpenseData(response);
     setShowModal(false);
-    setShowAlert(true);
+
+    // 알림 큐 생성
+    const alerts = [];
+
+    // 1. 지출 입력 알림 (항상 표시)
+    alerts.push({
+      type: "지출" as const,
+      value: response.expense?.categoryName,
+      expense: response.expense?.amount,
+    });
+
+    // 2. 스탬프 알림 (showStamp가 true인 경우에만 추가)
+    if (response.alerts?.expenseInput?.showStamp) {
+      alerts.push({
+        type: "스탬프" as const,
+      });
+    }
+
+    // 알림 큐 설정 및 첫 번째 알림 표시
+    setAlertQueue(alerts);
+    setCurrentAlert(alerts[0]);
 
     // TODO: 메인 페이지 데이터 재조회
     // fetchMainPageData();
 
     console.log("지출 등록 완료:", response);
+  };
+
+  // 현재 알림 닫기 및 다음 알림 표시
+  const handleCloseAlert = () => {
+    const currentIndex = alertQueue.findIndex(
+      (alert) => alert === currentAlert
+    );
+    const nextIndex = currentIndex + 1;
+
+    if (nextIndex < alertQueue.length) {
+      // 다음 알림 표시
+      setCurrentAlert(alertQueue[nextIndex]);
+    } else {
+      // 모든 알림 표시 완료
+      setCurrentAlert(null);
+      setAlertQueue([]);
+    }
   };
 
   return (
@@ -138,15 +175,13 @@ export const MainPage = () => {
         </ModalWrapper>
       )}
 
-      {showAlert && expenseData && (
+      {currentAlert && (
         <div className="fixed top-4 left-1/2 z-50 -translate-x-1/2">
           <AlertModal
-            type={
-              expenseData.alerts?.expenseInput?.showStamp ? "스탬프" : "지출"
-            }
-            value={expenseData.expense?.categoryName}
-            expense={expenseData.expense?.amount}
-            onClose={() => setShowAlert(false)}
+            type={currentAlert.type}
+            value={currentAlert.value}
+            expense={currentAlert.expense}
+            onClose={handleCloseAlert}
           />
         </div>
       )}
