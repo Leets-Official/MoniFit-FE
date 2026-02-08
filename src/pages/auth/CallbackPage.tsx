@@ -1,72 +1,58 @@
+import { useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-const api = axios.create({
-  baseURL: '/api/v1', 
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
+export default function CallbackPage() {
+  const navigate = useNavigate();
+  const calledRef = useRef(false);
 
-// Request 인터셉터 - 모든 요청에 Access Token 자동 추가
-api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('accessToken');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
+  useEffect(() => {
+    if (calledRef.current) return;
+    calledRef.current = true;
+    const handleCallback = async () => {
+      const params = new URLSearchParams(window.location.search);
+      const authorizationCode = params.get('code');
 
-// Response 인터셉터 - 401 에러 시 토큰 자동 재발급
-api.interceptors.response.use(
-  (response) => {
-    return response;
-  },
-  async (error) => {
-    const originalRequest = error.config;
-
-    // 401 에러이고, 재시도가 아닌 경우에만 토큰 재발급 시도
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
+      if (!authorizationCode) {
+        console.error('인가 코드가 없습니다');
+        navigate('/login');
+        return;
+      }
 
       try {
-        const refreshToken = localStorage.getItem('refreshToken');
+        console.log('백엔드로 인가 코드 전송:', authorizationCode);
         
-        if (!refreshToken) {
-          localStorage.clear();
-          window.location.href = '/login';
-          return Promise.reject(error);
-        }
+        // 백엔드로 인가 코드 전송
+        const response = await axios.post(
+          `${import.meta.env.VITE_API_BASE_URL}/api/v1/auth/kakao/login`,
+          {
+            authorizationCode: authorizationCode
+          }
+        );
 
-        // API 명세서대로 토큰 재발급 요청
-        const response = await axios.post('/api/v1/auth/reissue', {
-          refreshToken: refreshToken
-        });
-
-        const { accessToken, refreshToken: newRefreshToken } = response.data.data;
-
-        // 새 토큰 저장
+        const { accessToken, refreshToken } = response.data.data;
+        
         localStorage.setItem('accessToken', accessToken);
-        localStorage.setItem('refreshToken', newRefreshToken);
-
-        // 실패했던 원래 요청에 새 토큰을 넣어서 재시도
-        originalRequest.headers.Authorization = `Bearer ${accessToken}`;
-        return api(originalRequest);
-
-      } catch (refreshError) {
-        console.error('토큰 재발급 실패:', refreshError);
-        localStorage.clear();
-        window.location.href = '/login';
-        return Promise.reject(refreshError);
+        localStorage.setItem('refreshToken', refreshToken);
+        
+        console.log('로그인 성공');
+        navigate('/main');
+      } catch (error) {
+        console.error('카카오 로그인 실패:', error);
+        alert('로그인에 실패했습니다. 다시 시도해주세요.');
+        navigate('/login');
       }
-    }
+    };
 
-    return Promise.reject(error);
-  }
-);
+    handleCallback();
+  }, [navigate]);
 
-export default api;
+  return (
+    <div className="flex h-screen items-center justify-center">
+      <div className="text-center">
+        <div className="mb-4 text-xl">로그인 처리 중...</div>
+        <div className="text-sm text-gray-500">잠시만 기다려주세요</div>
+      </div>
+    </div>
+  );
+}
