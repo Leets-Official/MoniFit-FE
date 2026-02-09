@@ -1,6 +1,12 @@
 // src/components/report/DonutChartLegend.tsx
 import type { DonutItem } from "./utils";
-import { buildSlices, clamp, donutArcPath, polarToCartesian, sumValue } from "./utils";
+import {
+  buildSlices,
+  clamp,
+  donutArcPath,
+  polarToCartesian,
+  sumValue,
+} from "./utils";
 
 type Props = {
   items: DonutItem[];
@@ -52,7 +58,11 @@ export default function DonutChartLegend({
   // 비율에 따라 두께를 다르게 주는 로직 유지
   const ratios = items.map((it) => clamp((it.value ?? 0) / safeTotal, 0, 1));
   const thicknessByIndex = ratios.map((r) =>
-    clamp(minThickness + (maxThickness - minThickness) * r, minThickness, maxThickness)
+    clamp(
+      minThickness + (maxThickness - minThickness) * r,
+      minThickness,
+      maxThickness,
+    ),
   );
 
   const hasLinear = items.some((it) => it.color === "linear");
@@ -84,11 +94,18 @@ export default function DonutChartLegend({
         const outerRadius = innerRadius + thickness;
 
         const fill = it.color === "linear" ? `url(#${linearId})` : it.color;
-        const path = donutArcPath(cx, cy, outerRadius, innerRadius, s.startRad, s.endRad);
+        const path = donutArcPath(
+          cx,
+          cy,
+          outerRadius,
+          innerRadius,
+          s.startRad,
+          s.endRad,
+        );
 
         // 면적 기준 중앙에 가까운 반지름 (RMS)
         const contentR = Math.sqrt(
-          (innerRadius * innerRadius + outerRadius * outerRadius) / 2
+          (innerRadius * innerRadius + outerRadius * outerRadius) / 2,
         );
 
         const p = polarToCartesian(cx, cy, contentR, s.midRad);
@@ -97,15 +114,22 @@ export default function DonutChartLegend({
         const labelColor = it.labelColor ?? "var(--color-gray-80)";
 
         const iconCenterY = p.y - (labelGap / 2 + labelFontSize / 2);
-        const labelY = iconCenterY + iconSize / 2 + labelGap + labelFontSize / 2;
+        const labelY =
+          iconCenterY + iconSize / 2 + labelGap + labelFontSize / 2;
 
         return (
           <g key={it.id}>
             <path d={path} fill={fill} />
 
             {Icon && (
-              <g transform={`translate(${p.x - iconSize / 2}, ${iconCenterY - iconSize / 2})`}>
-                <Icon width={iconSize} height={iconSize} style={{ color: labelColor }} />
+              <g
+                transform={`translate(${p.x - iconSize / 2}, ${iconCenterY - iconSize / 2})`}
+              >
+                <Icon
+                  width={iconSize}
+                  height={iconSize}
+                  style={{ color: labelColor }}
+                />
               </g>
             )}
 

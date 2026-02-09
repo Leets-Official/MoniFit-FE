@@ -24,9 +24,13 @@ export default function MyPageProfilePage() {
   };
 
   const modalInfo = useMemo(() => {
-    if (modal === "logout") return { title: "로그아웃", desc: "로그아웃 할까요?" };
+    if (modal === "logout")
+      return { title: "로그아웃", desc: "로그아웃 할까요?" };
     if (modal === "withdraw")
-      return { title: "회원탈퇴", desc: "회원탈퇴 시 회원 정보는 복구 되지 않습니다." };
+      return {
+        title: "회원탈퇴",
+        desc: "회원탈퇴 시 회원 정보는 복구 되지 않습니다.",
+      };
     return null;
   }, [modal]);
 
@@ -67,7 +71,7 @@ export default function MyPageProfilePage() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="이름을 입력하세요"
-            className="mt-3 h-11 w-58.75 rounded border-[0.5px] border-gray-10 px-4 text-sub1-size font-normal leading-5.5 text-gray-0 placeholder:text-sub1-size placeholder:font-normal placeholder:leading-5.5 placeholder:text-gray-50"
+            className="border-gray-10 text-sub1-size text-gray-0 placeholder:text-sub1-size mt-3 h-11 w-58.75 rounded border-[0.5px] px-4 leading-5.5 font-normal placeholder:leading-5.5 placeholder:font-normal placeholder:text-gray-50"
           />
         </div>
 

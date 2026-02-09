@@ -30,10 +30,16 @@ export function formatCompactDate(iso: string) {
   return `${y}${m}${day}`;
 }
 
-export function calcTimeRatio(startDate: string, endDate: string, currentDate?: string) {
+export function calcTimeRatio(
+  startDate: string,
+  endDate: string,
+  currentDate?: string,
+) {
   const s = parseDateISO(startDate)?.getTime();
   const e = parseDateISO(endDate)?.getTime();
-  const c = parseDateISO(currentDate ?? new Date().toISOString().slice(0, 10))?.getTime();
+  const c = parseDateISO(
+    currentDate ?? new Date().toISOString().slice(0, 10),
+  )?.getTime();
   if (!s || !e || !c || e <= s) return 0;
   return clamp01((c - s) / (e - s));
 }
@@ -55,14 +61,17 @@ export function calcBudgetState(targetBudget: number, spentAmount: number) {
   const savedAmount = Math.max(0, targetBudget - spentAmount);
   const overAmount = Math.max(0, spentAmount - targetBudget);
 
-  const savingRatio = targetBudget > 0 ? clamp01(savedAmount / targetBudget) : 0;
+  const savingRatio =
+    targetBudget > 0 ? clamp01(savedAmount / targetBudget) : 0;
   const overRatio = targetBudget > 0 ? clamp01(overAmount / targetBudget) : 0;
 
   const badgeText = isOver
     ? `${Math.round(overRatio * 100)}% 초과`
     : `${Math.round(savingRatio * 100)}% 절약`;
 
-  const indicatorLeftPercent = isOver ? (1 - overRatio) * 100 : savingRatio * 100;
+  const indicatorLeftPercent = isOver
+    ? (1 - overRatio) * 100
+    : savingRatio * 100;
 
   const barPurpleStyle = isOver
     ? ({ width: `${overRatio * 100}%`, right: 0, left: "auto" } as const)
