@@ -10,10 +10,12 @@ const TOTAL_AMOUNT = 1000000;
 
 export const MainPage = () => {
   const navigate = useNavigate();
+
   const [isReportOpen, setIsReportOpen] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [percent, setPercent] = useState(100);
   const [spent, setSpent] = useState(0);
+
   const fillRatio = Math.min(1, Math.max(0, percent / 100));
 
   const mixColor = (from: string, to: string, t: number) => {
@@ -32,14 +34,13 @@ export const MainPage = () => {
   const gradientCenter = mixColor("#7976FF", "#1F1F1F", 1 - fillRatio);
 
   const handleSaveExpense = (expense: number) => {
-    setSpent((prev) => prev + expense);
-
     const nextSpent = spent + expense;
     const nextPercent = Math.min(
       100,
       ((TOTAL_AMOUNT - nextSpent) / TOTAL_AMOUNT) * 100,
     );
 
+    setSpent(nextSpent);
     setPercent(nextPercent);
     setShowModal(false);
   };
@@ -76,11 +77,7 @@ export const MainPage = () => {
             <span>₩</span>
             <span>{(TOTAL_AMOUNT - spent).toLocaleString()}</span>
           </span>
-          <Button
-            width="md"
-            className="mt-3.5"
-            onClick={() => setShowModal(true)}
-          >
+          <Button width="md" className="mt-3.5" onClick={() => setShowModal(true)}>
             지출 입력하기
           </Button>
         </div>
@@ -88,11 +85,11 @@ export const MainPage = () => {
 
       <section className="absolute bottom-20 flex w-full items-center justify-center gap-3">
         <Button
-          width={"sm"}
-          borderColor={"outline"}
-          bgColor={"none"}
+          width="sm"
+          borderColor="outline"
+          bgColor="none"
           className="flex gap-2"
-          fontColor={"white"}
+          fontColor="white"
           onClick={() => navigate("/calendar")}
         >
           <CalendarIcon />
@@ -100,14 +97,12 @@ export const MainPage = () => {
         </Button>
 
         <Button
-          width={"md"}
-          borderColor={"outline"}
-          bgColor={"none"}
+          width="md"
+          borderColor="outline"
+          bgColor="none"
           className="flex gap-2"
-          fontColor={"white"}
-          onClick={() => {
-            setIsReportOpen(true);
-          }}
+          fontColor="white"
+          onClick={() => setIsReportOpen(true)}
         >
           <ReportIcon />
           <span>리포트</span>
@@ -122,10 +117,7 @@ export const MainPage = () => {
 
       {showModal && (
         <ModalWrapper onClose={() => setShowModal(false)}>
-          <ExpenseRecordModal
-            onClose={() => setShowModal(false)}
-            onSave={handleSaveExpense}
-          />
+          <ExpenseRecordModal onClose={() => setShowModal(false)} onSave={handleSaveExpense} />
         </ModalWrapper>
       )}
     </main>

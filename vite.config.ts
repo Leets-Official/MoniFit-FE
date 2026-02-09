@@ -11,4 +11,12 @@ export default defineConfig({
       "@": path.resolve(__dirname, "src"),
     },
   },
+  server: {
+  proxy: {
+    "/api": {
+      target: "http://monifit-be-dev.duckdns.org",
+      changeOrigin: true,
+    },
+  },
+},
 });
