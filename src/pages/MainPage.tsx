@@ -1,20 +1,62 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Canvas } from "@react-three/fiber";
 import { CalendarIcon, ReportIcon } from "@/assets/icons";
 import { Button, ExpenseRecordModal, Header, LiquidSphere } from "@/components";
 import { ModalWrapper } from "@/components/modal/ModalWrapper";
 import ReportPage from "./ReportPage";
-
-const TOTAL_AMOUNT = 1000000;
+import { getDashboard } from "@/api/budgetPeriod";
+import type { DashboardData } from "@/api/budgetPeriod"; 
 
 export const MainPage = () => {
   const navigate = useNavigate();
 
   const [isReportOpen, setIsReportOpen] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [percent, setPercent] = useState(100);
-  const [spent, setSpent] = useState(0);
+  const [loading, setLoading] = useState(true);
+  
+  // API 데이터 state
+  const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
+  const [totalBudget, setTotalBudget] = useState(0);
+  const [totalExpense, setTotalExpense] = useState(0);
+  const [remainingBudget, setRemainingBudget] = useState(0);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+
+  // 대시보드 데이터 불러오기
+  useEffect(() => {
+    const fetchDashboard = async () => {
+      try {
+        const data = await getDashboard();
+        
+        // 활성 기간 없으면 예산 설정 화면으로
+        if (!data.hasPeriod || !data.period) {
+          navigate('/onboarding/budget-setting');
+          return;
+        }
+
+        setDashboardData(data);
+        setTotalBudget(data.period.budgetAmount);
+        setTotalExpense(data.period.totalExpense);
+        setRemainingBudget(data.period.remainingBudget);
+        setStartDate(data.period.startDate);
+        setEndDate(data.period.endDate);
+        
+        setLoading(false);
+      } catch (error) {
+        console.error('대시보드 조회 실패:', error);
+        // 에러 시 로그인 페이지로
+        navigate('/login');
+      }
+    };
+
+    fetchDashboard();
+  }, [navigate]);
+
+  // 사용률 계산 (API에서 받은 데이터 기반)
+  const percent = dashboardData?.period 
+    ? (dashboardData.period.remainingBudget / dashboardData.period.budgetAmount) * 100
+    : 100;
 
   const fillRatio = Math.min(1, Math.max(0, percent / 100));
 
@@ -34,26 +76,77 @@ export const MainPage = () => {
   const gradientCenter = mixColor("#7976FF", "#1F1F1F", 1 - fillRatio);
 
   const handleSaveExpense = (expense: number) => {
-    const nextSpent = spent + expense;
-    const nextPercent = Math.min(
-      100,
-      ((TOTAL_AMOUNT - nextSpent) / TOTAL_AMOUNT) * 100,
-    );
-
-    setSpent(nextSpent);
-    setPercent(nextPercent);
+    // TODO: 지출 입력 API 호출 후 대시보드 재조회
+    // 임시로 로컬 상태 업데이트
+    const nextExpense = totalExpense + expense;
+    const nextRemaining = totalBudget - nextExpense;
+    
+    setTotalExpense(nextExpense);
+    setRemainingBudget(nextRemaining);
     setShowModal(false);
   };
+
+  // 날짜 포맷 함수
+  const formatDate = (dateString: string) => {
+    if (!dateString) return "";
+    return dateString.replace(/-/g, '.');
+  };
+
+  // 로딩 중
+  if (loading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="text-xl">로딩 중...</div>
+      </div>
+    );
+  }
 
   return (
     <main className="relative flex h-full w-full flex-col items-center">
       <Header showStampButton={true} onStampClick={() => navigate("/stamp")} />
 
+      {/* 알림 표시 */}
+      {dashboardData?.alerts?.showWarning && dashboardData?.alerts?.warning && (
+        <div className="mt-4 w-90 rounded-lg bg-yellow-500/20 p-4 text-center">
+          <p className="text-body1 text-yellow-500">
+            {dashboardData.alerts.warning.title}
+          </p>
+          <p className="text-body2 text-gray-300 mt-2">
+            {dashboardData.alerts.warning.message}
+          </p>
+        </div>
+      )}
+
+      {dashboardData?.alerts?.showOverBudget && dashboardData?.alerts?.overBudget && (
+        <div className="mt-4 w-90 rounded-lg bg-red-500/20 p-4 text-center">
+          <p className="text-body1 text-red-500">
+            {dashboardData.alerts.overBudget.title}
+          </p>
+          <p className="text-body2 text-gray-300 mt-2">
+            {dashboardData.alerts.overBudget.message}
+          </p>
+        </div>
+      )}
+
+      {dashboardData?.alerts?.showPeriodComplete && dashboardData?.alerts?.periodComplete && (
+        <div className="mt-4 w-90 rounded-lg bg-green-500/20 p-4 text-center">
+          <p className="text-body1 text-green-500">
+            {dashboardData.alerts.periodComplete.title}
+          </p>
+          <p className="text-body2 text-gray-300 mt-2">
+            {dashboardData.alerts.periodComplete.message1}
+          </p>
+          <p className="text-body2 text-gray-300">
+            {dashboardData.alerts.periodComplete.message2}
+          </p>
+        </div>
+      )}
+
       <section className="mt-6.25 flex h-fit w-full justify-center">
         <div className="text-body2 flex h-8 w-fit items-center gap-1 rounded-[60px] bg-[#7976FF80] px-3 py-1.5 text-[#DCDCDC]">
-          <span>2026.01.01</span>
+          <span>{formatDate(startDate)}</span>
           <span>-</span>
-          <span>2026.01.31</span>
+          <span>{formatDate(endDate)}</span>
         </div>
       </section>
 
@@ -75,7 +168,7 @@ export const MainPage = () => {
           <span className="text-body2 text-[#8A8A8A]">남은 금액</span>
           <span className="text-h1 text-gray-0 flex max-w-70 items-center gap-2 overflow-x-scroll">
             <span>₩</span>
-            <span>{(TOTAL_AMOUNT - spent).toLocaleString()}</span>
+            <span>{remainingBudget.toLocaleString()}</span>
           </span>
           <Button width="md" className="mt-3.5" onClick={() => setShowModal(true)}>
             지출 입력하기
