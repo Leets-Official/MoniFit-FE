@@ -9,6 +9,13 @@ type DateGridProps = {
   rangeEnd?: Date | null;
   budgetStart?: Date;
   budgetEnd?: Date;
+  // 새로 추가
+  dailySummaries?: Array<{
+    date: Date;
+    amount: number;
+    withinPeriod: boolean;
+  }>;
+  onDateClick?: (date: Date) => void;
 };
 
 export function DateGrid({
@@ -19,6 +26,8 @@ export function DateGrid({
   rangeEnd,
   budgetStart,
   budgetEnd,
+  dailySummaries = [],
+  onDateClick,
 }: DateGridProps) {
   const [selectedDate, setSelectedDate] = useState<number | null>(null);
 
@@ -34,9 +43,14 @@ export function DateGrid({
     );
   };
 
+  // 날짜별 지출 금액 가져오기 (추가)
+  const getDailySummary = (date: Date) => {
+    return dailySummaries.find(summary => isSameDate(summary.date, date));
+  };
+
   // 예산 기간 내 날짜인지 확인
   const isInBudgetPeriod = (date: Date) => {
-    if (!budgetStart || !budgetEnd) return true; // 예산 기간이 없으면 모두 활성
+    if (!budgetStart || !budgetEnd) return true;
 
     const targetDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
     const start = new Date(
@@ -71,6 +85,13 @@ export function DateGrid({
     return currentTarget > start && currentTarget < end;
   };
 
+  // 날짜 클릭 핸들러 (추가)
+  const handleDateClick = (day: number) => {
+    setSelectedDate(day);
+    const clickedDate = new Date(year, month, day);
+    onDateClick?.(clickedDate);
+  };
+
   const prevMonthDates = Array.from({ length: firstdayIndex }, (_, index) => ({
     day: prevMonthLastDate - firstdayIndex + index + 1,
     isCurrentMonth: false,
@@ -96,6 +117,7 @@ export function DateGrid({
         const prevMonthYear = month === 0 ? year - 1 : year;
         const prevMonth = month === 0 ? 11 : month - 1;
         const prevDate = new Date(prevMonthYear, prevMonth, item.day);
+        const summary = getDailySummary(prevDate);
 
         const isStart = rangeStart && isSameDate(prevDate, rangeStart);
         const isEnd = rangeEnd && isSameDate(prevDate, rangeEnd);
@@ -114,6 +136,7 @@ export function DateGrid({
             isRangeEnd={isEnd || false}
             isBetween={isBetween || false}
             isInBudgetPeriod={isInBudgetPeriod(prevDate)}
+            amount={summary?.amount}
           />
         );
       })}
@@ -122,6 +145,7 @@ export function DateGrid({
       {currentMonthDates.map((item, index) => {
         const dayOfWeek = (firstdayIndex + index) % 7;
         const currentDate = new Date(year, month, item.day);
+        const summary = getDailySummary(currentDate);
 
         if (isRangeMode) {
           return (
@@ -136,6 +160,7 @@ export function DateGrid({
               isRangeEnd={isRangeEndDate(item.day)}
               isBetween={isBetweenRange(item.day)}
               isInBudgetPeriod={isInBudgetPeriod(currentDate)}
+              amount={summary?.amount}
             />
           );
         } else {
@@ -146,8 +171,9 @@ export function DateGrid({
               dayOfWeek={dayOfWeek}
               isCurrentMonth={item.isCurrentMonth}
               isSelected={selectedDate === item.day}
-              onClick={() => setSelectedDate(item.day)}
+              onClick={() => handleDateClick(item.day)}
               isInBudgetPeriod={isInBudgetPeriod(currentDate)}
+              amount={summary?.amount}
             />
           );
         }
@@ -159,6 +185,7 @@ export function DateGrid({
         const nextMonthYear = month === 11 ? year + 1 : year;
         const nextMonth = month === 11 ? 0 : month + 1;
         const nextDate = new Date(nextMonthYear, nextMonth, item.day);
+        const summary = getDailySummary(nextDate);
 
         const isStart = rangeStart && isSameDate(nextDate, rangeStart);
         const isEnd = rangeEnd && isSameDate(nextDate, rangeEnd);
@@ -177,6 +204,7 @@ export function DateGrid({
             isRangeEnd={isEnd || false}
             isBetween={isBetween || false}
             isInBudgetPeriod={isInBudgetPeriod(nextDate)}
+            amount={summary?.amount}
           />
         );
       })}

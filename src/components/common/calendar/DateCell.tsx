@@ -9,7 +9,7 @@ const dateCellVariants = cva(
         default: "text-white",     
         selected: "text-black",  
         inRange: "text-white",
-        outsideBudget: "text-gray-20" // 예산 기간 외: 짙은 회색
+        outsideBudget: "text-gray-20"
       },
       isCurrentMonth: {
         true: "",          
@@ -33,7 +33,8 @@ type DateCellProps = {
     isCurrentMonth?: boolean;
     dayOfWeek?: number;
     onClick?: () => void;
-    isInBudgetPeriod?: boolean; // 추가
+    isInBudgetPeriod?: boolean;
+    amount?: number; // 새로 추가
 };
 
 export function DateCell({
@@ -45,10 +46,10 @@ export function DateCell({
   isBetween,
   isRangeMode,
   onClick,
-  isInBudgetPeriod = true // 추가
+  isInBudgetPeriod = true,
+  amount
 }: DateCellProps) {
 
-  // 상태 결정 - 예산 기간 체크 추가
   const currentStatus = !isInBudgetPeriod 
     ? "outsideBudget"
     : (isSelected || isRangeStart || isRangeEnd)
@@ -81,15 +82,32 @@ export function DateCell({
           <div className="z-10 col-start-1 row-start-1 h-[37.45px] w-[37.45px] rounded-full bg-[#A8A6FF] shadow-sm" />
         )}
 
-        {/* 날짜 텍스트 */}
-        <div className={clsx(
-          dateCellVariants({ 
-            status: currentStatus, 
-            isCurrentMonth: isInBudgetPeriod ? isCurrentMonth : true // 예산 외 날짜는 흐릿하게 처리 안함
-          }),
-          "z-20"
-        )}>
-          {day}
+        {/* 날짜 텍스트 + 금액 */}
+        <div className="z-20 flex flex-col items-center justify-center gap-0">
+          <div className={clsx(
+            dateCellVariants({ 
+              status: currentStatus, 
+              isCurrentMonth: isInBudgetPeriod ? isCurrentMonth : true
+            }),
+            "leading-none"
+          )}>
+            {day}
+          </div>
+          
+          {/* 금액 표시: 예산 기간 내 + 현재 달 + 금액 있을 때만 */}
+          {amount && isInBudgetPeriod && isCurrentMonth && (
+            <div className={clsx(
+              "text-[9px] leading-none mt-[2px] font-normal",
+              (isSelected || isRangeStart || isRangeEnd) 
+                ? "text-black/60" 
+                : "text-white/50"
+            )}>
+              {amount >= 10000 
+                ? `${(amount / 10000).toFixed(0)}만`
+                : amount.toLocaleString()
+              }
+            </div>
+          )}
         </div>
       </div>
     </button>
