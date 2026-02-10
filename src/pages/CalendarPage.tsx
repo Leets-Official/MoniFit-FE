@@ -7,7 +7,6 @@ import { CalendarIcon } from "@/assets/icons/general/CalendarIcon";
 import { useMonthlyCalendar, useDailyCalendar } from "@/api/calendar";
 
 export const CalendarPage = () => {
-    const [isDetailOpen, setIsDetailOpen] = useState(false);
     const [currentDate, setCurrentDate] = useState(new Date());
     const [selectedDate, setSelectedDate] = useState<string | null>(null);
     
@@ -24,16 +23,12 @@ export const CalendarPage = () => {
 
     const handleDateClick = (date: Date) => {
         setSelectedDate(date.toISOString().split('T')[0]);
-        setIsDetailOpen(true);
     };
 
     return (
         <div className="h-screen w-full flex flex-col">
             {/* 캘린더 섹션 */}
-            <section 
-                className="w-full bg-gray-70/20 flex-shrink-0"
-                onClick={() => setIsDetailOpen(true)}
-            >
+            <section className="w-full bg-gray-70/20 flex-shrink-0">
                 {isLoading ? (
                     <div className="h-[400px] flex items-center justify-center text-white">
                         로딩 중...
@@ -54,12 +49,10 @@ export const CalendarPage = () => {
                 )}   
             </section>
 
-            {/* 카테고리 리스트 섹션 - 기존 디자인 유지 */}
-            {isDetailOpen && (
-                <section className="w-full flex-1 overflow-y-auto px-4 min-h-0 bg-[#1F1F1F]">
-                    <CategoryList categories={dailyData?.categories} />
-                </section>
-            )}
+            {/* 카테고리 리스트 섹션 - 항상 표시 */}
+            <section className="w-full flex-1 overflow-y-auto px-4 min-h-0 bg-[#1F1F1F]">
+                <CategoryList categories={dailyData?.categories} />
+            </section>
 
             {/* 하단 네비게이션 */}
             <div className="w-full flex-shrink-0 bg-[#1F1F1F] py-4 border-t border-white/10">
