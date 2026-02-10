@@ -17,6 +17,8 @@ import CloseSvg from "./general/close.svg?react";
 import HomeSvg from "./general/home.svg?react";
 import ReportSvg from "./general/report.svg?react";
 import AvartarSvg from "./general/avatar.svg?react";
+import BigChevronSvg from "./general/big-chevron-right.svg?react";
+import StampSvg from "./general/stamp.svg?react";
 
 export const ColoredFoodIcon = ColoredFoodSvg;
 export const ColoredHospitalIcon = ColoredHospitalSvg;
@@ -37,3 +39,5 @@ export const CloseIcon = CloseSvg;
 export const HomeIcon = HomeSvg;
 export const ReportIcon = ReportSvg;
 export const AvartarIcon = AvartarSvg;
+export const BigChevronRightIcon = BigChevronSvg;
+export const StampIcon = StampSvg;

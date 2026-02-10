@@ -6,3 +6,5 @@ export { CategoryButton } from "./CategoryButton";
 export { ExpenseRecordModal } from "./modal/ExpenseRecordModal";
 
 export { LiquidSphere } from "./sphere/LiquidSphere";
+export { Stamp } from "./common/Stamp";
+export * from "./common/CommonCard";
