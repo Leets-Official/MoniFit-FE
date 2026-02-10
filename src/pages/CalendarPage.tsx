@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Calendar } from "@/components/common/calendar/Calendar";
+import { Header } from "@/components";
 import CategoryList from "@/components/category/CategoryList";
 import { Button } from "@/components/common/Button";
 import { HomeIcon, ReportIcon } from "@/assets/icons";
@@ -27,8 +28,10 @@ export const CalendarPage = () => {
 
     return (
         <div className="h-screen w-full flex flex-col">
+            <Header />
             {/* 캘린더 섹션 */}
             <section className="w-full bg-gray-70/20 flex-shrink-0">
+            <header />
                 {isLoading ? (
                     <div className="h-[400px] flex items-center justify-center text-white">
                         로딩 중...
