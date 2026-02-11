@@ -49,13 +49,21 @@ export function DateGrid({
   const isInBudgetPeriod = (date: Date) => {
     if (!budgetStart || !budgetEnd) return true;
 
-    const targetDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    const targetDate = new Date(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate(),
+    );
     const start = new Date(
       budgetStart.getFullYear(),
       budgetStart.getMonth(),
       budgetStart.getDate(),
     );
-    const end = new Date(budgetEnd.getFullYear(), budgetEnd.getMonth(), budgetEnd.getDate());
+    const end = new Date(
+      budgetEnd.getFullYear(),
+      budgetEnd.getMonth(),
+      budgetEnd.getDate(),
+    );
 
     return targetDate >= start && targetDate <= end;
   };
@@ -76,8 +84,16 @@ export function DateGrid({
     if (!isRangeMode || !rangeStart || !rangeEnd) return false;
 
     const currentTarget = new Date(year, month, day);
-    const start = new Date(rangeStart.getFullYear(), rangeStart.getMonth(), rangeStart.getDate());
-    const end = new Date(rangeEnd.getFullYear(), rangeEnd.getMonth(), rangeEnd.getDate());
+    const start = new Date(
+      rangeStart.getFullYear(),
+      rangeStart.getMonth(),
+      rangeStart.getDate(),
+    );
+    const end = new Date(
+      rangeEnd.getFullYear(),
+      rangeEnd.getMonth(),
+      rangeEnd.getDate(),
+    );
 
     return currentTarget > start && currentTarget < end;
   };
