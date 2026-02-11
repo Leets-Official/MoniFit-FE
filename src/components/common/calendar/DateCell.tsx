@@ -2,14 +2,14 @@ import { cva } from "class-variance-authority";
 import { clsx } from "clsx";
 
 const dateCellVariants = cva(
-  "transition-colors cursor-pointer select-none flex items-center justify-center font-bold leading-none",
+  "transition-colors select-none flex items-center justify-center font-bold leading-none",
   {
     variants: {
       status: {
         default: "text-white",     
         selected: "text-black",  
         inRange: "text-white",
-        outsideBudget: "text-gray-20"
+        outsideBudget: "text-gray-50"
       },
       isCurrentMonth: {
         true: "",          
@@ -35,18 +35,21 @@ const DateText = ({
   isInBudgetPeriod: boolean;
   isCurrentMonth: boolean;
 }) => (
-  <div 
-    style={{ fontSize: '16px' }}
+  <span 
+    style={{ 
+      fontSize: '16px',
+      fontWeight: 'bold'
+    }}
     className={dateCellVariants({ 
       status: currentStatus, 
       isCurrentMonth: isInBudgetPeriod ? isCurrentMonth : true
     })}
   >
     {day}
-  </div>
+  </span>
 );
 
-// 금액 텍스트 컴포넌트 - 모든 스타일 인라인으로
+// 금액 텍스트 컴포넌트
 const AmountText = ({ 
   amount, 
   isSelectedState 
@@ -54,20 +57,20 @@ const AmountText = ({
   amount: number; 
   isSelectedState: boolean;
 }) => (
-  <div 
+  <span
     style={{ 
+      display: 'block',
       fontSize: '7px',
-      lineHeight: 'normal',
-      marginTop: '2px',
-      fontWeight: 'normal',
-      color: isSelectedState ? 'rgba(0,0,0,0.6)' : '#ffffff'
+      lineHeight: '0',
+      fontWeight: '600',
+      color: isSelectedState ? 'rgba(0, 0, 0, 0.6)' : '#ffffff'
     }}
   >
     {amount >= 10000 
-      ? `${(amount / 10000).toFixed(0)}만`
-      : amount.toLocaleString()
+      ? `₩${Math.floor(amount / 10000)}만`
+      : `₩${amount.toLocaleString()}`
     }
-  </div>
+  </span>
 );
 
 type DateCellProps = {
@@ -83,7 +86,6 @@ type DateCellProps = {
     isInBudgetPeriod?: boolean;
     amount?: number;
 };
-
 export function DateCell({
   day,
   isSelected,
@@ -110,7 +112,7 @@ export function DateCell({
   return (
     <div
       className={clsx(
-        "w-[37.45px] h-[37.45px] relative",
+        "w-[36px] h-[36px] relative",
         !isRangeMode && "cursor-pointer"
       )}
       onClick={isRangeMode ? undefined : onClick}
@@ -126,24 +128,26 @@ export function DateCell({
         )} />
       )}
 
-      {/* 선택 시 보라색 원 배경 */}
+      {/* 보라색 원 배경 - 날짜만 감쌈 */}
       {(isRangeStart || isRangeEnd || (!isRangeMode && isSelected)) && (
         <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center z-10">
-          <div className="h-[37.45px] w-[37.45px] rounded-full bg-[#A8A6FF] shadow-sm" />
+          <div className="w-[36px] h-[36px] rounded-full bg-[#A8A6FF]" />
         </div>
       )}
 
-      {/* 날짜 텍스트 + 금액 컨테이너 */}
-      <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center z-20">
-        <div className="flex flex-col items-center justify-center gap-0">
-          <DateText 
-            day={day}
-            currentStatus={currentStatus}
-            isInBudgetPeriod={isInBudgetPeriod}
-            isCurrentMonth={isCurrentMonth}
-          />
-          
-          {amount && isInBudgetPeriod && isCurrentMonth && (
+      {/* 날짜 + 금액 컨테이너 */}
+      <div className="absolute inset-0 flex flex-col items-center justify-center z-20">
+        {/* 날짜 텍스트 */}
+        <DateText 
+          day={day}
+          currentStatus={currentStatus}
+          isInBudgetPeriod={isInBudgetPeriod}
+          isCurrentMonth={isCurrentMonth}
+        />
+        
+        {/* 금액 영역 - 항상 동일한 높이 유지 */}
+        <div className="mt-[2px]" style={{ height: '9px' }}>
+          {amount !== undefined && isInBudgetPeriod && isCurrentMonth && (
             <AmountText 
               amount={amount}
               isSelectedState={!!isSelectedState}

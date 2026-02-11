@@ -7,7 +7,6 @@ type CalendarProps = {
     isRangeMode?: boolean;
     budgetStart?: Date;
     budgetEnd?: Date;
-    // 새로 추가되는 props
     dailySummaries?: Array<{
         date: Date;
         amount: number;
@@ -29,9 +28,8 @@ export function Calendar({
 }: CalendarProps) {
     const now = currentDate || new Date();
     const [currentYear, setCurrentYear] = useState(now.getFullYear());
-    const [currentMonth, setCurrentMonth] = useState(now.getMonth()); // 0~11
+    const [currentMonth, setCurrentMonth] = useState(now.getMonth());
 
-    // 온보딩 모드일 때만 30일 기간 계산
     const rangeStart = isRangeMode
         ? new Date(now.getFullYear(), now.getMonth(), now.getDate())
         : null;
@@ -39,7 +37,6 @@ export function Calendar({
         ? new Date(now.getFullYear(), now.getMonth(), now.getDate() + 30)
         : null;
 
-    // 이전 달/다음 달로 이동하는 함수
     const handlePrevMonth = () => {
         let newYear = currentYear;
         let newMonth = currentMonth;
@@ -54,7 +51,6 @@ export function Calendar({
             setCurrentMonth(newMonth);
         }
         
-        // 부모에게 월 변경 알림
         onMonthChange?.(new Date(newYear, newMonth, 1));
     };
 
@@ -72,13 +68,12 @@ export function Calendar({
             setCurrentMonth(newMonth);
         }
         
-        // 부모에게 월 변경 알림
         onMonthChange?.(new Date(newYear, newMonth, 1));
     };
 
     return (
-        <div className="flex flex-col items-center justify-center w-full">
-            <div className="flex flex-col"> 
+        <div className="flex flex-col items-center justify-center w-full px-6">
+            <div className="flex flex-col w-full max-w-[320px]"> 
                 <CalendarHeader 
                     year={currentYear} 
                     month={currentMonth}

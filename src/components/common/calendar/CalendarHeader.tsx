@@ -15,26 +15,30 @@ export function CalendarHeader({
   onNext,
 }: CalendarHeaderProps) {
   return (
-    <div className="flex w-[248px] items-center justify-between">
+    <div className="flex items-center mb-3">
       {/* 년/월 */}
-      <span className="text-[18px] font-semibold text-[#EAEAEA]">
-        {year}년 {month + 1}월 {/* month는 0부터 시작하므로 +1 */}
+      <span className="text-[18px] font-semibold text-white">
+        {year}년 {month + 1}월
       </span>
 
       {/* 화살표 영역 */}
-      <div className="flex gap-3">
+      <div className="flex gap-[3.53px] items-center ml-3">
         <button
           onClick={onPrev}
-          className="flex h-8 w-8 items-center justify-center"
+          className="flex items-center justify-center"
         >
-          <ArrowBack />
+          <div className="w-[15px] h-[15.47px] flex items-center justify-center">
+            <ArrowBack />
+          </div>
         </button>
 
         <button
           onClick={onNext}
-          className="flex h-8 w-8 items-center justify-center"
+          className="flex items-center justify-center"
         >
-          <ArrowForward />
+          <div className="w-[15px] h-[15.47px] flex items-center justify-center">
+            <ArrowForward />
+          </div>
         </button>
       </div>
     </div>

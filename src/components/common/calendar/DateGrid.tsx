@@ -9,7 +9,6 @@ type DateGridProps = {
   rangeEnd?: Date | null;
   budgetStart?: Date;
   budgetEnd?: Date;
-  // 새로 추가
   dailySummaries?: Array<{
     date: Date;
     amount: number;
@@ -43,12 +42,10 @@ export function DateGrid({
     );
   };
 
-  // 날짜별 지출 금액 가져오기 (추가)
   const getDailySummary = (date: Date) => {
     return dailySummaries.find(summary => isSameDate(summary.date, date));
   };
 
-  // 예산 기간 내 날짜인지 확인
   const isInBudgetPeriod = (date: Date) => {
     if (!budgetStart || !budgetEnd) return true;
 
@@ -85,7 +82,6 @@ export function DateGrid({
     return currentTarget > start && currentTarget < end;
   };
 
-  // 날짜 클릭 핸들러 (추가)
   const handleDateClick = (day: number) => {
     setSelectedDate(day);
     const clickedDate = new Date(year, month, day);
@@ -111,7 +107,7 @@ export function DateGrid({
   }));
 
   return (
-    <div className="grid grid-cols-7 gap-x-[2.34px] gap-y-[9.36px] w-[276.2px]">
+    <div className="grid grid-cols-7 gap-[8px]">
       {/* 이전 달 날짜들 */}
       {prevMonthDates.map((item, index) => {
         const prevMonthYear = month === 0 ? year - 1 : year;
