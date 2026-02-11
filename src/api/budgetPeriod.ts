@@ -211,3 +211,58 @@ export const getCompletedBudgets = async (): Promise<CompletedPeriodItem[]> => {
     throw error;
   }
 };
+  // 지출 항목 타입 (리포트 도넛/카테고리 합산용)
+export interface ExpenseItem {
+  id: number;
+  category: string;
+  categoryName: string;
+  amount: number;
+  spentDate: string;
+  createdAt: string;
+}
+
+// 지출 목록 응답 타입
+interface ExpensesData {
+  expenses: ExpenseItem[];
+  totalCount: number;
+  totalAmount: number;
+}
+
+
+// 6. 지출 목록 조회 (리포트용)
+export const getExpenses = async (params?: {
+  periodId?: string | number;
+  date?: string;
+  category?: string;
+}): Promise<ExpensesData> => {
+  try {
+    const query = new URLSearchParams();
+    
+    if (params?.periodId !== undefined) query.set('periodId', String(params.periodId));
+    if (params?.date) query.set('date', params.date);
+    if (params?.category) query.set('category', params.category);
+
+    const queryString = query.toString();
+    const url = queryString
+      ? `${API_BASE_URL}/expenses?${queryString}`
+      : `${API_BASE_URL}/expenses`;
+
+    const response = await fetch(url, {
+      headers: {
+        'Authorization': `Bearer ${getAuthToken()}`,
+      }
+    });
+
+    const result: ApiResponse<ExpensesData> = await response.json();
+    
+    if (result.success && result.data) {
+      return result.data;
+    } else {
+      throw new Error(result.error?.message || '지출 목록 조회 실패');
+    }
+  } catch (error) {
+    console.error('getExpenses 오류:', error);
+    throw error;
+  }
+};
+

@@ -10,6 +10,7 @@ import SplashPage from "./pages/auth/SplashPage";
 import LoginPage from "./pages/auth/LoginPage";
 import CallbackPage from "./pages/auth/CallbackPage";
 import CalendarPage from "./pages/CalendarPage";
+import ReportPage from "./pages/ReportPage";
 import { MainPage } from "./pages";
 import { StampPage } from "./pages";
 import {
@@ -44,6 +45,8 @@ export default function App() {
             element={<BudgetSettingPage />}
           />
           <Route path="/calendar" element={<CalendarPage />} />
+          <Route path="/report" element={<ReportPage />} />
+
 
           <Route path="/mypage" element={<MyPageMainPage />} />
           <Route path="/mypage/profile" element={<MyPageProfilePage />} />
