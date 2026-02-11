@@ -38,13 +38,21 @@ export function DateGrid({
   const isInBudgetPeriod = (date: Date) => {
     if (!budgetStart || !budgetEnd) return true; // 예산 기간이 없으면 모두 활성
 
-    const targetDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    const targetDate = new Date(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate(),
+    );
     const start = new Date(
       budgetStart.getFullYear(),
       budgetStart.getMonth(),
       budgetStart.getDate(),
     );
-    const end = new Date(budgetEnd.getFullYear(), budgetEnd.getMonth(), budgetEnd.getDate());
+    const end = new Date(
+      budgetEnd.getFullYear(),
+      budgetEnd.getMonth(),
+      budgetEnd.getDate(),
+    );
 
     return targetDate >= start && targetDate <= end;
   };
@@ -65,8 +73,16 @@ export function DateGrid({
     if (!isRangeMode || !rangeStart || !rangeEnd) return false;
 
     const currentTarget = new Date(year, month, day);
-    const start = new Date(rangeStart.getFullYear(), rangeStart.getMonth(), rangeStart.getDate());
-    const end = new Date(rangeEnd.getFullYear(), rangeEnd.getMonth(), rangeEnd.getDate());
+    const start = new Date(
+      rangeStart.getFullYear(),
+      rangeStart.getMonth(),
+      rangeStart.getDate(),
+    );
+    const end = new Date(
+      rangeEnd.getFullYear(),
+      rangeEnd.getMonth(),
+      rangeEnd.getDate(),
+    );
 
     return currentTarget > start && currentTarget < end;
   };
@@ -90,7 +106,7 @@ export function DateGrid({
   }));
 
   return (
-    <div className="grid grid-cols-7 gap-x-[2.34px] gap-y-[9.36px] w-[276.2px]">
+    <div className="grid w-[276.2px] grid-cols-7 gap-x-[2.34px] gap-y-[9.36px]">
       {/* 이전 달 날짜들 */}
       {prevMonthDates.map((item, index) => {
         const prevMonthYear = month === 0 ? year - 1 : year;
