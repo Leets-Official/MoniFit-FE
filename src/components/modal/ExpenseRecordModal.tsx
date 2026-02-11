@@ -66,7 +66,7 @@ export const ExpenseRecordModal = ({
       setError(null);
 
       // 오늘 날짜 생성 (YYYY-MM-DD)
-      const today = new Date().toISOString().split("T")[0];
+      const today = new Date().toLocaleDateString("en-CA");
 
       // API 요청 데이터 (key 값 그대로 전송)
       const request: ExpenseCreateRequest = {
