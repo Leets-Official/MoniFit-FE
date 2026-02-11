@@ -36,7 +36,7 @@ export default function MyPageProfilePage() {
 
   const handleConfirm = () => {
     setModal(null);
-    navigate("/");
+    navigate("/main");
   };
 
   return (
