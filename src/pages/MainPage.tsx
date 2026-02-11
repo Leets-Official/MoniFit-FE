@@ -2,7 +2,13 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Canvas } from "@react-three/fiber";
 import { CalendarIcon, ReportIcon } from "@/assets/icons";
-import { Button, ExpenseRecordModal, Header, LiquidSphere } from "@/components";
+import {
+  Button,
+  ExpenseRecordModal,
+  Header,
+  LiquidSphere,
+} from "@/components";
+import { AlertModal } from "@/components/modal/AlertModal";
 import { ModalWrapper } from "@/components/modal/ModalWrapper";
 import ReportPage from "./ReportPage";
 import { getDashboard } from "@/api/budgetPeriod";
@@ -13,51 +19,12 @@ export const MainPage = () => {
 
   const [isReportOpen, setIsReportOpen] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [loading, setLoading] = useState(true);
-  
-  // API 데이터 state
-  const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
-  const [totalBudget, setTotalBudget] = useState(0);
-  const [totalExpense, setTotalExpense] = useState(0);
-  const [remainingBudget, setRemainingBudget] = useState(0);
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-
-  // 대시보드 데이터 불러오기
-  useEffect(() => {
-    const fetchDashboard = async () => {
-      try {
-        const data = await getDashboard();
-        
-        // 활성 기간 없으면 예산 설정 화면으로
-        if (!data.hasPeriod || !data.period) {
-          navigate('/onboarding/budget-setting');
-          return;
-        }
-
-        setDashboardData(data);
-        setTotalBudget(data.period.budgetAmount);
-        setTotalExpense(data.period.totalExpense);
-        setRemainingBudget(data.period.remainingBudget);
-        setStartDate(data.period.startDate);
-        setEndDate(data.period.endDate);
-        
-        setLoading(false);
-      } catch (error) {
-        console.error('대시보드 조회 실패:', error);
-        // 에러 시 로그인 페이지로
-        navigate('/login');
-      }
-    };
-
-    fetchDashboard();
-  }, [navigate]);
-
-  // 사용률 계산 (API에서 받은 데이터 기반)
-  const percent = dashboardData?.period 
-    ? (dashboardData.period.remainingBudget / dashboardData.period.budgetAmount) * 100
-    : 100;
-
+  const [percent] = useState(100);
+  const [spent] = useState(0);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [alertQueue, setAlertQueue] = useState<any[]>([]);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [currentAlert, setCurrentAlert] = useState<any>(null);
   const fillRatio = Math.min(1, Math.max(0, percent / 100));
 
   const mixColor = (from: string, to: string, t: number) => {
@@ -75,15 +42,52 @@ export const MainPage = () => {
 
   const gradientCenter = mixColor("#7976FF", "#1F1F1F", 1 - fillRatio);
 
-  const handleSaveExpense = (expense: number) => {
-    // TODO: 지출 입력 API 호출 후 대시보드 재조회
-    // 임시로 로컬 상태 업데이트
-    const nextExpense = totalExpense + expense;
-    const nextRemaining = totalBudget - nextExpense;
-    
-    setTotalExpense(nextExpense);
-    setRemainingBudget(nextRemaining);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleSaveExpense = (response: any) => {
     setShowModal(false);
+
+    // 알림 큐 생성
+    const alerts = [];
+
+    // 1. 지출 입력 알림 (항상 표시)
+    alerts.push({
+      type: "지출" as const,
+      value: response.expense?.categoryName,
+      expense: response.expense?.amount,
+    });
+
+    // 2. 스탬프 알림 (showStamp가 true인 경우에만 추가)
+    if (response.alerts?.expenseInput?.showStamp) {
+      alerts.push({
+        type: "스탬프" as const,
+      });
+    }
+
+    // 알림 큐 설정 및 첫 번째 알림 표시
+    setAlertQueue(alerts);
+    setCurrentAlert(alerts[0]);
+
+    // TODO: 메인 페이지 데이터 재조회
+    // fetchMainPageData();
+
+    console.log("지출 등록 완료:", response);
+  };
+
+  // 현재 알림 닫기 및 다음 알림 표시
+  const handleCloseAlert = () => {
+    const currentIndex = alertQueue.findIndex(
+      (alert) => alert === currentAlert
+    );
+    const nextIndex = currentIndex + 1;
+
+    if (nextIndex < alertQueue.length) {
+      // 다음 알림 표시
+      setCurrentAlert(alertQueue[nextIndex]);
+    } else {
+      // 모든 알림 표시 완료
+      setCurrentAlert(null);
+      setAlertQueue([]);
+    }
   };
 
   // 날짜 포맷 함수
@@ -212,6 +216,17 @@ export const MainPage = () => {
         <ModalWrapper onClose={() => setShowModal(false)}>
           <ExpenseRecordModal onClose={() => setShowModal(false)} onSave={handleSaveExpense} />
         </ModalWrapper>
+      )}
+
+      {currentAlert && (
+        <div className="fixed top-4 left-1/2 z-50 -translate-x-1/2">
+          <AlertModal
+            type={currentAlert.type}
+            value={currentAlert.value}
+            expense={currentAlert.expense}
+            onClose={handleCloseAlert}
+          />
+        </div>
       )}
     </main>
   );

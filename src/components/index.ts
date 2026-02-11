@@ -7,4 +7,5 @@ export { ExpenseRecordModal } from "./modal/ExpenseRecordModal";
 
 export { LiquidSphere } from "./sphere/LiquidSphere";
 export { Stamp } from "./common/Stamp";
+export { StampSkeleton } from "./common/StampSkeleton";
 export * from "./common/CommonCard";

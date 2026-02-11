@@ -1,39 +1,104 @@
-import { useMemo } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { Header, Stamp } from "@/components";
+import { Header, Stamp, StampSkeleton } from "@/components";
 import {
   BigChevronRightIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
 } from "@/assets/icons";
+import { getStamps } from "@/api/stamp";
+import type { StampResponse } from "@/types/stamp";
 
 export const StampPage = () => {
   const navigate = useNavigate();
+  const [stampData, setStampData] = useState<StampResponse | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const stamps = useMemo(() => {
-    const START = new Date(2026, 5, 12);
-    const TOTAL = 30;
+  const fetchStamps = async (periodId?: number) => {
+    try {
+      setLoading(true);
+      setError(null);
+      const data = await getStamps(periodId);
+      setStampData(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "스탬프 조회 실패");
+      console.error("스탬프 조회 에러:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    const recordedIndexSet = new Set([
-      0, 1, 2, 5, 6, 10, 11, 15, 18, 22, 23, 27, 29,
-    ]);
-
-    return Array.from({ length: TOTAL }, (_, i) => {
-      const d = new Date(START);
-      d.setDate(d.getDate() + i);
-
-      const yy = String(d.getFullYear()).slice(2);
-      const mm = String(d.getMonth() + 1).padStart(2, "0");
-      const dd = String(d.getDate()).padStart(2, "0");
-
-      return {
-        id: `${yy}/${mm}/${dd}`,
-        label: `${yy}/${mm}/${dd}`,
-        isRecorded: recordedIndexSet.has(i),
-      };
-    });
+  useEffect(() => {
+    fetchStamps();
   }, []);
+
+  const handlePrevious = () => {
+    if (stampData?.navigation.hasPrevious) {
+      fetchStamps(stampData.navigation.previousPeriodId);
+    }
+  };
+
+  const handleNext = () => {
+    if (stampData?.navigation.hasNext) {
+      fetchStamps(stampData.navigation.nextPeriodId);
+    }
+  };
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const year = String(date.getFullYear());
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}.${month}.${day}`;
+  };
+
+  const formatStampLabel = (dateString: string) => {
+    const date = new Date(dateString);
+    const year = String(date.getFullYear()).slice(2);
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}/${month}/${day}`;
+  };
+
+  if (loading) {
+    return (
+      <>
+        <Header />
+        <main className="flex flex-col items-center">
+          <header className="flex h-9.5 w-full items-center justify-between px-5">
+            <button onClick={() => navigate("/main")}>
+              <BigChevronRightIcon className="w-6" />
+            </button>
+            <span className="text-gray-10 text-sub1-size">스탬프</span>
+            <span className="h-6 w-6"></span>
+          </header>
+          <StampSkeleton />
+        </main>
+      </>
+    );
+  }
+
+  if (error || !stampData) {
+    return (
+      <>
+        <Header />
+        <main className="flex flex-col items-center">
+          <header className="flex h-9.5 w-full items-center justify-between px-5">
+            <button onClick={() => navigate("/main")}>
+              <BigChevronRightIcon className="w-6" />
+            </button>
+            <span className="text-gray-10 text-sub1-size">스탬프</span>
+            <span className="h-6 w-6"></span>
+          </header>
+          <div className="text-gray-0 mt-20 text-center">
+            {error || "데이터를 불러올 수 없습니다"}
+          </div>
+        </main>
+      </>
+    );
+  }
 
   return (
     <>
@@ -53,13 +118,22 @@ export const StampPage = () => {
             </span>
             <div className="flex items-center gap-2">
               <span className="text-gray-0 text-[11px]">
-                <span>2026.06.12</span> ~ <span>2026.07.11</span>
+                <span>{formatDate(stampData.period.startDate)}</span> ~{" "}
+                <span>{formatDate(stampData.period.endDate)}</span>
               </span>
               <div className="flex items-center gap-1">
-                <button>
+                <button
+                  onClick={handlePrevious}
+                  disabled={!stampData.navigation.hasPrevious}
+                  className="disabled:opacity-30"
+                >
                   <ChevronLeftIcon className="w-4" />
                 </button>
-                <button>
+                <button
+                  onClick={handleNext}
+                  disabled={!stampData.navigation.hasNext}
+                  className="disabled:opacity-30"
+                >
                   <ChevronRightIcon className="w-4" />
                 </button>
               </div>
@@ -67,8 +141,12 @@ export const StampPage = () => {
             <div className="mt-4 w-full border border-gray-50"></div>
           </div>
           <div className="mt-7 grid w-full grid-cols-5 gap-3">
-            {stamps.map(({ id, label, isRecorded }) => (
-              <Stamp key={id} label={label} isRecorded={isRecorded} />
+            {stampData.stamps.map((stamp) => (
+              <Stamp
+                key={stamp.date}
+                label={formatStampLabel(stamp.date)}
+                isRecorded={stamp.stamped}
+              />
             ))}
           </div>
         </section>
