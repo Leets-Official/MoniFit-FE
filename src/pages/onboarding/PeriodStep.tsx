@@ -1,17 +1,12 @@
 import { Button } from "@/components/common/Button";
 import { Calendar } from "@/components/common/calendar/Calendar";
-import { useState } from "react";
 
 interface PeriodStepProps {
-  onNext: (startDate: string) => void;
+  onNext: () => void;  // startDate 파라미터 제거
   isFirstLogin?: boolean;
 }
 
 const PeriodStep = ({ onNext, isFirstLogin = true }: PeriodStepProps) => {
-  // 오늘 날짜를 기본값으로
-  const today = new Date().toISOString().split('T')[0]; // "2026-02-07" 형식
-  const [selectedDate] = useState(today);
-
   return (
     <div className="flex flex-col h-full">
       <div className="mb-8 items-center justify-center text-center">
@@ -34,7 +29,7 @@ const PeriodStep = ({ onNext, isFirstLogin = true }: PeriodStepProps) => {
       <div className="mt-[45px] w-full flex justify-center">
         <Button 
           width={"lg"} 
-          onClick={() => onNext(selectedDate)} 
+          onClick={() => onNext()}  // 파라미터 없이 호출
           className="w-[285px] h-[63px] px-3 py-2 gap-2 rounded-full bg-[#A8A6FF]"
         >
           다음
