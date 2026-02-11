@@ -1,5 +1,6 @@
-import api from '@/api/auth';
+import api from "@/api/auth";
 
+/* -------------------- 공통 응답 타입 -------------------- */
 interface ApiResponse<T> {
   success: boolean;
   data?: T;
@@ -9,6 +10,7 @@ interface ApiResponse<T> {
   } | null;
 }
 
+/* -------------------- 예산 기간 타입 -------------------- */
 interface BudgetPeriodData {
   id: string;
   startDate: string;
@@ -49,7 +51,7 @@ interface CompletedPeriodItem {
   totalExpense: number;
   savedAmount?: number;
   exceededAmount?: number;
-  completionType: 'SUCCESS' | 'OVER_BUDGET';
+  completionType: "SUCCESS" | "OVER_BUDGET";
 }
 
 interface CompletedPeriodsResponse {
@@ -57,7 +59,7 @@ interface CompletedPeriodsResponse {
   totalCount: number;
 }
 
-// 대시보드 데이터 타입
+/* -------------------- 대시보드 타입 -------------------- */
 export interface DashboardData {
   hasPeriod: boolean;
   period: ActiveBudgetData | null;
@@ -84,104 +86,7 @@ export interface DashboardData {
   };
 }
 
-export const createBudgetPeriod = async (
-  startDate: string,
-  budgetAmount: number
-): Promise<BudgetPeriodData> => {
-  try {
-    const response = await api.post<ApiResponse<BudgetPeriodData>>(
-      '/budget-periods',
-      {
-        startDate,
-        budgetAmount,
-      }
-    );
-
-    if (response.data.success && response.data.data) {
-      return response.data.data;
-    }
-
-    throw new Error(response.data.error?.message || '예산 생성 실패');
-  } catch (error) {
-    console.error('createBudgetPeriod 오류:', error);
-    throw error;
-  }
-};
-
-export const getActiveBudget = async (): Promise<ActiveBudgetData | null> => {
-  try {
-    const response =
-      await api.get<ApiResponse<ActiveBudgetData>>(
-        '/budget-periods/active'
-      );
-
-    if (response.data.success && response.data.data) {
-      return response.data.data;
-    }
-
-    return null;
-  } catch (error) {
-    console.error('getActiveBudget 오류:', error);
-    throw error;
-  }
-};
-
-export const getDashboard = async (): Promise<DashboardData> => {
-  try {
-    const response =
-      await api.get<ApiResponse<DashboardData>>(
-        '/dashboard'
-      );
-
-    if (response.data.success && response.data.data) {
-      return response.data.data;
-    }
-
-    throw new Error(response.data.error?.message || '대시보드 조회 실패');
-  } catch (error) {
-    console.error('getDashboard 오류:', error);
-    throw error;
-  }
-};
-
-export const getBudgetPeriod = async (
-  periodId: string
-): Promise<BudgetPeriodData> => {
-  try {
-    const response =
-      await api.get<ApiResponse<BudgetPeriodData>>(
-        `/budget-periods/${periodId}`
-      );
-
-    if (response.data.success && response.data.data) {
-      return response.data.data;
-    }
-
-    throw new Error(response.data.error?.message || '예산 조회 실패');
-  } catch (error) {
-    console.error('getBudgetPeriod 오류:', error);
-    throw error;
-  }
-};
-
-export const getCompletedBudgets = async (): Promise<CompletedPeriodItem[]> => {
-  try {
-    const response =
-      await api.get<ApiResponse<CompletedPeriodsResponse>>(
-        '/budget-periods/completed'
-      );
-
-    if (response.data.success && response.data.data) {
-      return response.data.data.periods;
-    }
-
-    throw new Error(response.data.error?.message || '완료 목록 조회 실패');
-  } catch (error) {
-    console.error('getCompletedBudgets 오류:', error);
-    throw error;
-  }
-};
-  // 지출 항목 타입 (리포트 도넛/카테고리 합산용)
+/* -------------------- 지출 타입 -------------------- */
 export interface ExpenseItem {
   id: number;
   category: string;
@@ -191,48 +96,120 @@ export interface ExpenseItem {
   createdAt: string;
 }
 
-// 지출 목록 응답 타입
 interface ExpensesData {
   expenses: ExpenseItem[];
   totalCount: number;
   totalAmount: number;
 }
 
+/* ========================= API ========================= */
 
-// 6. 지출 목록 조회 (리포트용)
+/* 1. 예산 생성 */
+export const createBudgetPeriod = async (
+  startDate: string,
+  budgetAmount: number
+): Promise<BudgetPeriodData> => {
+  const response = await api.post<ApiResponse<BudgetPeriodData>>(
+    "/budget-periods",
+    { startDate, budgetAmount }
+  );
+
+  if (response.data.success && response.data.data) {
+    return response.data.data;
+  }
+
+  throw new Error(
+    response.data.error?.message || "예산 생성 실패"
+  );
+};
+
+/* 2. 활성 예산 조회 */
+export const getActiveBudget =
+  async (): Promise<ActiveBudgetData | null> => {
+    const response =
+      await api.get<ApiResponse<ActiveBudgetData>>(
+        "/budget-periods/active"
+      );
+
+    if (response.data.success && response.data.data) {
+      return response.data.data;
+    }
+
+    return null;
+  };
+
+/* 3. 대시보드 조회 */
+export const getDashboard =
+  async (): Promise<DashboardData> => {
+    const response =
+      await api.get<ApiResponse<DashboardData>>(
+        "/dashboard"
+      );
+
+    if (response.data.success && response.data.data) {
+      return response.data.data;
+    }
+
+    throw new Error(
+      response.data.error?.message ||
+        "대시보드 조회 실패"
+    );
+  };
+
+/* 4. 특정 예산 조회 */
+export const getBudgetPeriod = async (
+  periodId: string
+): Promise<BudgetPeriodData> => {
+  const response =
+    await api.get<ApiResponse<BudgetPeriodData>>(
+      `/budget-periods/${periodId}`
+    );
+
+  if (response.data.success && response.data.data) {
+    return response.data.data;
+  }
+
+  throw new Error(
+    response.data.error?.message || "예산 조회 실패"
+  );
+};
+
+/* 5. 완료된 예산 목록 */
+export const getCompletedBudgets =
+  async (): Promise<CompletedPeriodItem[]> => {
+    const response =
+      await api.get<ApiResponse<CompletedPeriodsResponse>>(
+        "/budget-periods/completed"
+      );
+
+    if (response.data.success && response.data.data) {
+      return response.data.data.periods;
+    }
+
+    throw new Error(
+      response.data.error?.message ||
+        "완료 목록 조회 실패"
+    );
+  };
+
+/* 6. 지출 목록 조회 */
 export const getExpenses = async (params?: {
   periodId?: string | number;
   date?: string;
   category?: string;
 }): Promise<ExpensesData> => {
-  try {
-    const query = new URLSearchParams();
-    
-    if (params?.periodId !== undefined) query.set('periodId', String(params.periodId));
-    if (params?.date) query.set('date', params.date);
-    if (params?.category) query.set('category', params.category);
+  const response =
+    await api.get<ApiResponse<ExpensesData>>(
+      "/expenses",
+      { params }
+    );
 
-    const queryString = query.toString();
-    const url = queryString
-      ? `${API_BASE_URL}/expenses?${queryString}`
-      : `${API_BASE_URL}/expenses`;
-
-    const response = await fetch(url, {
-      headers: {
-        'Authorization': `Bearer ${getAuthToken()}`,
-      }
-    });
-
-    const result: ApiResponse<ExpensesData> = await response.json();
-    
-    if (result.success && result.data) {
-      return result.data;
-    } else {
-      throw new Error(result.error?.message || '지출 목록 조회 실패');
-    }
-  } catch (error) {
-    console.error('getExpenses 오류:', error);
-    throw error;
+  if (response.data.success && response.data.data) {
+    return response.data.data;
   }
-};
 
+  throw new Error(
+    response.data.error?.message ||
+      "지출 목록 조회 실패"
+  );
+};
