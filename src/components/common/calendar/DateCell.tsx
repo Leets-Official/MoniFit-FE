@@ -1,8 +1,9 @@
 import { cva } from "class-variance-authority";
 import { clsx } from "clsx";
 
+// 날짜 텍스트 스타일 (16px)
 const dateCellVariants = cva(
-  "row-start-1 col-start-1 transition-colors cursor-pointer select-none flex items-center justify-center w-full h-full font-bold",
+  "transition-colors cursor-pointer select-none flex items-center justify-center font-bold text-[16px] leading-none",
   {
     variants: {
       status: {
@@ -23,6 +24,8 @@ const dateCellVariants = cva(
   },
 );
 
+// amountTextVariants 제거
+
 type DateCellProps = {
     day: number;
     isSelected: boolean;
@@ -34,7 +37,7 @@ type DateCellProps = {
     dayOfWeek?: number;
     onClick?: () => void;
     isInBudgetPeriod?: boolean;
-    amount?: number; // 새로 추가
+    amount?: number;
 };
 
 export function DateCell({
@@ -57,6 +60,8 @@ export function DateCell({
       : isBetween 
         ? "inRange" 
         : "default";
+
+  const isSelectedState = isSelected || isRangeStart || isRangeEnd;
 
   return (
     <button 
@@ -82,25 +87,23 @@ export function DateCell({
           <div className="z-10 col-start-1 row-start-1 h-[37.45px] w-[37.45px] rounded-full bg-[#A8A6FF] shadow-sm" />
         )}
 
-        {/* 날짜 텍스트 + 금액 */}
+        {/* 날짜 텍스트 + 금액 컨테이너 */}
         <div className="z-20 flex flex-col items-center justify-center gap-0">
-          <div className={clsx(
-            dateCellVariants({ 
-              status: currentStatus, 
-              isCurrentMonth: isInBudgetPeriod ? isCurrentMonth : true
-            }),
-            "leading-none"
-          )}>
+          {/* 날짜 텍스트 (16px) */}
+          <div className={dateCellVariants({ 
+            status: currentStatus, 
+            isCurrentMonth: isInBudgetPeriod ? isCurrentMonth : true
+          })}>
             {day}
           </div>
           
-          {/* 금액 표시: 예산 기간 내 + 현재 달 + 금액 있을 때만 */}
+          {/* 금액 텍스트 (7px) - 직접 인라인 스타일 적용 */}
           {amount && isInBudgetPeriod && isCurrentMonth && (
             <div className={clsx(
-              "text-[9px] leading-none mt-[2px] font-normal",
-              (isSelected || isRangeStart || isRangeEnd) 
+              "!text-[7px] leading-none mt-[2px] font-normal",
+              isSelectedState 
                 ? "text-black/60" 
-                : "text-white/50"
+                : "text-white"
             )}>
               {amount >= 10000 
                 ? `${(amount / 10000).toFixed(0)}만`

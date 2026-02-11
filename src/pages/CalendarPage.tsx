@@ -30,7 +30,7 @@ export const CalendarPage = () => {
         <div className="h-screen w-full flex flex-col">
             <Header />
             {/* 캘린더 섹션 */}
-            <section className="w-full bg-gray-70/20 flex-shrink-0">
+            <section className="w-[375px] h-[295px] bg-gray-70/20 flex-shrink-0">
             <header />
                 {isLoading ? (
                     <div className="h-[400px] flex items-center justify-center text-white">
@@ -53,14 +53,14 @@ export const CalendarPage = () => {
             </section>
 
             {/* 카테고리 리스트 섹션 - 항상 표시 */}
-            <section className="w-full flex-1 overflow-y-auto px-4 min-h-0 bg-[#1F1F1F]">
+            <section className="w-full flex-1 overflow-y-auto min-h-0 bg-[#1F1F1F] pt-4">
                 <CategoryList categories={dailyData?.categories} />
             </section>
 
             {/* 하단 네비게이션 */}
             <div className="w-full flex-shrink-0 bg-[#1F1F1F] py-4">
                 <div className="max-w-md mx-auto w-full flex justify-between items-center px-6">
-                    <div className="flex bg-primary-opacity-50 rounded-full p-1 border-white/10">
+                    <div className="flex bg-primary-opacity-50 rounded-full gap-3 border-white/10">
                         <Button 
                             borderColor={"outline"}
                             bgColor={"none"}

@@ -39,7 +39,7 @@ const CategoryList = ({ categories = [] }: CategoryListProps) => {
   // API 데이터가 없으면 기존 더미 데이터 표시
   if (categories.length === 0) {
     return (
-      <div className="flex flex-col">
+      <div className="flex flex-col gap-[7px]">
         <CategoryItem
           data={{
             type: "food",
@@ -90,7 +90,7 @@ const CategoryList = ({ categories = [] }: CategoryListProps) => {
 
   // API 데이터가 있으면 API 데이터 표시
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col gap-[7px]">
       {categories.map((category) => (
         <CategoryItem
           key={category.category}

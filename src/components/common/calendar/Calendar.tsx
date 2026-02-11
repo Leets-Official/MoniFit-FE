@@ -78,7 +78,7 @@ export function Calendar({
 
     return (
         <div className="flex flex-col items-center justify-center w-full">
-            <div className="flex flex-col w-[276.2px]"> 
+            <div className="flex flex-col"> 
                 <CalendarHeader 
                     year={currentYear} 
                     month={currentMonth}

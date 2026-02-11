@@ -15,9 +15,9 @@ export function CalendarHeader({
   onNext,
 }: CalendarHeaderProps) {
   return (
-    <div className="flex w-[276.74px] items-center justify-between">
+    <div className="flex w-[248px] items-center justify-between">
       {/* 년/월 */}
-      <span className="text-lg font-semibold text-[#EAEAEA]">
+      <span className="text-[18px] font-semibold text-[#EAEAEA]">
         {year}년 {month + 1}월 {/* month는 0부터 시작하므로 +1 */}
       </span>
 
