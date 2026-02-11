@@ -57,7 +57,8 @@ interface CompletedPeriodsResponse {
   totalCount: number;
 }
 
-interface DashboardData {
+// 대시보드 데이터 타입
+export interface DashboardData {
   hasPeriod: boolean;
   period: ActiveBudgetData | null;
   alerts: {
