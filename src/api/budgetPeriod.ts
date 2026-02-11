@@ -115,9 +115,14 @@ export const createBudgetPeriod = async (
   budgetAmount: number
 ): Promise<BudgetPeriodData> => {
   try {
-    // 오늘 날짜를 자동으로 생성
-    const today = new Date().toISOString().split('T')[0];
-    
+    const now = new Date();
+    const today =
+      now.getFullYear() +
+      "-" +
+      String(now.getMonth() + 1).padStart(2, "0") +
+      "-" +
+      String(now.getDate()).padStart(2, "0");
+
     const response = await fetch(`${API_BASE_URL}/budget-periods`, {
       method: 'POST',
       headers: {
