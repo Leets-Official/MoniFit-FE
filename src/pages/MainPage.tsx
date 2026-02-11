@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Canvas } from "@react-three/fiber";
+import { CalendarIcon, ReportIcon } from "@/assets/icons";
 import {
   Button,
   ExpenseRecordModal,
@@ -9,6 +10,7 @@ import {
 } from "@/components";
 import { AlertModal } from "@/components/modal/AlertModal";
 import { ModalWrapper } from "@/components/modal/ModalWrapper";
+import ReportPage from "./ReportPage";
 import { getDashboard } from "@/api/budgetPeriod";
 import type { DashboardData } from "@/api/budgetPeriod";
 
@@ -51,6 +53,7 @@ export const MainPage = () => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
 
+  const [isReportOpen, setIsReportOpen] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
   const [alertQueue, setAlertQueue] = useState<AlertType[]>([]);
@@ -124,6 +127,7 @@ export const MainPage = () => {
 
     const alerts: AlertType[] = [];
 
+    // 1. 지출 입력 알림 (항상 표시)
     alerts.push({
       type: "지출",
       value:
@@ -133,12 +137,15 @@ export const MainPage = () => {
       expense: response.expense?.amount,
     });
 
+    // 2. 스탬프 알림 (showStamp가 true인 경우에만 추가)
     if (response.alerts?.expenseInput?.showStamp) {
       alerts.push({ type: "스탬프" });
     }
 
     setAlertQueue(alerts);
     setCurrentAlert(alerts[0]);
+
+    console.log("지출 등록 완료:", response);
   };
 
   const handleCloseAlert = () => {
@@ -173,10 +180,11 @@ export const MainPage = () => {
   return (
     <main className="relative flex h-full w-full flex-col items-center">
       <Header
-        showStampButton
+        showStampButton={true}
         onStampClick={() => navigate("/stamp")}
       />
 
+      {/* 알림 표시 */}
       {dashboardData?.alerts?.showWarning &&
         dashboardData?.alerts?.warning && (
           <div className="mt-4 w-90 rounded-lg bg-yellow-500/20 p-4 text-center">
@@ -189,8 +197,35 @@ export const MainPage = () => {
           </div>
         )}
 
-      <section className="mt-6.25 flex justify-center w-full">
-        <div className="text-body2 flex items-center gap-1 rounded-full bg-[#7976FF80] px-3 py-1.5 text-[#DCDCDC]">
+      {dashboardData?.alerts?.showOverBudget &&
+        dashboardData?.alerts?.overBudget && (
+          <div className="mt-4 w-90 rounded-lg bg-red-500/20 p-4 text-center">
+            <p className="text-body1 text-red-500">
+              {dashboardData.alerts.overBudget.title}
+            </p>
+            <p className="text-body2 text-gray-300 mt-2">
+              {dashboardData.alerts.overBudget.message}
+            </p>
+          </div>
+        )}
+
+      {dashboardData?.alerts?.showPeriodComplete &&
+        dashboardData?.alerts?.periodComplete && (
+          <div className="mt-4 w-90 rounded-lg bg-green-500/20 p-4 text-center">
+            <p className="text-body1 text-green-500">
+              {dashboardData.alerts.periodComplete.title}
+            </p>
+            <p className="text-body2 text-gray-300 mt-2">
+              {dashboardData.alerts.periodComplete.message1}
+            </p>
+            <p className="text-body2 text-gray-300">
+              {dashboardData.alerts.periodComplete.message2}
+            </p>
+          </div>
+        )}
+
+      <section className="mt-6.25 flex h-fit w-full justify-center">
+        <div className="text-body2 flex h-8 w-fit items-center gap-1 rounded-[60px] bg-[#7976FF80] px-3 py-1.5 text-[#DCDCDC]">
           <span>{formatDate(startDate)}</span>
           <span>-</span>
           <span>{formatDate(endDate)}</span>
@@ -214,12 +249,13 @@ export const MainPage = () => {
           </Canvas>
         </div>
 
-        <div className="absolute -bottom-30 left-1/2 -translate-x-1/2 flex flex-col items-center">
+        <div className="absolute -bottom-30 left-1/2 flex -translate-x-1/2 flex-col items-center">
           <span className="text-body2 text-[#8A8A8A]">
             남은 금액
           </span>
-          <span className="text-h1 text-gray-0 flex gap-2">
-            ₩ {remainingBudget.toLocaleString()}
+          <span className="text-h1 text-gray-0 flex max-w-70 items-center gap-2 overflow-x-scroll">
+            <span>₩</span>
+            <span>{remainingBudget.toLocaleString()}</span>
           </span>
           <Button
             width="md"
@@ -230,6 +266,38 @@ export const MainPage = () => {
           </Button>
         </div>
       </section>
+
+      <section className="absolute bottom-20 flex w-full items-center justify-center gap-3">
+        <Button
+          width="sm"
+          borderColor="outline"
+          bgColor="none"
+          className="flex gap-2"
+          fontColor="white"
+          onClick={() => navigate("/calendar")}
+        >
+          <CalendarIcon />
+          <span>달력</span>
+        </Button>
+
+        <Button
+          width="md"
+          borderColor="outline"
+          bgColor="none"
+          className="flex gap-2"
+          fontColor="white"
+          onClick={() => setIsReportOpen(true)}
+        >
+          <ReportIcon />
+          <span>리포트</span>
+        </Button>
+      </section>
+
+      {isReportOpen && (
+        <div className="fixed inset-0 z-50 bg-transparent">
+          <ReportPage onClose={() => setIsReportOpen(false)} />
+        </div>
+      )}
 
       {showModal && (
         <ModalWrapper onClose={() => setShowModal(false)}>
@@ -261,4 +329,5 @@ export const MainPage = () => {
     </main>
   );
 };
+
 export default MainPage;
