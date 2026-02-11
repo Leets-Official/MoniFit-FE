@@ -8,6 +8,7 @@ import DonutChartTestPage from "@/pages/DonutChartTestPage";
 
 import SplashPage from "./pages/auth/SplashPage";
 import LoginPage from "./pages/auth/LoginPage";
+import CallbackPage from "./pages/auth/CallbackPage";
 import CalendarPage from "./pages/CalendarPage";
 import { MainPage } from "./pages";
 import { StampPage } from "./pages";
@@ -35,6 +36,7 @@ export default function App() {
         <Route path="/" element={<MobileLayout />}>
           <Route index element={<SplashPage />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/oauth/callback" element={<CallbackPage />} />
           <Route path="/main" element={<MainPage />} />
           <Route path="/stamp" element={<StampPage />} />
           <Route

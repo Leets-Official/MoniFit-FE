@@ -98,16 +98,12 @@ export function DateGrid({
   }));
 
   const totalFilled = prevMonthDates.length + currentMonthDates.length;
-  const nextMonthLength =
-    totalFilled > 35 ? 42 - totalFilled : 35 - totalFilled;
+  const nextMonthLength = totalFilled > 35 ? 42 - totalFilled : 35 - totalFilled;
 
-  const nextMonthDates = Array.from(
-    { length: nextMonthLength },
-    (_, index) => ({
-      day: index + 1,
-      isCurrentMonth: false,
-    }),
-  );
+  const nextMonthDates = Array.from({ length: nextMonthLength }, (_, index) => ({
+    day: index + 1,
+    isCurrentMonth: false,
+  }));
 
   return (
     <div className="grid w-[276.2px] grid-cols-7 gap-x-[2.34px] gap-y-[9.36px]">
@@ -120,10 +116,7 @@ export function DateGrid({
         const isStart = rangeStart && isSameDate(prevDate, rangeStart);
         const isEnd = rangeEnd && isSameDate(prevDate, rangeEnd);
         const isBetween =
-          rangeStart &&
-          rangeEnd &&
-          prevDate > rangeStart &&
-          prevDate < rangeEnd;
+          rangeStart && rangeEnd && prevDate > rangeStart && prevDate < rangeEnd;
 
         return (
           <DateCell
@@ -186,10 +179,7 @@ export function DateGrid({
         const isStart = rangeStart && isSameDate(nextDate, rangeStart);
         const isEnd = rangeEnd && isSameDate(nextDate, rangeEnd);
         const isBetween =
-          rangeStart &&
-          rangeEnd &&
-          nextDate > rangeStart &&
-          nextDate < rangeEnd;
+          rangeStart && rangeEnd && nextDate > rangeStart && nextDate < rangeEnd;
 
         return (
           <DateCell
