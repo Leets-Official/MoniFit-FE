@@ -58,23 +58,21 @@ export const CalendarPage = () => {
             </section>
 
             {/* 하단 네비게이션 */}
-            <div className="w-full flex-shrink-0 bg-[#1F1F1F] py-4 border-t border-white/10">
+            <div className="w-full flex-shrink-0 bg-[#1F1F1F] py-4">
                 <div className="max-w-md mx-auto w-full flex justify-between items-center px-6">
                     <div className="flex bg-primary-opacity-50 rounded-full p-1 border-white/10">
                         <Button 
-                            width={"sm"}
                             borderColor={"outline"}
                             bgColor={"none"}
-                            className="flex gap-2 bg-white"
+                            className="flex w-[108px] h-[52px] gap-2 bg-white"
                         >
                             <CalendarIcon />
                             달력
                         </Button>
                         <Button 
-                            width={"md"}
                             borderColor={"outline"}
                             bgColor={"none"}
-                            className="flex gap-2"
+                            className="flex gap-2 w-[122px] h-[52px]"
                             fontColor={"white"}
                         >
                             <ReportIcon />
