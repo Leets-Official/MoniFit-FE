@@ -192,7 +192,7 @@ export default function MyPageMainPage() {
             모니핏 참고사항
           </button>
 
-          <button type="button" onClick={() => navigate("/")}>
+          <button type="button" onClick={() => navigate("/main")}>
             <img src={HomeIcon} alt="home" className="h-12 w-12" />
           </button>
         </div>
