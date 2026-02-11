@@ -62,6 +62,22 @@ interface CompletedPeriodsResponse {
   totalCount: number;
 }
 
+// 지출 아이템 타입
+export interface ExpenseItem {
+  id: string;
+  category: string;
+  categoryName: string;
+  amount: number;
+  spentDate: string;
+  createdAt: string;
+}
+
+// 지출 목록 응답 타입
+interface ExpensesResponse {
+  expenses: ExpenseItem[];
+  totalCount: number;
+}
+
 // 대시보드 데이터 타입
 export interface DashboardData {
   hasPeriod: boolean;
@@ -210,6 +226,33 @@ export const getCompletedBudgets = async (): Promise<CompletedPeriodItem[]> => {
     }
   } catch (error) {
     console.error('getCompletedBudgets 오류:', error);
+    throw error;
+  }
+};
+
+// 6. 특정 기간의 지출 내역 조회
+export const getExpenses = async (params: { 
+  periodId: number 
+}): Promise<ExpensesResponse> => {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/budget-periods/${params.periodId}/expenses`,
+      {
+        headers: {
+          'Authorization': `Bearer ${getAuthToken()}`,
+        }
+      }
+    );
+
+    const result: ApiResponse<ExpensesResponse> = await response.json();
+    
+    if (result.success && result.data) {
+      return result.data;
+    } else {
+      throw new Error(result.error?.message || '지출 내역 조회 실패');
+    }
+  } catch (error) {
+    console.error('getExpenses 오류:', error);
     throw error;
   }
 };
