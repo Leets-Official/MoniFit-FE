@@ -1,4 +1,4 @@
-const API_BASE_URL = '/api/v1';
+const API_BASE_URL = 'https://monifit-be.duckdns.org/api/v1';
 
 // 공통 응답 타입
 interface ApiResponse<T> {
