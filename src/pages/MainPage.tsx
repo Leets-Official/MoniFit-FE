@@ -27,8 +27,6 @@ export const MainPage = () => {
   
   // API 데이터 state
   const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
-  const [totalBudget, setTotalBudget] = useState(0);
-  const [totalExpense, setTotalExpense] = useState(0);
   const [remainingBudget, setRemainingBudget] = useState(0);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -46,8 +44,6 @@ export const MainPage = () => {
         }
 
         setDashboardData(data);
-        setTotalBudget(data.period.budgetAmount);
-        setTotalExpense(data.period.totalExpense);
         setRemainingBudget(data.period.remainingBudget);
         setStartDate(data.period.startDate);
         setEndDate(data.period.endDate);
@@ -98,8 +94,6 @@ export const MainPage = () => {
 
       if (data.hasPeriod && data.period) {
         setDashboardData(data);
-        setTotalBudget(data.period.budgetAmount);
-        setTotalExpense(data.period.totalExpense);
         setRemainingBudget(data.period.remainingBudget);
       }
 
