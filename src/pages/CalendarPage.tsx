@@ -36,7 +36,7 @@ export const CalendarPage = () => {
     };
 
     return (
-        <div className="h-screen w-full flex flex-col">
+        <div className="h-full w-full flex flex-col">
             <Header />
             {/* 캘린더 섹션 */}
             <section className="w-[375px] h-[295px] bg-gray-70/20 flex-shrink-0">

@@ -4,6 +4,7 @@ export { Header } from "./common/Header";
 
 export { CategoryButton } from "./CategoryButton";
 export { ExpenseRecordModal } from "./modal/ExpenseRecordModal";
+export { AlertModal } from "./modal/AlertModal";
 
 export { LiquidSphere } from "./sphere/LiquidSphere";
 export { Stamp } from "./common/Stamp";

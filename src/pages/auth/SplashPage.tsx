@@ -14,7 +14,7 @@ const SplashPage = () => {
   }, [navigate]);
 
   return (
-    <div className="flex h-screen w-full items-center justify-center">
+    <div className="flex h-full w-full items-center justify-center">
       <div className="animate-in fade-in duration-1000">
         <img src="/banner-4x.png" alt="MONIFIT" className="w-32 md:w-40" />
       </div>

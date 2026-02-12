@@ -2,61 +2,34 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Canvas } from "@react-three/fiber";
 import { CalendarIcon, ReportIcon } from "@/assets/icons";
-import {
-  Button,
-  ExpenseRecordModal,
-  Header,
-  LiquidSphere,
-} from "@/components";
-import { AlertModal } from "@/components/modal/AlertModal";
+import { AlertModal, Button, ExpenseRecordModal, Header, LiquidSphere } from "@/components";
 import { ModalWrapper } from "@/components/modal/ModalWrapper";
-import { getDashboard } from "@/api/budgetPeriod";
-import type { DashboardData } from "@/api/budgetPeriod";
+import { getDashboard, createExpense } from "@/api/budgetPeriod";
+import type { DashboardData } from "@/api/budgetPeriod"; 
 
-/* -------------------- 타입 정의 -------------------- */
-
-type ExpenseCategory =
-  | "식비"
-  | "쇼핑"
-  | "의료"
-  | "생활"
-  | "기타";
-
-type AlertType =
-  | { type: "지출"; value?: ExpenseCategory; expense?: number }
-  | { type: "스탬프" };
-
-interface SaveExpenseResponse {
-  expense?: {
-    categoryName?: string;
-    amount?: number;
-  };
-  alerts?: {
-    expenseInput?: {
-      showStamp?: boolean;
-    };
-  };
-}
-
-/* -------------------- 컴포넌트 -------------------- */
+const CATEGORY_LABEL: Record<string, "식비" | "쇼핑" | "의료" | "생활" | "기타"> = {
+  FOOD: "식비",
+  SHOPPING: "쇼핑",
+  MEDICAL: "의료",
+  LIVING: "생활",
+  ETC: "기타",
+};
 
 export const MainPage = () => {
   const navigate = useNavigate();
 
   /* -------------------- state -------------------- */
   const [loading, setLoading] = useState(true);
-  const [dashboardData, setDashboardData] =
-    useState<DashboardData | null>(null);
-
+  const [expenseAlert, setExpenseAlert] = useState<{ category: string; amount: number } | null>(null);
+  const [showStampAlert, setShowStampAlert] = useState(false);
+  
+  // API 데이터 state
+  const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
   const [remainingBudget, setRemainingBudget] = useState(0);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
 
   const [showModal, setShowModal] = useState(false);
-
-  const [alertQueue, setAlertQueue] = useState<AlertType[]>([]);
-  const [currentAlert, setCurrentAlert] =
-    useState<AlertType | null>(null);
 
   /* -------------------- 데이터 조회 -------------------- */
   useEffect(() => {
@@ -117,59 +90,31 @@ export const MainPage = () => {
     1 - fillRatio
   );
 
-  /* -------------------- 지출 저장 -------------------- */
-  const handleSaveExpense = async (
-    response: SaveExpenseResponse
-  ): Promise<void> => { 
-    setShowModal(false);
+  const handleSaveExpense = async (expense: number, category: string) => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const spentDate = `${year}-${month}-${day}`;
 
-    const alerts: AlertType[] = [];
-
-    // 1. 지출 입력 알림 (항상 표시)
-    alerts.push({
-      type: "지출",
-      value:
-        response.expense?.categoryName as
-          | ExpenseCategory
-          | undefined,
-      expense: response.expense?.amount,
-    });
-
-    // 2. 스탬프 알림 (showStamp가 true인 경우에만 추가)
-    if (response.alerts?.expenseInput?.showStamp) {
-      alerts.push({ type: "스탬프" });
-    }
-
-    setAlertQueue(alerts);
-    setCurrentAlert(alerts[0]);
-
-    console.log("지출 등록 완료:", response);
-
-    // 대시보드 데이터 새로고침
     try {
+      const result = await createExpense(category, expense, spentDate);
       const data = await getDashboard();
+
       if (data.hasPeriod && data.period) {
         setDashboardData(data);
         setRemainingBudget(data.period.remainingBudget);
-        setStartDate(data.period.startDate);
-        setEndDate(data.period.endDate);
+      }
+
+      setShowModal(false);
+      setExpenseAlert({ category, amount: expense });
+
+      if (result.alerts.showStamp) {
+        setShowStampAlert(true);
       }
     } catch (error) {
-      console.error("대시보드 새로고침 실패:", error);
-    }
-  };
-
-  const handleCloseAlert = () => {
-    const currentIndex = alertQueue.findIndex(
-      (alert) => alert === currentAlert
-    );
-    const nextIndex = currentIndex + 1;
-
-    if (nextIndex < alertQueue.length) {
-      setCurrentAlert(alertQueue[nextIndex]);
-    } else {
-      setCurrentAlert(null);
-      setAlertQueue([]);
+      console.error('지출 기록 실패:', error);
+      throw error;
     }
   };
 
@@ -181,7 +126,7 @@ export const MainPage = () => {
   /* -------------------- 로딩 처리 -------------------- */
   if (loading) {
     return (
-      <div className="flex h-screen items-center justify-center">
+      <div className="flex h-full items-center justify-center">
         <div className="text-xl">로딩 중...</div>
       </div>
     );
@@ -194,6 +139,26 @@ export const MainPage = () => {
         showStampButton={true}
         onStampClick={() => navigate("/stamp")}
       />
+
+      {(expenseAlert || showStampAlert) && (
+        <div className="absolute top-16 z-50 flex flex-col items-center gap-3">
+          {expenseAlert && (
+            <AlertModal
+              type="지출"
+              value={CATEGORY_LABEL[expenseAlert.category]}
+              expense={expenseAlert.amount}
+              onClose={() => setExpenseAlert(null)}
+            />
+          )}
+          {showStampAlert && (
+            <AlertModal
+              type="스탬프"
+              onClose={() => setShowStampAlert(false)}
+              onNavigate={() => navigate("/stamp")}
+            />
+          )}
+        </div>
+      )}
 
       {/* 알림 표시 */}
       {dashboardData?.alerts?.showWarning &&
@@ -313,24 +278,6 @@ export const MainPage = () => {
         </ModalWrapper>
       )}
 
-      {currentAlert && (
-        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50">
-          <AlertModal
-            type={currentAlert.type}
-            value={
-              currentAlert.type === "지출"
-                ? currentAlert.value
-                : undefined
-            }
-            expense={
-              currentAlert.type === "지출"
-                ? currentAlert.expense
-                : undefined
-            }
-            onClose={handleCloseAlert}
-          />
-        </div>
-      )}
     </main>
   );
 };

@@ -11,21 +11,18 @@ import { CategoryButton } from "../CategoryButton";
 import { Input } from "../common/Input";
 import { Button } from "../common/Button";
 import clsx from "clsx";
-import { createExpense } from "@/api/expense";
-import type { ExpenseCreateRequest } from "@/types/expense";
 
 const CATEGORIES = [
-  { key: "food", label: "식비", icon: <ColoredFoodIcon /> },
-  { key: "shopping", label: "쇼핑", icon: <ColoredShopingIcon /> },
-  { key: "medical", label: "의료", icon: <ColoredHospitalIcon /> },
-  { key: "living", label: "생활", icon: <ColoredHomeIcon /> },
-  { key: "etc", label: "기타", icon: <ColoredStarIcon /> },
+  { key: "FOOD", label: "식비", icon: <ColoredFoodIcon /> },
+  { key: "SHOPPING", label: "쇼핑", icon: <ColoredShopingIcon /> },
+  { key: "MEDICAL", label: "의료", icon: <ColoredHospitalIcon /> },
+  { key: "LIVING", label: "생활", icon: <ColoredHomeIcon /> },
+  { key: "ETC", label: "기타", icon: <ColoredStarIcon /> },
 ] as const;
 
 interface ExpenseRecordModalProps {
   onClose: () => void;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onSave: (response: any) => void;
+  onSave: (expense: number, category: string) => Promise<void>;
 }
 
 export const ExpenseRecordModal = ({
@@ -36,7 +33,7 @@ export const ExpenseRecordModal = ({
   const [expense, setExpense] = useState<number | "">("");
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -58,34 +55,17 @@ export const ExpenseRecordModal = ({
 
   const handleSave = async () => {
     setIsSubmitted(true);
+    setError(null);
 
     if (!selected || expense === "") return;
 
+    setIsLoading(true);
     try {
-      setIsSubmitting(true);
-      setError(null);
-
-      // 오늘 날짜 생성 (YYYY-MM-DD)
-      const today = new Date().toLocaleDateString("en-CA");
-
-      // API 요청 데이터 (key 값 그대로 전송)
-      const request: ExpenseCreateRequest = {
-        category: selected, // "food", "shopping" 등
-        amount: Number(expense),
-        spentDate: today,
-      };
-
-      // API 호출
-      const response = await createExpense(request);
-
-      // 성공 시 부모에게 전체 응답 데이터 전달 후 모달 닫기
-      onSave(response);
-      handleClose();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "지출 등록에 실패했습니다");
-      console.error("지출 등록 에러:", err);
+      await onSave(expense, selected);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : '지출 기록에 실패했습니다');
     } finally {
-      setIsSubmitting(false);
+      setIsLoading(false);
     }
   };
 
@@ -160,7 +140,10 @@ export const ExpenseRecordModal = ({
             </span>
           )}
         </div>
-        <div className="relative mt-21.25 flex h-40 w-full gap-4.5">
+        {error && (
+          <p className="text-body2 mt-6 text-[#CA0111]">{error}</p>
+        )}
+        <div className={clsx("relative flex h-40 w-full gap-4.5", error ? "mt-4" : "mt-21.25")}>
           <Button
             type={"button"}
             width={"xs"}
@@ -168,11 +151,12 @@ export const ExpenseRecordModal = ({
             borderColor={"outline"}
             fontColor={"white"}
             onClick={handleEaseClick}
+            disabled={isLoading}
           >
             지우기
           </Button>
-          <Button type={"submit"} width={"lg"} disabled={isSubmitting}>
-            {isSubmitting ? "저장 중..." : "저장하기"}
+          <Button type={"submit"} width={"lg"} disabled={isLoading}>
+            {isLoading ? "저장 중..." : "저장하기"}
           </Button>
         </div>
       </form>

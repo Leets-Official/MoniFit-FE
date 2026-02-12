@@ -192,19 +192,53 @@ export const getCompletedBudgets = async (): Promise<CompletedPeriodItem[]> => {
 };
 
 
-// 6. 특정 기간 지출 조회
-export const getExpenses = async (
-  periodId: number
-): Promise<ExpensesResponse> => {
+
+interface AlertDetail {
+  title: string;
+  message: string;
+}
+
+interface CreateExpenseAlerts {
+  expenseInput: AlertDetail;
+  showStamp: boolean;
+  stamp: AlertDetail;
+  showWarning: boolean;
+  warning: AlertDetail;
+  showOverBudget: boolean;
+  overBudget: AlertDetail;
+}
+
+export interface CreateExpenseResponse {
+  alerts: CreateExpenseAlerts;
+}
+
+export const createExpense = async (
+  category: string,
+  amount: number,
+  spentDate: string
+): Promise<CreateExpenseResponse> => {
+  const response = await api.post<ApiResponse<CreateExpenseResponse>>(
+    '/expenses',
+    { category, amount, spentDate }
+  );
+
+  if (!response.data.success || !response.data.data) {
+    throw new Error(response.data.error?.message || '지출 기록 실패');
+  }
+
+  return response.data.data;
+};
+
+export const getExpenses = async (params?: {
+  periodId?: string | number;
+  date?: string;
+  category?: string;
+}): Promise<ExpensesResponse> => {
   try {
-    console.log('getExpenses 호출:', periodId);
-    
-    // getBudgetPeriod로 개별 기간 상세 조회
+    const periodId = params?.periodId;
+
     const periodData = await getBudgetPeriod(String(periodId));
-    
-    console.log('기간 상세 데이터:', periodData);
-    console.log('categoryExpenses:', periodData.categoryExpenses);
-    
+
     if (periodData.categoryExpenses && periodData.categoryExpenses.length > 0) {
       const expenses: ExpenseItem[] = periodData.categoryExpenses.map((cat) => ({
         id: `${periodId}-${cat.category}`,
@@ -214,20 +248,16 @@ export const getExpenses = async (
         spentDate: periodData.endDate,
         createdAt: periodData.endDate,
       }));
-      
-      console.log('변환된 expenses:', expenses);
-      
+
       return {
         expenses,
         totalCount: expenses.length
       };
     }
-    
-    console.log('categoryExpenses 없음 - 빈 배열 반환');
+
     return { expenses: [], totalCount: 0 };
-    
-  } catch (error) {
-    console.error('getExpenses 에러:', error);
+
+  } catch {
     return { expenses: [], totalCount: 0 };
   }
 };

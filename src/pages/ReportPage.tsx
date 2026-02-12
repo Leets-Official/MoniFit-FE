@@ -4,7 +4,6 @@ import type { SVGProps } from "react";
 
 import CategoryList from "@/components/category/CategoryList";
 import { Button } from "@/components/common/Button";
-import { Header } from "@/components";
 import { HomeIcon } from "@/assets/icons";
 import { ReportIcon } from "@/assets/icons/general/ReportIcon";
 import { CalendarIcon } from "@/assets/icons/general/CalendarIcon";
@@ -18,6 +17,7 @@ import TintedHospitalIcon from "@/assets/icons/tinted/TintedHospitalIcon";
 import TintedHomeIcon from "@/assets/icons/tinted/TintedHomeIcon";
 import TintedStarIcon from "@/assets/icons/tinted/TintedStarIcon";
 
+import SideSheet from "@/components/SideSheet/SideSheet";
 import { getDashboard, getExpenses, getCompletedBudgets, type ExpenseItem } from "@/api/budgetPeriod";
 
 type PeriodOption = {
@@ -257,7 +257,7 @@ export const ReportPage = ({ refreshTrigger }: ReportPageProps) => {
         });
         setPeriodOptions(options);
 
-        const exp = await getExpenses(periodId);
+        const exp = await getExpenses({ periodId });
         setDonutItems(buildDonutItems(exp.expenses ?? []));
         setCategories(buildCategoryData(exp.expenses ?? []));
       } catch (e: unknown) {
@@ -328,7 +328,7 @@ export const ReportPage = ({ refreshTrigger }: ReportPageProps) => {
         });
         setPeriodOptions(options);
 
-        const exp = await getExpenses(periodId);
+        const exp = await getExpenses({ periodId });
         setDonutItems(buildDonutItems(exp.expenses ?? []));
         setCategories(buildCategoryData(exp.expenses ?? [])); 
       } catch (e: unknown) {
@@ -361,7 +361,7 @@ export const ReportPage = ({ refreshTrigger }: ReportPageProps) => {
           setExceededAmount((selectedPeriod.exceededAmount ?? 0) as number);
         }
 
-        const exp = await getExpenses(selectedPeriodId);
+        const exp = await getExpenses({ periodId: selectedPeriodId });
         setDonutItems(buildDonutItems(exp.expenses ?? []));
         setCategories(buildCategoryData(exp.expenses ?? []));
       } catch (e: unknown) {
@@ -377,16 +377,109 @@ export const ReportPage = ({ refreshTrigger }: ReportPageProps) => {
   }, [selectedPeriodId]);
 
   return (
-    <div className="h-screen w-full flex flex-col relative">
-      <Header />
-      
-      {/* 오버레이 배경 */}
-      {isPeriodOpen && (
-        <div 
-          className="absolute inset-0 bg-black/50 z-40"
-          onClick={() => setIsPeriodOpen(false)}
+    <div className="relative z-50 flex h-full w-full flex-col items-center bg-black pt-20">
+      <SideSheet
+        open={isPeriodOpen}
+        onClose={() => setIsPeriodOpen(false)}
+        width={158}
+        side="left"
+        ariaLabel="period select side sheet"
+      >
+        <div className="flex items-center justify-end px-3 pt-3">
+          <button
+            type="button"
+            onClick={() => setIsPeriodOpen(false)}
+            className="grid h-8 w-8 place-items-center rounded-full hover:bg-white/5"
+            aria-label="close"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M15 18l-6-6 6-6"
+                stroke="white"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </button>
+        </div>
+
+        <div className="px-3 pt-2">
+          <ul className="space-y-2">
+            {periodOptions.map((opt) => {
+              const active = opt.id === selectedPeriodId;
+
+              return (
+                <li key={opt.id}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedPeriodId(opt.id);
+                      setIsPeriodOpen(false);
+                    }}
+                    className={[
+                      "w-full rounded-[10px] p-3 text-left",
+                      "flex items-start gap-2",
+                      "transition-colors",
+                      active ? "bg-[#5D57FF]/35" : "hover:bg-white/5",
+                    ].join(" ")}
+                  >
+                    <div className="mt-0.5 shrink-0">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                        <circle cx="12" cy="12" r="9" stroke="#3B82F6" strokeWidth="2" />
+                        <path
+                          d="M12 8v5l3 2"
+                          stroke="#3B82F6"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </div>
+
+                    <div className="flex flex-col leading-tight">
+                      <span className="text-[12px] text-white/90">{opt.primary}</span>
+                      <span className="mt-1 text-[12px] text-white/70">{opt.secondary}</span>
+                    </div>
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+
+        <div className="flex-1" />
+      </SideSheet>
+
+      <div className="w-93.75 px-5 pb-2">
+        <button
+          type="button"
+          onClick={() => setIsPeriodOpen(true)}
+          className="text-[14px] text-white/80 hover:text-white"
+        >
+          목록 &gt;
+        </button>
+      </div>
+
+      <section className="flex h-73.75 w-93.75 shrink-0 items-center justify-center bg-transparent">
+        <DonutChart
+          items={donutItems}
+          totalValue={totalValue || computedTotal}
+          budgetValue={budgetValue || 0}
+          size={260}
+          innerRadius={78}
+          minThickness={36}
+          maxThickness={92}
+          iconSize={28}
+          labelFontSize={12}
+          totalFontSize={30}
+          budgetFontSize={14}
+          className="select-none"
+          centerBg="var(--color-gray-0)"
+          centerTextColor="var(--color-gray-80)"
+          budgetTextColor="var(--color-gray-60)"
         />
-      )}
+      </section>
 
       {/* 기간 선택 사이드 패널 */}
       {isPeriodOpen && (

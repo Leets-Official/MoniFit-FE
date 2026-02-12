@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   CloseIcon,
   ColoredFoodIcon,
@@ -19,6 +19,7 @@ interface AlertModalProps {
   value?: "식비" | "쇼핑" | "의료" | "생활" | "기타";
   expense?: number;
   onClose: () => void;
+  onNavigate?: () => void;
 }
 
 const categoryIcons: CategoryIconItem[] = [
@@ -34,6 +35,7 @@ export const AlertModal = ({
   value,
   expense = 0,
   onClose,
+  onNavigate,
 }: AlertModalProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
@@ -46,7 +48,15 @@ export const AlertModal = ({
     const year = String(now.getFullYear()).slice(2);
     const month = String(now.getMonth() + 1).padStart(2, "0");
     const day = String(now.getDate()).padStart(2, "0");
-    const weekdays = ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"];
+    const weekdays = [
+      "일요일",
+      "월요일",
+      "화요일",
+      "수요일",
+      "목요일",
+      "금요일",
+      "토요일",
+    ];
     const weekday = weekdays[now.getDay()];
     return `${year}.${month}.${day} ${weekday}`;
   };
@@ -59,10 +69,15 @@ export const AlertModal = ({
     return () => cancelAnimationFrame(raf);
   }, []);
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setIsClosing(true);
     setTimeout(onClose, 300);
-  };
+  }, [onClose]);
+
+  useEffect(() => {
+    const timer = setTimeout(handleClose, 5000);
+    return () => clearTimeout(timer);
+  }, [handleClose]);
 
   return (
     <section
@@ -78,8 +93,7 @@ export const AlertModal = ({
         <CloseIcon />
       </button>
       <div className="relative flex h-5 w-81 items-center">
-        <img src={"/src/public/logo.png"} className="absolute left-1 h-5 w-5" />
-        <img src={"/src/public/appname.png"} className="h-6 w-25 object-fill" />
+        <img src={"/banner-4x.png"} className="h-6 w-25 object-fill" />
       </div>
       <div className="text-gray-0 text-body1 mt-1">
         <div className="ml-1.5">{formatDate()}</div>
@@ -89,11 +103,19 @@ export const AlertModal = ({
             <div>{`${value} ${expense.toLocaleString()}원 지출 입력되었습니다`}</div>
           ) : (
             <div className="w-full text-center">
-              오늘 기록 완료! 스탬프가 찍혔어요 🎉
+              오늘 기록 완료! 스탬프가 찍혔어요
             </div>
           )}
         </div>
       </div>
+      {type === "스탬프" && onNavigate && (
+        <button
+          onClick={onNavigate}
+          className="text-body2 mt-2 w-full rounded-lg bg-[#7976FF] py-2 text-center text-white"
+        >
+          스탬프 보러가기
+        </button>
+      )}
     </section>
   );
 };

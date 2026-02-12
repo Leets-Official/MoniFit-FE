@@ -2,11 +2,12 @@ import { Button } from "@/components/common/Button";
 import { Calendar } from "@/components/common/calendar/Calendar";
 
 interface PeriodStepProps {
-  onNext: () => void;  // startDate 파라미터 제거
+  onNext: () => void;
   isFirstLogin?: boolean;
 }
 
 const PeriodStep = ({ onNext, isFirstLogin = true }: PeriodStepProps) => {
+
   return (
     <div className="flex flex-col h-full">
       <div className="mb-8 items-center justify-center text-center">
