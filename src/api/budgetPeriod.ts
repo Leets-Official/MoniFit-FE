@@ -1,4 +1,4 @@
-const API_BASE_URL = 'https://monifit-be.duckdns.org/api/v1';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 // 공통 응답 타입
 interface ApiResponse<T> {
