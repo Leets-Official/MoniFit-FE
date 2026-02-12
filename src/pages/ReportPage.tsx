@@ -404,8 +404,8 @@ export const ReportPage = ({ refreshTrigger }: ReportPageProps) => {
       </SideSheet>
 
       {/* 리포트 차트 섹션 */}
-      <section className="w-[375px] bg-[#1F1F1F] flex-shrink-0 pt-4">
-        <div className="w-full px-5 pb-2">
+      <section className="w-[375px] bg-[#1F1F1F] flex-shrink-0">
+        <div className="w-full px-5">
           <button
             type="button"
             onClick={() => setIsPeriodOpen(true)}
@@ -442,7 +442,7 @@ export const ReportPage = ({ refreshTrigger }: ReportPageProps) => {
         )}
 
         {!loading && hasPeriod && (
-          <div className="w-full px-4 pb-4 text-center">
+          <div className="w-full px-4 text-center">
             <span className="text-[#E6E6E6] text-[18px] font-semibold leading-normal tracking-[-0.408px]">
               {resultText}
             </span>
@@ -453,7 +453,7 @@ export const ReportPage = ({ refreshTrigger }: ReportPageProps) => {
       </section>
 
       {/* 카테고리 리스트 섹션 - 항상 표시 */}
-      <section className="w-full flex-1 overflow-y-auto min-h-0 bg-[#1F1F1F] pt-4 pb-20">
+      <section className="w-full flex-1 pt-2 min-h-0 bg-[#1F1F1F] pb-20">
         <CategoryList categories={categories} showExpandButton={false}/>
       </section>
 
