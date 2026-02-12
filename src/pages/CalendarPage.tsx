@@ -12,11 +12,6 @@ export const CalendarPage = () => {
     const navigate = useNavigate();
     const [currentDate, setCurrentDate] = useState(new Date());
     const [selectedDate, setSelectedDate] = useState<string | null>(null);
-    
-    const [budgetPeriod] = useState({
-        start: new Date(2026, 0, 1),
-        end: new Date(2026, 0, 31)
-    });
 
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth() + 1;
@@ -33,15 +28,15 @@ export const CalendarPage = () => {
             <Header />
             {/* 캘린더 섹션 */}
             <section className="w-[375px] h-[295px] bg-gray-70/20 flex-shrink-0">
-            <header />
+                <header />
                 {isLoading ? (
                     <div className="h-[400px] flex items-center justify-center text-white">
                         로딩 중...
                     </div>
                 ) : (
                     <Calendar 
-                        budgetStart={budgetPeriod.start}
-                        budgetEnd={budgetPeriod.end}
+                        budgetStart={monthlyData?.period?.startDate ? new Date(monthlyData.period.startDate) : undefined}
+                        budgetEnd={monthlyData?.period?.endDate ? new Date(monthlyData.period.endDate) : undefined}
                         dailySummaries={monthlyData?.dailySummaries.map(d => ({
                             date: new Date(d.date),
                             amount: d.totalAmount,
