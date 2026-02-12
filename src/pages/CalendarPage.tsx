@@ -8,6 +8,12 @@ import { HomeIcon, ReportIcon } from "@/assets/icons";
 import { CalendarIcon } from "@/assets/icons/general/CalendarIcon";
 import { useMonthlyCalendar, useDailyCalendar } from "@/api/calendar";
 
+// 날짜 문자열을 로컬 날짜로 안전하게 변환하는 헬퍼 함수
+const parseLocalDate = (dateString: string): Date => {
+  const [year, month, day] = dateString.split('-').map(Number);
+  return new Date(year, month - 1, day);
+};
+
 export const CalendarPage = () => {
     const navigate = useNavigate();
     const [currentDate, setCurrentDate] = useState(new Date());
@@ -50,8 +56,8 @@ export const CalendarPage = () => {
                     <Calendar 
                         budgetStart={monthlyData?.period?.startDate ? new Date(monthlyData.period.startDate) : undefined}
                         budgetEnd={monthlyData?.period?.endDate ? new Date(monthlyData.period.endDate) : undefined}
-                        dailySummaries={monthlyData?.dailySummaries.map(d => ({
-                            date: new Date(d.date),
+                        dailyAmounts={monthlyData?.dailySummaries?.map(d => ({
+                            date: parseLocalDate(d.date),
                             amount: d.totalAmount,
                             withinPeriod: d.withinPeriod
                         }))}
