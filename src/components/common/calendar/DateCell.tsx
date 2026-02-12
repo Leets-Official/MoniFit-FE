@@ -9,7 +9,7 @@ const dateCellVariants = cva(
         default: "text-white",     
         selected: "text-black",  
         inRange: "text-white",
-        outsideBudget: "text-gray-50"
+        outsideBudget: "text-gray-400"  // ✅ 더 진한 회색으로 변경
       },
       isCurrentMonth: {
         true: "",          
@@ -27,13 +27,11 @@ const dateCellVariants = cva(
 const DateText = ({ 
   day, 
   currentStatus, 
-  isInBudgetPeriod, 
   isCurrentMonth 
 }: { 
   day: number; 
   currentStatus: "default" | "selected" | "inRange" | "outsideBudget";
-  isInBudgetPeriod: boolean;
-  isCurrentMonth: boolean;
+  isCurrentMonth: boolean;  // ✅ isInBudgetPeriod 제거
 }) => (
   <span 
     style={{ 
@@ -42,7 +40,7 @@ const DateText = ({
     }}
     className={dateCellVariants({ 
       status: currentStatus, 
-      isCurrentMonth: isInBudgetPeriod ? isCurrentMonth : true
+      isCurrentMonth: isCurrentMonth
     })}
   >
     {day}
@@ -83,6 +81,7 @@ type DateCellProps = {
     isInBudgetPeriod?: boolean;
     amount?: number;
 };
+
 export function DateCell({
   day,
   isSelected,
@@ -143,13 +142,12 @@ export function DateCell({
         <DateText 
           day={day}
           currentStatus={currentStatus}
-          isInBudgetPeriod={isInBudgetPeriod}
           isCurrentMonth={isCurrentMonth}
         />
         
         {/* 금액 영역 - 항상 동일한 높이 유지 */}
         <div className="mt-[2px]" style={{ height: '9px' }}>
-          {amount !== undefined && isInBudgetPeriod && (
+          {amount !== undefined && amount > 0 && isInBudgetPeriod && (
             <AmountText 
               amount={amount}
               isSelectedState={!!isSelectedState}
