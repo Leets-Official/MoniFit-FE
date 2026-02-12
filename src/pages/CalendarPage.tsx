@@ -12,9 +12,9 @@ export const CalendarPage = () => {
     const navigate = useNavigate();
     const [currentDate, setCurrentDate] = useState(new Date());
     
-    // 오늘 날짜를 기본 선택값으로 설정
+    // 오늘 날짜를 로컬 타임존 기준으로 YYYY-MM-DD 형식으로 변환
     const today = new Date();
-    const todayString = today.toISOString().split('T')[0];
+    const todayString = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
     const [selectedDate, setSelectedDate] = useState<string | null>(todayString);
 
     const year = currentDate.getFullYear();
@@ -26,7 +26,8 @@ export const CalendarPage = () => {
     const handleRefreshAll = async () => {
         await refetch();
         await refetchMonthly();
-        };
+    };
+    
     const handleDateClick = (date: Date) => {
         // 타임존 문제 방지: 로컬 날짜를 YYYY-MM-DD 형식으로 변환
         const year = date.getFullYear();
@@ -68,7 +69,7 @@ export const CalendarPage = () => {
                     categories={dailyData?.categories}
                     spentDate={selectedDate || undefined}
                     onRefresh={handleRefreshAll}
-                    />
+                />
             </section>
 
             {/* 하단 네비게이션 */}

@@ -473,7 +473,7 @@ export const ReportPage = ({ refreshTrigger }: ReportPageProps) => {
         <section className="w-full flex-1 bg-[#1F1F1F] flex items-center justify-center pb-20">
           <div className="text-center px-6">
             <div className="text-[20px] font-semibold text-white/90 mb-3">
-              기간 완료 후 소비 레포트가 생성됩니다
+              기간 완료 후 소비 리포트가 생성됩니다
             </div>
             <div className="text-[14px] text-white/60 leading-relaxed whitespace-pre-line">
               {!hasPeriod 
