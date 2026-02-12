@@ -86,7 +86,7 @@ export const MainPage = () => {
 
   const gradientCenter = mixColor(
     "#7976FF",
-    "#1F1F1F",
+    "#1C1C1E",
     1 - fillRatio
   );
 
@@ -212,7 +212,7 @@ export const MainPage = () => {
         <div
           className="relative h-90 w-90"
           style={{
-            background: `radial-gradient(circle at center, ${gradientCenter} 0%, #1F1F1F 49%)`,
+            background: `radial-gradient(circle at center, ${gradientCenter} 0%, #1C1C1E 49%)`,
           }}
         >
           <Canvas>
