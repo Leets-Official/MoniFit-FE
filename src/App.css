@@ -4,7 +4,16 @@
 @import "./styles/typography.css";
 
 html,
-body,
+body {
+  max-width: 376px;
+  max-height: 812px;
+  height: 100%;
+  margin: 0 auto;
+  padding: 0;
+  overflow: hidden;
+  background-color: #1c1c1e;
+}
+
 #root {
   height: 100%;
   margin: 0;
