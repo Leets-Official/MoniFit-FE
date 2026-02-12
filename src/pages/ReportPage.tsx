@@ -12,8 +12,6 @@ import { CalendarIcon } from "@/assets/icons/general/CalendarIcon";
 import DonutChart from "@/components/report/DonutChart";
 import type { DonutItem } from "@/components/report/utils";
 
-import SideSheet from "@/components/SideSheet/SideSheet";
-
 import TintedFoodIcon from "@/assets/icons/tinted/TintedFoodIcon";
 import TintedShoppingIcon from "@/assets/icons/tinted/TintedShoppingIcon";
 import TintedHospitalIcon from "@/assets/icons/tinted/TintedHospitalIcon";
@@ -248,13 +246,13 @@ export const ReportPage = ({ refreshTrigger }: ReportPageProps) => {
         setExceededAmount((latestPeriod.exceededAmount ?? 0) as number);
 
         // ✅ 완료된 기간 목록을 periodOptions에 추가
-        const options = completedPeriods.map((period, index) => {
+        const options = completedPeriods.map((period) => {
           const start = formatPeriodLabel(period.startDate);
           const end = formatPeriodLabel(period.endDate);
           return {
             id: Number(period.id),
             primary: `${start} - ${end}`,
-            secondary: index === 0 ? "최근 완료" : `${index + 1}번째 기간`,
+            secondary: "",
           };
         });
         setPeriodOptions(options);
@@ -319,13 +317,13 @@ export const ReportPage = ({ refreshTrigger }: ReportPageProps) => {
         setExceededAmount((currentPeriod.exceededAmount ?? 0) as number);
 
         // periodOptions 업데이트
-        const options = completedPeriods.map((period, index) => {
+        const options = completedPeriods.map((period) => {
           const start = formatPeriodLabel(period.startDate);
           const end = formatPeriodLabel(period.endDate);
           return {
             id: Number(period.id),
             primary: `${start} - ${end}`,
-            secondary: index === 0 ? "최근 완료" : `${index + 1}번째 기간`,
+            secondary: "",
           };
         });
         setPeriodOptions(options);
@@ -379,141 +377,164 @@ export const ReportPage = ({ refreshTrigger }: ReportPageProps) => {
   }, [selectedPeriodId]);
 
   return (
-    <div className="h-screen w-full flex flex-col">
+    <div className="h-screen w-full flex flex-col relative">
       <Header />
       
-      <SideSheet
-        open={isPeriodOpen}
-        onClose={() => setIsPeriodOpen(false)}
-        width={158}
-        side="left"
-        ariaLabel="period select side sheet"
-      >
-        <div className="flex items-center justify-end px-3 pt-3">
-          <button
-            type="button"
-            onClick={() => setIsPeriodOpen(false)}
-            className="grid h-8 w-8 place-items-center rounded-full hover:bg-white/5"
-            aria-label="close"
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-              <path
-                d="M15 18l-6-6 6-6"
-                stroke="white"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
+      {/* 오버레이 배경 */}
+      {isPeriodOpen && (
+        <div 
+          className="absolute inset-0 bg-black/50 z-40"
+          onClick={() => setIsPeriodOpen(false)}
+        />
+      )}
+
+      {/* 기간 선택 사이드 패널 */}
+      {isPeriodOpen && (
+        <div 
+          className="absolute left-0 top-12 z-50"
+          style={{
+            width: '158px',
+            height: '660px',
+            borderRadius: '0 10px 10px 0',
+            border: '0.5px solid #7976FF',
+            background: '#1C1C1E',
+            boxShadow: '0 0 30px 0 #1F1F1F'
+          }}
+        >
+          <div className="flex items-center justify-end px-3 pt-3">
+            <button
+              type="button"
+              onClick={() => setIsPeriodOpen(false)}
+              className="grid h-8 w-8 place-items-center rounded-full hover:bg-white/5"
+              aria-label="close"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M15 18l-6-6 6-6"
+                  stroke="white"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
+          </div>
+
+          <div className="px-3 pt-2 pb-4">
+            <ul className="space-y-2">
+              {periodOptions.map((opt) => {
+                const active = opt.id === selectedPeriodId;
+
+                return (
+                  <li key={opt.id}>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSelectedPeriodId(opt.id);
+                        setIsPeriodOpen(false);
+                      }}
+                      className={[
+                        "w-full rounded-[10px] p-3 text-left",
+                        "flex items-start gap-2",
+                        "transition-colors",
+                        active ? "bg-[#5D57FF]/35" : "hover:bg-white/5",
+                      ].join(" ")}
+                    >
+                      <div className="mt-0.5 shrink-0">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                          <circle cx="12" cy="12" r="9" stroke="#3B82F6" strokeWidth="2" />
+                          <path
+                            d="M12 8v5l3 2"
+                            stroke="#3B82F6"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </div>
+
+                      <div className="flex flex-col leading-tight">
+                        <span className="text-[12px] text-white/90">{opt.primary}</span>
+                        {opt.secondary && (
+                          <span className="mt-1 text-[12px] text-white/70">{opt.secondary}</span>
+                        )}
+                      </div>
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        </div>
+      )}
+
+      {/* 완료된 기간이 없을 때 - 안내 화면만 표시 */}
+      {!loading && (!hasPeriod || periodOptions.length === 0) ? (
+        <section className="w-full flex-1 bg-[#1F1F1F] flex items-center justify-center pb-20">
+          <div className="text-center px-6">
+            <div className="text-[20px] font-semibold text-white/90 mb-3">
+              기간 완료 후 소비 레포트가 생성됩니다
+            </div>
+            <div className="text-[14px] text-white/60 leading-relaxed whitespace-pre-line">
+              {!hasPeriod 
+                ? "예산 기간을 설정하면\n리포트를 확인할 수 있습니다."
+                : "첫 기간을 완료하면\n소비 패턴을 분석한 리포트를 제공합니다."}
+            </div>
+          </div>
+        </section>
+      ) : (
+        <>
+          {/* 리포트 차트 섹션 */}
+          <section className="w-full bg-[#1F1F1F] flex-shrink-0">
+            <div className="w-full px-5">
+              <button
+                type="button"
+                onClick={() => setIsPeriodOpen(true)}
+                className="text-[14px] text-white/80 hover:text-white"
+              >
+                목록 &gt;
+              </button>
+            </div>
+
+            <div className="flex h-[295px] w-full items-center justify-center px-4">
+              <DonutChart
+                items={donutItems}
+                totalValue={totalValue || computedTotal}
+                budgetValue={budgetValue || 0}
+                size={260}
+                innerRadius={78}
+                minThickness={36}
+                maxThickness={92}
+                iconSize={28}
+                labelFontSize={12}
+                totalFontSize={30}
+                budgetFontSize={14}
+                className="select-none"
+                centerBg="var(--color-gray-0)"
+                centerTextColor="var(--color-gray-80)"
+                budgetTextColor="var(--color-gray-60)"
               />
-            </svg>
-          </button>
-        </div>
+            </div>
 
-        <div className="px-3 pt-2">
-          <ul className="space-y-2">
-            {periodOptions.map((opt) => {
-              const active = opt.id === selectedPeriodId;
+            {loading && <div className="w-full px-4 pt-3 text-[12px] text-white/60">불러오는 중...</div>}
 
-              return (
-                <li key={opt.id}>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setSelectedPeriodId(opt.id);
-                      setIsPeriodOpen(false);
-                    }}
-                    className={[
-                      "w-full rounded-[10px] p-3 text-left",
-                      "flex items-start gap-2",
-                      "transition-colors",
-                      active ? "bg-[#5D57FF]/35" : "hover:bg-white/5",
-                    ].join(" ")}
-                  >
-                    <div className="mt-0.5 shrink-0">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                        <circle cx="12" cy="12" r="9" stroke="#3B82F6" strokeWidth="2" />
-                        <path
-                          d="M12 8v5l3 2"
-                          stroke="#3B82F6"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    </div>
+            {!loading && periodOptions.length > 0 && (
+              <div className="w-full px-4 text-center">
+                <span className="text-[#E6E6E6] text-[18px] font-semibold leading-normal tracking-[-0.408px]">
+                  {resultText}
+                </span>
+              </div>
+            )}
+            
+            {errorMessage && <div className="w-full px-4 pt-2 text-[12px] text-red-300">{errorMessage}</div>}
+          </section>
 
-                    <div className="flex flex-col leading-tight">
-                      <span className="text-[12px] text-white/90">{opt.primary}</span>
-                      <span className="mt-1 text-[12px] text-white/70">{opt.secondary}</span>
-                    </div>
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-
-        <div className="flex-1" />
-      </SideSheet>
-
-      {/* 리포트 차트 섹션 */}
-      <section className="w-[375px] bg-[#1F1F1F] flex-shrink-0">
-        <div className="w-full px-5">
-          <button
-            type="button"
-            onClick={() => setIsPeriodOpen(true)}
-            className="text-[14px] text-white/80 hover:text-white"
-          >
-            목록 &gt;
-          </button>
-        </div>
-
-        <div className="flex h-[295px] w-full items-center justify-center">
-          <DonutChart
-            items={donutItems}
-            totalValue={totalValue || computedTotal}
-            budgetValue={budgetValue || 0}
-            size={260}
-            innerRadius={78}
-            minThickness={36}
-            maxThickness={92}
-            iconSize={28}
-            labelFontSize={12}
-            totalFontSize={30}
-            budgetFontSize={14}
-            className="select-none"
-            centerBg="var(--color-gray-0)"
-            centerTextColor="var(--color-gray-80)"
-            budgetTextColor="var(--color-gray-60)"
-          />
-        </div>
-
-        {loading && <div className="w-full px-4 pt-3 text-[12px] text-white/60">불러오는 중...</div>}
-
-        {!loading && !hasPeriod && (
-          <div className="w-full px-4 pt-3 text-[12px] text-white/60">표시할 리포트 기간이 없어요.</div>
-        )}
-
-        {!loading && hasPeriod && periodOptions.length === 0 && (
-          <div className="w-full px-4 pt-3 text-center text-[14px] text-white/60">
-            완료된 기간이 없습니다.<br/>첫 기간을 완료하면 리포트를 확인할 수 있습니다.
-          </div>
-        )}
-
-        {!loading && hasPeriod && periodOptions.length > 0 && (
-          <div className="w-full px-4 text-center">
-            <span className="text-[#E6E6E6] text-[18px] font-semibold leading-normal tracking-[-0.408px]">
-              {resultText}
-            </span>
-          </div>
-        )}
-        
-        {errorMessage && <div className="w-full px-4 pt-2 text-[12px] text-red-300">{errorMessage}</div>}
-      </section>
-
-      {/* 카테고리 리스트 섹션 - 항상 표시 */}
-      <section className="w-full flex-1 pt-2 min-h-0 bg-[#1F1F1F] pb-20">
-        <CategoryList categories={categories} showExpandButton={false}/>
-      </section>
+          {/* 카테고리 리스트 섹션 */}
+          <section className="w-full flex-1 min-h-0 bg-[#1F1F1F] pb-20">
+            <CategoryList categories={categories} showExpandButton={false}/>
+          </section>
+        </>
+      )}
 
       {/* 하단 네비게이션 */}
       <div className="w-full flex-shrink-0 bg-[#1F1F1F] py-4">
