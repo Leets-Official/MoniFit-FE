@@ -12,7 +12,7 @@ export interface MonthlyCalendarData {
   dailySummaries: {
     date: string;
     totalAmount: number;
-    withinPeriod: boolean;
+    isWithinPeriod: boolean;
   }[];
 }
 
