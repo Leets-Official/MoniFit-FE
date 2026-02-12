@@ -5,7 +5,7 @@ import ShopIcon from "@/assets/icons/colored/colored_shoping.svg";
 import HomeIcon from "@/assets/icons/colored/colored-home.svg";
 import StarIcon from "@/assets/icons/colored/colored-star.svg";
 import VerticalIndicator from "../common/icons/VerticalIndicator";
-import ChevronRightIcon from "@/assets/icons/general/chevron-right.svg";
+import ChevronRightIcon from "@/assets/icons/general/chevron-right.svg?react";
 import ExpenseDetail from "./ExpenseDetail";
 import type { CategoryData } from "./types";
 
@@ -93,11 +93,9 @@ const apiCategory = categoryTypeToApi[type] || "ETC";
               {showExpandButton ? `${totalAmount.toLocaleString()}원` : `총 ${totalAmount.toLocaleString()}원 지출`}
             </span>
             {showExpandButton && (
-              <img
-                src={ChevronRightIcon}
-                alt="icon"
-                className={`transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
-              />
+              <ChevronRightIcon className={`w-6 h-6 text-primary-40 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+/>
+
             )}
           </div>
         </div>
