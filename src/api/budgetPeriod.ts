@@ -17,15 +17,28 @@ interface ApiResponse<T> {
 // ================= 데이터 타입 =================
 //
 
+// 카테고리별 지출 타입
+interface CategoryExpense {
+  category: string;
+  categoryName: string;
+  amount: number;
+  percentage: number;
+}
+
+// BudgetPeriodData에 categoryExpenses 추가
 interface BudgetPeriodData {
   id: string;
   startDate: string;
   endDate: string;
   budgetAmount: number;
+  totalExpense?: number;
+  savedAmount?: number | null;
+  exceededAmount?: number | null;
   status: string;
   completionType: string | null;
   warningShown: boolean;
   createdAt: string;
+  categoryExpenses?: CategoryExpense[]; 
 }
 
 interface ActiveBudgetData {
@@ -49,15 +62,6 @@ interface ActiveBudgetData {
   warningShown: boolean;
 }
 
-// 카테고리별 지출 타입 추가
-interface CategoryExpense {
-  category: string;
-  categoryName: string;
-  amount: number;
-  percentage: number;
-}
-
-// categoryExpenses 추가
 interface CompletedPeriodItem {
   id: string;
   startDate: string;
@@ -193,24 +197,25 @@ export const getExpenses = async (
   periodId: number
 ): Promise<ExpensesResponse> => {
   try {
-    // 1. 먼저 완료된 기간에서 찾기
-    const completedResponse = await api.get<ApiResponse<CompletedPeriodsResponse>>(
-      '/budget-periods/completed'
-    );
+    console.log('getExpenses 호출:', periodId);
     
-    const completedPeriod = completedResponse.data.data?.periods.find(
-      p => Number(p.id) === periodId
-    );
+    // getBudgetPeriod로 개별 기간 상세 조회
+    const periodData = await getBudgetPeriod(String(periodId));
     
-    if (completedPeriod?.categoryExpenses) {
-      const expenses: ExpenseItem[] = completedPeriod.categoryExpenses.map((cat, index) => ({
-        id: `${periodId}-${index}`,
+    console.log('기간 상세 데이터:', periodData);
+    console.log('categoryExpenses:', periodData.categoryExpenses);
+    
+    if (periodData.categoryExpenses && periodData.categoryExpenses.length > 0) {
+      const expenses: ExpenseItem[] = periodData.categoryExpenses.map((cat) => ({
+        id: `${periodId}-${cat.category}`,
         category: cat.category,
         categoryName: cat.categoryName,
         amount: cat.amount,
-        spentDate: completedPeriod.endDate,
-        createdAt: completedPeriod.endDate,
+        spentDate: periodData.endDate,
+        createdAt: periodData.endDate,
       }));
+      
+      console.log('변환된 expenses:', expenses);
       
       return {
         expenses,
@@ -218,9 +223,7 @@ export const getExpenses = async (
       };
     }
     
-    // 2. 완료된 기간에 없으면 활성 기간일 수 있음
-    // 현재 활성 기간은 categoryExpenses가 없으므로 빈 배열 반환
-    console.log('활성 기간이거나 데이터 없음 - 빈 배열 반환');
+    console.log('categoryExpenses 없음 - 빈 배열 반환');
     return { expenses: [], totalCount: 0 };
     
   } catch (error) {

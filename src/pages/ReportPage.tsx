@@ -20,7 +20,7 @@ import TintedHospitalIcon from "@/assets/icons/tinted/TintedHospitalIcon";
 import TintedHomeIcon from "@/assets/icons/tinted/TintedHomeIcon";
 import TintedStarIcon from "@/assets/icons/tinted/TintedStarIcon";
 
-import { getDashboard, getExpenses, type ExpenseItem } from "@/api/budgetPeriod";
+import { getDashboard, getExpenses, getCompletedBudgets, type ExpenseItem } from "@/api/budgetPeriod";
 
 type PeriodOption = {
   id: number;
@@ -141,7 +141,7 @@ function buildDonutItems(expenses: ExpenseItem[]): DonutItem[] {
   });
 }
 
-// ✅ CategoryList용 데이터 빌드 함수
+// CategoryList용 데이터 빌드 함수
 function buildCategoryData(expenses: ExpenseItem[]): CategoryData[] {
   const categoryMap = new Map<string, CategoryData>();
   
@@ -206,7 +206,7 @@ export const ReportPage = ({ refreshTrigger }: ReportPageProps) => {
     return `${savedAmount.toLocaleString()}원 절약 🎉`;
   }, [savedAmount, exceededAmount]);
 
-  // 초기 로드
+  // 초기 로드 - 완료된 기간만 표시
   useEffect(() => {
     const init = async () => {
       try {
@@ -224,28 +224,40 @@ export const ReportPage = ({ refreshTrigger }: ReportPageProps) => {
 
         setHasPeriod(true);
 
-        const period = dash.period;
-        const periodId = Number(period.id);
+        // ✅ 완료된 기간 목록 조회
+        const completedPeriods = await getCompletedBudgets();
+        
+        if (completedPeriods.length === 0) {
+          // 완료된 기간이 없으면 안내 메시지
+          setErrorMessage("완료된 기간이 없습니다. 첫 기간을 완료하면 리포트를 확인할 수 있습니다.");
+          setDonutItems(buildDonutItems([]));
+          setCategories([]);
+          setPeriodOptions([]);
+          setLoading(false);
+          return;
+        }
+
+        // ✅ 가장 최근 완료된 기간을 기본 선택
+        const latestPeriod = completedPeriods[0];
+        const periodId = Number(latestPeriod.id);
 
         setSelectedPeriodId(periodId);
-        setBudgetValue(period.budgetAmount ?? 0);
-        setTotalValue(period.totalExpense ?? 0);
-        setSavedAmount((period.savedAmount ?? 0) as number);
-        setExceededAmount((period.exceededAmount ?? 0) as number);
+        setBudgetValue(latestPeriod.budgetAmount ?? 0);
+        setTotalValue(latestPeriod.totalExpense ?? 0);
+        setSavedAmount((latestPeriod.savedAmount ?? 0) as number);
+        setExceededAmount((latestPeriod.exceededAmount ?? 0) as number);
 
-        const start = formatPeriodLabel(period.startDate);
-        const end = formatPeriodLabel(period.endDate);
-
-        setPeriodOptions((prev) => {
-          if (prev.length > 0) return prev;
-          return [
-            {
-              id: periodId,
-              primary: `${start} - ${end}`,
-              secondary: "현재 기간",
-            },
-          ];
+        // ✅ 완료된 기간 목록을 periodOptions에 추가
+        const options = completedPeriods.map((period, index) => {
+          const start = formatPeriodLabel(period.startDate);
+          const end = formatPeriodLabel(period.endDate);
+          return {
+            id: Number(period.id),
+            primary: `${start} - ${end}`,
+            secondary: index === 0 ? "최근 완료" : `${index + 1}번째 기간`,
+          };
         });
+        setPeriodOptions(options);
 
         const exp = await getExpenses(periodId);
         setDonutItems(buildDonutItems(exp.expenses ?? []));
@@ -281,13 +293,42 @@ export const ReportPage = ({ refreshTrigger }: ReportPageProps) => {
           return;
         }
 
-        const period = dash.period;
-        const periodId = Number(period.id);
+        // ✅ 완료된 기간 목록 다시 조회
+        const completedPeriods = await getCompletedBudgets();
+        
+        if (completedPeriods.length === 0) {
+          setErrorMessage("완료된 기간이 없습니다. 첫 기간을 완료하면 리포트를 확인할 수 있습니다.");
+          setDonutItems(buildDonutItems([]));
+          setCategories([]);
+          setPeriodOptions([]);
+          setLoading(false);
+          return;
+        }
 
-        setBudgetValue(period.budgetAmount ?? 0);
-        setTotalValue(period.totalExpense ?? 0);
-        setSavedAmount((period.savedAmount ?? 0) as number);
-        setExceededAmount((period.exceededAmount ?? 0) as number);
+        // ✅ 현재 선택된 기간이 있으면 유지, 없으면 최신 기간 선택
+        const currentPeriod = selectedPeriodId 
+          ? completedPeriods.find(p => Number(p.id) === selectedPeriodId) || completedPeriods[0]
+          : completedPeriods[0];
+        
+        const periodId = Number(currentPeriod.id);
+
+        setSelectedPeriodId(periodId);
+        setBudgetValue(currentPeriod.budgetAmount ?? 0);
+        setTotalValue(currentPeriod.totalExpense ?? 0);
+        setSavedAmount((currentPeriod.savedAmount ?? 0) as number);
+        setExceededAmount((currentPeriod.exceededAmount ?? 0) as number);
+
+        // periodOptions 업데이트
+        const options = completedPeriods.map((period, index) => {
+          const start = formatPeriodLabel(period.startDate);
+          const end = formatPeriodLabel(period.endDate);
+          return {
+            id: Number(period.id),
+            primary: `${start} - ${end}`,
+            secondary: index === 0 ? "최근 완료" : `${index + 1}번째 기간`,
+          };
+        });
+        setPeriodOptions(options);
 
         const exp = await getExpenses(periodId);
         setDonutItems(buildDonutItems(exp.expenses ?? []));
@@ -300,7 +341,7 @@ export const ReportPage = ({ refreshTrigger }: ReportPageProps) => {
     };
 
     refresh();
-  }, [refreshTrigger]);
+  }, [refreshTrigger, selectedPeriodId]);
 
   // selectedPeriodId 변경 감지
   useEffect(() => {
@@ -310,6 +351,17 @@ export const ReportPage = ({ refreshTrigger }: ReportPageProps) => {
       try {
         setLoading(true);
         setErrorMessage(null);
+
+        // ✅ 선택된 기간의 상세 정보 조회
+        const completedPeriods = await getCompletedBudgets();
+        const selectedPeriod = completedPeriods.find(p => Number(p.id) === selectedPeriodId);
+        
+        if (selectedPeriod) {
+          setBudgetValue(selectedPeriod.budgetAmount ?? 0);
+          setTotalValue(selectedPeriod.totalExpense ?? 0);
+          setSavedAmount((selectedPeriod.savedAmount ?? 0) as number);
+          setExceededAmount((selectedPeriod.exceededAmount ?? 0) as number);
+        }
 
         const exp = await getExpenses(selectedPeriodId);
         setDonutItems(buildDonutItems(exp.expenses ?? []));
@@ -441,7 +493,13 @@ export const ReportPage = ({ refreshTrigger }: ReportPageProps) => {
           <div className="w-full px-4 pt-3 text-[12px] text-white/60">표시할 리포트 기간이 없어요.</div>
         )}
 
-        {!loading && hasPeriod && (
+        {!loading && hasPeriod && periodOptions.length === 0 && (
+          <div className="w-full px-4 pt-3 text-center text-[14px] text-white/60">
+            완료된 기간이 없습니다.<br/>첫 기간을 완료하면 리포트를 확인할 수 있습니다.
+          </div>
+        )}
+
+        {!loading && hasPeriod && periodOptions.length > 0 && (
           <div className="w-full px-4 text-center">
             <span className="text-[#E6E6E6] text-[18px] font-semibold leading-normal tracking-[-0.408px]">
               {resultText}
