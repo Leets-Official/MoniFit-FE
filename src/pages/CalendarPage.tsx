@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Calendar } from "@/components/common/calendar/Calendar";
 import { Header } from "@/components";
 import CategoryList from "@/components/category/CategoryList";
@@ -8,13 +9,13 @@ import { CalendarIcon } from "@/assets/icons/general/CalendarIcon";
 import { useMonthlyCalendar, useDailyCalendar } from "@/api/calendar";
 
 export const CalendarPage = () => {
+    const navigate = useNavigate();
     const [currentDate, setCurrentDate] = useState(new Date());
-    const [selectedDate, setSelectedDate] = useState<string | null>(null);
     
-    const [budgetPeriod] = useState({
-        start: new Date(2026, 0, 1),
-        end: new Date(2026, 0, 31)
-    });
+    // 오늘 날짜를 기본 선택값으로 설정
+    const today = new Date();
+    const todayString = today.toISOString().split('T')[0];
+    const [selectedDate, setSelectedDate] = useState<string | null>(todayString);
 
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth() + 1;
@@ -23,7 +24,11 @@ export const CalendarPage = () => {
     const { data: dailyData } = useDailyCalendar(selectedDate);
 
     const handleDateClick = (date: Date) => {
-        setSelectedDate(date.toISOString().split('T')[0]);
+        // 타임존 문제 방지: 로컬 날짜를 YYYY-MM-DD 형식으로 변환
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        setSelectedDate(`${year}-${month}-${day}`);
     };
 
     return (
@@ -31,15 +36,15 @@ export const CalendarPage = () => {
             <Header />
             {/* 캘린더 섹션 */}
             <section className="w-[375px] h-[295px] bg-gray-70/20 flex-shrink-0">
-            <header />
+                <header />
                 {isLoading ? (
                     <div className="h-[400px] flex items-center justify-center text-white">
                         로딩 중...
                     </div>
                 ) : (
                     <Calendar 
-                        budgetStart={budgetPeriod.start}
-                        budgetEnd={budgetPeriod.end}
+                        budgetStart={monthlyData?.period?.startDate ? new Date(monthlyData.period.startDate) : undefined}
+                        budgetEnd={monthlyData?.period?.endDate ? new Date(monthlyData.period.endDate) : undefined}
                         dailySummaries={monthlyData?.dailySummaries.map(d => ({
                             date: new Date(d.date),
                             amount: d.totalAmount,
@@ -48,6 +53,7 @@ export const CalendarPage = () => {
                         onDateClick={handleDateClick}
                         onMonthChange={setCurrentDate}
                         currentDate={currentDate}
+                        selectedDate={selectedDate}
                     />
                 )}   
             </section>
@@ -74,12 +80,13 @@ export const CalendarPage = () => {
                             bgColor={"none"}
                             className="flex gap-2 w-[122px] h-[52px]"
                             fontColor={"white"}
+                            onClick={() => navigate('/report')}
                         >
                             <ReportIcon />
                             리포트
                         </Button>
                     </div>
-                    <div className="cursor-pointer">
+                    <div className="cursor-pointer" onClick={() => navigate('/main')}>
                         <HomeIcon className="w-[52px] h-[52px]" />
                     </div>
                 </div>
