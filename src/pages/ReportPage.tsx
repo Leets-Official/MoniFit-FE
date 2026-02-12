@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import type { SVGProps } from "react";
 
 import CategoryList from "@/components/category/CategoryList";
 import { Button } from "@/components/common/Button";
+import { Header } from "@/components";
 import { HomeIcon, ReportIcon } from "@/assets/icons";
 import { CalendarIcon } from "@/assets/icons/general/CalendarIcon";
 
@@ -26,13 +28,27 @@ type PeriodOption = {
 };
 
 interface ReportPageProps {
-  onClose?: () => void;
   refreshTrigger?: number;
 }
 
 type CategoryKey = "food" | "shopping" | "medical" | "living" | "etc";
 
 type IconComponent = React.FC<SVGProps<SVGSVGElement>>;
+
+// CategoryList용 타입 정의
+type CategoryData = {
+  category: string;
+  categoryName: string;
+  totalAmount: number;
+  expenses: Array<{
+    id: string;
+    category: string;
+    categoryName: string;
+    amount: number;
+    spentDate: string;
+    createdAt: string;
+  }>;
+};
 
 const CATEGORY_ORDER: Array<{ key: CategoryKey; label: string }> = [
   { key: "food", label: "식비" },
@@ -124,8 +140,32 @@ function buildDonutItems(expenses: ExpenseItem[]): DonutItem[] {
   });
 }
 
-export const ReportPage = ({ onClose, refreshTrigger }: ReportPageProps) => {
-  const [isDetailOpen] = useState(true);
+// ✅ CategoryList용 데이터 빌드 함수
+function buildCategoryData(expenses: ExpenseItem[]): CategoryData[] {
+  const categoryMap = new Map<string, CategoryData>();
+  
+  for (const expense of expenses) {
+    const key = expense.category;
+    
+    if (!categoryMap.has(key)) {
+      categoryMap.set(key, {
+        category: expense.category,
+        categoryName: expense.categoryName,
+        totalAmount: 0,
+        expenses: [],
+      });
+    }
+    
+    const cat = categoryMap.get(key)!;
+    cat.totalAmount += expense.amount;
+    cat.expenses.push(expense);
+  }
+  
+  return Array.from(categoryMap.values());
+}
+
+export const ReportPage = ({ refreshTrigger }: ReportPageProps) => {
+  const navigate = useNavigate();
   const [isPeriodOpen, setIsPeriodOpen] = useState(false);
 
   const [loading, setLoading] = useState(true);
@@ -139,6 +179,7 @@ export const ReportPage = ({ onClose, refreshTrigger }: ReportPageProps) => {
   const [totalValue, setTotalValue] = useState(0);
   const [savedAmount, setSavedAmount] = useState(0);
   const [exceededAmount, setExceededAmount] = useState(0);
+  const [categories, setCategories] = useState<CategoryData[]>([]);
 
   const [donutItems, setDonutItems] = useState<DonutItem[]>(() =>
     CATEGORY_ORDER.map(({ key, label }) => {
@@ -176,6 +217,7 @@ export const ReportPage = ({ onClose, refreshTrigger }: ReportPageProps) => {
         if (!dash.hasPeriod || !dash.period) {
           setHasPeriod(false);
           setDonutItems(buildDonutItems([]));
+          setCategories([]);
           return;
         }
 
@@ -206,9 +248,11 @@ export const ReportPage = ({ onClose, refreshTrigger }: ReportPageProps) => {
 
         const exp = await getExpenses(periodId);
         setDonutItems(buildDonutItems(exp.expenses ?? []));
+        setCategories(buildCategoryData(exp.expenses ?? []));
       } catch (e: unknown) {
         setHasPeriod(false);
         setDonutItems(buildDonutItems([]));
+        setCategories([]);
         setErrorMessage(e instanceof Error ? e.message : "리포트 데이터를 불러오지 못했어요.");
       } finally {
         setLoading(false);
@@ -232,6 +276,7 @@ export const ReportPage = ({ onClose, refreshTrigger }: ReportPageProps) => {
         if (!dash.hasPeriod || !dash.period) {
           setHasPeriod(false);
           setDonutItems(buildDonutItems([]));
+          setCategories([]); 
           return;
         }
 
@@ -245,6 +290,7 @@ export const ReportPage = ({ onClose, refreshTrigger }: ReportPageProps) => {
 
         const exp = await getExpenses(periodId);
         setDonutItems(buildDonutItems(exp.expenses ?? []));
+        setCategories(buildCategoryData(exp.expenses ?? [])); 
       } catch (e: unknown) {
         setErrorMessage(e instanceof Error ? e.message : "데이터를 새로고침하지 못했어요.");
       } finally {
@@ -266,8 +312,10 @@ export const ReportPage = ({ onClose, refreshTrigger }: ReportPageProps) => {
 
         const exp = await getExpenses(selectedPeriodId);
         setDonutItems(buildDonutItems(exp.expenses ?? []));
+        setCategories(buildCategoryData(exp.expenses ?? []));
       } catch (e: unknown) {
         setDonutItems(buildDonutItems([]));
+        setCategories([]); 
         setErrorMessage(e instanceof Error ? e.message : "지출 데이터를 불러오지 못했어요.");
       } finally {
         setLoading(false);
@@ -278,7 +326,9 @@ export const ReportPage = ({ onClose, refreshTrigger }: ReportPageProps) => {
   }, [selectedPeriodId]);
 
   return (
-    <div className="relative z-50 flex h-screen w-full flex-col items-center bg-black pt-20">
+    <div className="h-screen w-full flex flex-col">
+      <Header />
+      
       <SideSheet
         open={isPeriodOpen}
         onClose={() => setIsPeriodOpen(false)}
@@ -352,92 +402,85 @@ export const ReportPage = ({ onClose, refreshTrigger }: ReportPageProps) => {
         <div className="flex-1" />
       </SideSheet>
 
-      <div className="w-93.75 px-5 pb-2">
-        <button
-          type="button"
-          onClick={() => setIsPeriodOpen(true)}
-          className="text-[14px] text-white/80 hover:text-white"
-        >
-          목록 &gt;
-        </button>
-      </div>
+      {/* 리포트 차트 섹션 */}
+      <section className="w-[375px] bg-[#1F1F1F] flex-shrink-0 pt-4">
+        <div className="w-full px-5 pb-2">
+          <button
+            type="button"
+            onClick={() => setIsPeriodOpen(true)}
+            className="text-[14px] text-white/80 hover:text-white"
+          >
+            목록 &gt;
+          </button>
+        </div>
 
-      <section className="flex h-73.75 w-93.75 shrink-0 items-center justify-center bg-transparent">
-        <DonutChart
-          items={donutItems}
-          totalValue={totalValue || computedTotal}
-          budgetValue={budgetValue || 0}
-          size={260}
-          innerRadius={78}
-          minThickness={36}
-          maxThickness={92}
-          iconSize={28}
-          labelFontSize={12}
-          totalFontSize={30}
-          budgetFontSize={14}
-          className="select-none"
-          centerBg="var(--color-gray-0)"
-          centerTextColor="var(--color-gray-80)"
-          budgetTextColor="var(--color-gray-60)"
-        />
+        <div className="flex h-[295px] w-full items-center justify-center">
+          <DonutChart
+            items={donutItems}
+            totalValue={totalValue || computedTotal}
+            budgetValue={budgetValue || 0}
+            size={260}
+            innerRadius={78}
+            minThickness={36}
+            maxThickness={92}
+            iconSize={28}
+            labelFontSize={12}
+            totalFontSize={30}
+            budgetFontSize={14}
+            className="select-none"
+            centerBg="var(--color-gray-0)"
+            centerTextColor="var(--color-gray-80)"
+            budgetTextColor="var(--color-gray-60)"
+          />
+        </div>
+
+        {loading && <div className="w-full px-4 pt-3 text-[12px] text-white/60">불러오는 중...</div>}
+
+        {!loading && !hasPeriod && (
+          <div className="w-full px-4 pt-3 text-[12px] text-white/60">표시할 리포트 기간이 없어요.</div>
+        )}
+
+        {!loading && hasPeriod && (
+          <div className="w-full px-4 pb-4 text-center">
+            <span className="text-[#E6E6E6] text-[18px] font-semibold leading-normal tracking-[-0.408px]">
+              {resultText}
+            </span>
+          </div>
+        )}
+        
+        {errorMessage && <div className="w-full px-4 pt-2 text-[12px] text-red-300">{errorMessage}</div>}
       </section>
 
-      {loading && <div className="w-93.75 px-4 pt-3 text-[12px] text-white/60">불러오는 중...</div>}
+      {/* 카테고리 리스트 섹션 - 항상 표시 */}
+      <section className="w-full flex-1 overflow-y-auto min-h-0 bg-[#1F1F1F] pt-4 pb-20">
+        <CategoryList categories={categories} showExpandButton={false}/>
+      </section>
 
-      {!loading && !hasPeriod && (
-        <div className="w-93.75 px-4 pt-3 text-[12px] text-white/60">표시할 리포트 기간이 없어요.</div>
-      )}
-
-      {!loading && hasPeriod && (
-        <div className="w-93.75 px-4 pt-2 text-[14px] text-white/90">{resultText}</div>
-      )}
-
-      {errorMessage && <div className="w-93.75 px-4 pt-2 text-[12px] text-red-300">{errorMessage}</div>}
-
-      {isDetailOpen && (
-        <section className="w-93.75 flex-1 overflow-y-auto bg-[#121212] px-4 pb-20">
-          <div className="space-y-3 pt-4">
-            {donutItems.map((it) => {
-              const Icon = it.icon as IconComponent | undefined;
-
-              return (
-                <div key={it.id} className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="grid h-7 w-7 place-items-center rounded-full bg-white/5">
-                      {Icon ? <Icon /> : null}
-                    </div>
-                    <div className="text-[14px] text-white/90">{it.label}</div>
-                  </div>
-                  <div className="text-[14px] text-white/80">
-                    총 {Number(it.value ?? 0).toLocaleString()}원 지출
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          <div className="pt-6">
-            <CategoryList />
-          </div>
-        </section>
-      )}
-
-      <div className="fixed bottom-8 w-93.75 px-6">
-        <div className="flex items-center justify-between">
-          <div className="bg-primary-opacity-50 flex rounded-full border border-white/10 p-1">
-            <Button width={"sm"} borderColor={"outline"} bgColor={"none"} className="flex gap-2" fontColor={"white"}>
+      {/* 하단 네비게이션 */}
+      <div className="w-full flex-shrink-0 bg-[#1F1F1F] py-4">
+        <div className="max-w-md mx-auto w-full flex justify-between items-center px-6">
+          <div className="flex bg-primary-opacity-50 rounded-full gap-3 border-white/10">
+            <Button 
+              borderColor={"outline"}
+              bgColor={"none"}
+              className="flex w-[108px] h-[52px] gap-2"
+              fontColor={"white"}
+              onClick={() => navigate('/calendar')}
+            >
               <CalendarIcon />
               달력
             </Button>
-
-            <Button width={"md"} borderColor={"outline"} bgColor={"none"} className="flex gap-2 bg-white">
+            <Button 
+              borderColor={"outline"}
+              bgColor={"none"}
+              className="flex gap-2 w-[122px] h-[52px] bg-white"
+            >
               <ReportIcon />
               리포트
             </Button>
           </div>
-
-          <div className="cursor-pointer" onClick={() => onClose?.()}>
-            <HomeIcon className="h-13 w-13" />
+          <div className="cursor-pointer" onClick={() => navigate('/main')}>
+            <HomeIcon className="w-[52px] h-[52px]" />
           </div>
         </div>
       </div>

@@ -14,6 +14,7 @@ type CategoryListProps = {
       createdAt: string;
     }>;
   }>;
+  showExpandButton?: boolean;
 }
 
 // API 카테고리 → CategoryItem type 매핑
@@ -35,7 +36,7 @@ const getCategoryType = (category: string): "food" | "shop" | "hospital" | "home
   return categoryMap[category] || "etc";
 };
 
-const CategoryList = ({ categories = [] }: CategoryListProps) => {
+const CategoryList = ({ categories = [], showExpandButton = true }: CategoryListProps) => {
   // API 데이터가 없으면 기존 더미 데이터 표시
   if (categories.length === 0) {
     return (
@@ -49,6 +50,7 @@ const CategoryList = ({ categories = [] }: CategoryListProps) => {
               { id: "2", amount: 20000 },
             ],
           }}
+          showExpandButton={showExpandButton}
         />
         <CategoryItem
           data={{
@@ -59,6 +61,7 @@ const CategoryList = ({ categories = [] }: CategoryListProps) => {
               { id: "4", amount: 150000 },
             ],
           }}
+          showExpandButton={showExpandButton}
         />
         <CategoryItem
           data={{
@@ -66,6 +69,7 @@ const CategoryList = ({ categories = [] }: CategoryListProps) => {
             totalAmount: 50000,
             items: [{ id: "5", amount: 50000 }],
           }}
+          showExpandButton={showExpandButton} 
         />
         <CategoryItem
           data={{
@@ -76,6 +80,7 @@ const CategoryList = ({ categories = [] }: CategoryListProps) => {
               { id: "7", amount: 50000 },
             ],
           }}
+          showExpandButton={showExpandButton}
         />
         <CategoryItem
           data={{
@@ -83,6 +88,7 @@ const CategoryList = ({ categories = [] }: CategoryListProps) => {
             totalAmount: 40000,
             items: [{ id: "8", amount: 40000 }],
           }}
+          showExpandButton={showExpandButton}
         />
       </div>
     );
@@ -102,6 +108,7 @@ const CategoryList = ({ categories = [] }: CategoryListProps) => {
               amount: expense.amount,
             })),
           }}
+          showExpandButton={showExpandButton}
         />
       ))}
     </div>

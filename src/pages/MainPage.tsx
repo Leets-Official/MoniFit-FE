@@ -10,7 +10,6 @@ import {
 } from "@/components";
 import { AlertModal } from "@/components/modal/AlertModal";
 import { ModalWrapper } from "@/components/modal/ModalWrapper";
-import ReportPage from "./ReportPage";
 import { getDashboard } from "@/api/budgetPeriod";
 import type { DashboardData } from "@/api/budgetPeriod";
 
@@ -53,14 +52,11 @@ export const MainPage = () => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
 
-  const [isReportOpen, setIsReportOpen] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
   const [alertQueue, setAlertQueue] = useState<AlertType[]>([]);
   const [currentAlert, setCurrentAlert] =
     useState<AlertType | null>(null);
-
-  const [reportRefreshTrigger, setReportRefreshTrigger] = useState(0);
 
   /* -------------------- 데이터 조회 -------------------- */
   useEffect(() => {
@@ -149,18 +145,18 @@ export const MainPage = () => {
 
     console.log("지출 등록 완료:", response);
 
+    // 대시보드 데이터 새로고침
     try {
-    const data = await getDashboard();
-    if (data.hasPeriod && data.period) {
-      setDashboardData(data);
-      setRemainingBudget(data.period.remainingBudget);
-      setStartDate(data.period.startDate);
-      setEndDate(data.period.endDate);
-      setReportRefreshTrigger(prev => prev + 1);
+      const data = await getDashboard();
+      if (data.hasPeriod && data.period) {
+        setDashboardData(data);
+        setRemainingBudget(data.period.remainingBudget);
+        setStartDate(data.period.startDate);
+        setEndDate(data.period.endDate);
+      }
+    } catch (error) {
+      console.error("대시보드 새로고침 실패:", error);
     }
-  } catch (error) {
-    console.error("대시보드 새로고침 실패:", error);
-  }
   };
 
   const handleCloseAlert = () => {
@@ -301,19 +297,12 @@ export const MainPage = () => {
           bgColor="none"
           className="flex gap-2"
           fontColor="white"
-          onClick={() => setIsReportOpen(true)}
+          onClick={() => navigate('/report')}
         >
           <ReportIcon />
           <span>리포트</span>
         </Button>
       </section>
-
-      {isReportOpen && (
-        <div className="fixed inset-0 z-50 bg-transparent">
-          <ReportPage onClose={() => setIsReportOpen(false)}
-          refreshTrigger={reportRefreshTrigger} />
-        </div>
-      )}
 
       {showModal && (
         <ModalWrapper onClose={() => setShowModal(false)}>

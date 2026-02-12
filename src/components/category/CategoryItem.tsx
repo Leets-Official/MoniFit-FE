@@ -11,6 +11,7 @@ import type { CategoryData } from "./types";
 
 interface CategoryItemProps {
   data: CategoryData;
+  showExpandButton?: boolean;
 }
 
 const categoryIcons: Record<string, string> = {
@@ -29,7 +30,7 @@ const categoryNames: Record<string, string> = {
   etc: "기타",
 };
 
-const CategoryItem = ({ data }: CategoryItemProps) => {
+const CategoryItem = ({ data, showExpandButton = true }: CategoryItemProps) => {
   const { type, items: initialitems } = data;
   const [isOpen, setIsOpen] = useState(false);
   const [items, setItems] = useState(initialitems);
@@ -55,6 +56,7 @@ const CategoryItem = ({ data }: CategoryItemProps) => {
   };
   const currentIcon = categoryIcons[type] || StarIcon;
   const currentName = categoryNames[type] || "기타";
+  
   return (
     <div className="flex w-full gap-[18px] px-[18px]">
       <div className="flex flex-col items-center self-stretch">
@@ -71,8 +73,8 @@ const CategoryItem = ({ data }: CategoryItemProps) => {
 
       <div className="flex-1">
         <div
-          className="flex cursor-pointer items-center justify-between py-2"
-          onClick={toggleAccordion}
+          className={`flex items-center justify-between py-2 ${showExpandButton ? 'cursor-pointer' : ''}`}
+          onClick={showExpandButton ? toggleAccordion : undefined}
         >
           <div className="flex items-center gap-[7px]">
             <img src={currentIcon} alt="icon" />
@@ -82,16 +84,18 @@ const CategoryItem = ({ data }: CategoryItemProps) => {
           </div>
           <div className="flex items-center gap-2">
             <span className="text-gray-10 text-[14px] font-medium">
-              {totalAmount.toLocaleString()}원
+              {showExpandButton ? `${totalAmount.toLocaleString()}원` : `총 ${totalAmount.toLocaleString()}원 지출`}
             </span>
-            <img
-              src={ChevronRightIcon}
-              alt="icon"
-              className={`transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
-            />
+            {showExpandButton && (
+              <img
+                src={ChevronRightIcon}
+                alt="icon"
+                className={`transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+              />
+            )}
           </div>
         </div>
-        {isOpen && (
+        {isOpen && showExpandButton && (
           <div>
             <ExpenseDetail
               items={items}
