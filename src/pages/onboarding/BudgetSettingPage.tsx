@@ -31,7 +31,7 @@ const BudgetSettingPage = () => {
   };
 
   return (
-    <div className="min-h-screen text-white flex flex-col">
+    <div className="min-h-full text-white flex flex-col">
       <header>
         <StepIndicator step={step} />
       </header>

@@ -72,7 +72,7 @@ export default function CallbackPage() {
   }, [navigate]);
 
   return (
-    <div className="flex h-screen items-center justify-center">
+    <div className="flex h-full items-center justify-center">
       <div className="text-center">
         <div className="mb-4 text-xl">로그인 처리 중...</div>
         <div className="text-sm text-gray-500">잠시만 기다려주세요</div>
