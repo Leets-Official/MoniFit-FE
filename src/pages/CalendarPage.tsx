@@ -29,6 +29,31 @@ export const CalendarPage = () => {
     const { data: monthlyData, isLoading, refetch: refetchMonthly } = useMonthlyCalendar(year, month);
     const { data: dailyData, refetch } = useDailyCalendar(selectedDate);
 
+    // 🔍 디버깅 코드 추가
+    console.log('=== 월별 데이터 디버깅 ===');
+    console.log('monthlyData:', monthlyData);
+    
+    if (monthlyData?.dailySummaries) {
+        console.log('dailySummaries 전체:', monthlyData.dailySummaries);
+        
+        // 12일과 13일 데이터만 필터링
+        const feb12 = monthlyData.dailySummaries.find(d => d.date === '2026-02-12');
+        const feb13 = monthlyData.dailySummaries.find(d => d.date === '2026-02-13');
+        
+        console.log('🔴 2월 12일:', feb12);
+        console.log('🟢 2월 13일:', feb13);
+        
+        // parseLocalDate 적용 후 결과
+        if (feb12) {
+            const parsed12 = parseLocalDate(feb12.date);
+            console.log('파싱된 12일:', parsed12, '| withinPeriod:', feb12.withinPeriod);
+        }
+        if (feb13) {
+            const parsed13 = parseLocalDate(feb13.date);
+            console.log('파싱된 13일:', parsed13, '| withinPeriod:', feb13.withinPeriod);
+        }
+    }
+
     const handleRefreshAll = async () => {
         await refetch();
         await refetchMonthly();
@@ -54,8 +79,8 @@ export const CalendarPage = () => {
                     </div>
                 ) : (
                     <Calendar 
-                        budgetStart={monthlyData?.period?.startDate ? new Date(monthlyData.period.startDate) : undefined}
-                        budgetEnd={monthlyData?.period?.endDate ? new Date(monthlyData.period.endDate) : undefined}
+                        budgetStart={monthlyData?.period?.startDate ? parseLocalDate(monthlyData.period.startDate) : undefined}
+                        budgetEnd={monthlyData?.period?.endDate ? parseLocalDate(monthlyData.period.endDate) : undefined}
                         dailyAmounts={monthlyData?.dailySummaries?.map(d => ({
                             date: parseLocalDate(d.date),
                             amount: d.totalAmount,
