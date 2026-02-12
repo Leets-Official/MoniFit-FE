@@ -5,7 +5,7 @@ import { CalendarIcon, ReportIcon } from "@/assets/icons";
 import { Button, ExpenseRecordModal, Header, LiquidSphere } from "@/components";
 import { ModalWrapper } from "@/components/modal/ModalWrapper";
 import ReportPage from "./ReportPage";
-import { getDashboard } from "@/api/budgetPeriod";
+import { getDashboard, createExpense } from "@/api/budgetPeriod";
 import type { DashboardData } from "@/api/budgetPeriod"; 
 
 export const MainPage = () => {
@@ -75,15 +75,29 @@ export const MainPage = () => {
 
   const gradientCenter = mixColor("#7976FF", "#1F1F1F", 1 - fillRatio);
 
-  const handleSaveExpense = (expense: number) => {
-    // TODO: 지출 입력 API 호출 후 대시보드 재조회
-    // 임시로 로컬 상태 업데이트
-    const nextExpense = totalExpense + expense;
-    const nextRemaining = totalBudget - nextExpense;
-    
-    setTotalExpense(nextExpense);
-    setRemainingBudget(nextRemaining);
-    setShowModal(false);
+  const handleSaveExpense = async (expense: number, category: string) => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const spentDate = `${year}-${month}-${day}`;
+
+    try {
+      await createExpense(category, expense, spentDate);
+      const data = await getDashboard();
+
+      if (data.hasPeriod && data.period) {
+        setDashboardData(data);
+        setTotalBudget(data.period.budgetAmount);
+        setTotalExpense(data.period.totalExpense);
+        setRemainingBudget(data.period.remainingBudget);
+      }
+
+      setShowModal(false);
+    } catch (error) {
+      console.error('지출 기록 실패:', error);
+      throw error;
+    }
   };
 
   // 날짜 포맷 함수

@@ -230,6 +230,27 @@ interface ExpensesData {
 
 
 // 6. 지출 목록 조회 (리포트용)
+export const createExpense = async (
+  category: string,
+  amount: number,
+  spentDate: string
+): Promise<void> => {
+  const response = await fetch(`${API_BASE_URL}/expenses`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${getAuthToken()}`,
+    },
+    body: JSON.stringify({ category, amount, spentDate })
+  });
+
+  const result: ApiResponse<unknown> = await response.json();
+
+  if (!result.success) {
+    throw new Error(result.error?.message || '지출 기록 실패');
+  }
+};
+
 export const getExpenses = async (params?: {
   periodId?: string | number;
   date?: string;

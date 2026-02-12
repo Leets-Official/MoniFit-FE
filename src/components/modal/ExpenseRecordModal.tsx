@@ -13,16 +13,16 @@ import { Button } from "../common/Button";
 import clsx from "clsx";
 
 const CATEGORIES = [
-  { key: "food", label: "식비", icon: <ColoredFoodIcon /> },
-  { key: "shopping", label: "쇼핑", icon: <ColoredShopingIcon /> },
-  { key: "medical", label: "의료", icon: <ColoredHospitalIcon /> },
-  { key: "life", label: "생활", icon: <ColoredHomeIcon /> },
-  { key: "etc", label: "기타", icon: <ColoredStarIcon /> },
+  { key: "FOOD", label: "식비", icon: <ColoredFoodIcon /> },
+  { key: "SHOPPING", label: "쇼핑", icon: <ColoredShopingIcon /> },
+  { key: "MEDICAL", label: "의료", icon: <ColoredHospitalIcon /> },
+  { key: "LIVING", label: "생활", icon: <ColoredHomeIcon /> },
+  { key: "ETC", label: "기타", icon: <ColoredStarIcon /> },
 ] as const;
 
 interface ExpenseRecordModalProps {
   onClose: () => void;
-  onSave: (expense: number, category: string) => void;
+  onSave: (expense: number, category: string) => Promise<void>;
 }
 
 export const ExpenseRecordModal = ({
@@ -33,6 +33,8 @@ export const ExpenseRecordModal = ({
   const [expense, setExpense] = useState<number | "">("");
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     setTimeout(() => setIsVisible(true), 0);
@@ -51,12 +53,20 @@ export const ExpenseRecordModal = ({
     setSelected(null);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     setIsSubmitted(true);
+    setError(null);
 
     if (!selected || expense === "") return;
 
-    onSave(expense, selected);
+    setIsLoading(true);
+    try {
+      await onSave(expense, selected);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : '지출 기록에 실패했습니다');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -125,7 +135,10 @@ export const ExpenseRecordModal = ({
             </span>
           )}
         </div>
-        <div className="relative mt-21.25 flex h-40 w-full gap-4.5">
+        {error && (
+          <p className="text-body2 mt-6 text-[#CA0111]">{error}</p>
+        )}
+        <div className={clsx("relative flex h-40 w-full gap-4.5", error ? "mt-4" : "mt-21.25")}>
           <Button
             type={"button"}
             width={"xs"}
@@ -133,11 +146,12 @@ export const ExpenseRecordModal = ({
             borderColor={"outline"}
             fontColor={"white"}
             onClick={handleEaseClick}
+            disabled={isLoading}
           >
             지우기
           </Button>
-          <Button type={"submit"} width={"lg"}>
-            저장하기
+          <Button type={"submit"} width={"lg"} disabled={isLoading}>
+            {isLoading ? "저장 중..." : "저장하기"}
           </Button>
         </div>
       </form>
