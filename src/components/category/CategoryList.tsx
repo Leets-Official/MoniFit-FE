@@ -15,6 +15,8 @@ type CategoryListProps = {
     }>;
   }>;
   showExpandButton?: boolean;
+  spentDate?: string; // 지출 날짜 추가
+  onRefresh?: () => void; // 새로고침 콜백 추가
 }
 
 // API 카테고리 → CategoryItem type 매핑
@@ -36,7 +38,12 @@ const getCategoryType = (category: string): "food" | "shop" | "hospital" | "home
   return categoryMap[category] || "etc";
 };
 
-const CategoryList = ({ categories = [], showExpandButton = true }: CategoryListProps) => {
+const CategoryList = ({ 
+  categories = [], 
+  showExpandButton = true,
+  spentDate = new Date().toISOString().split('T')[0], // 기본값: 오늘 날짜 (YYYY-MM-DD)
+  onRefresh,
+}: CategoryListProps) => {
   // API 데이터가 없으면 기존 더미 데이터 표시
   if (categories.length === 0) {
     return (
@@ -51,6 +58,8 @@ const CategoryList = ({ categories = [], showExpandButton = true }: CategoryList
             ],
           }}
           showExpandButton={showExpandButton}
+          spentDate={spentDate}
+          onRefresh={onRefresh}
         />
         <CategoryItem
           data={{
@@ -62,6 +71,8 @@ const CategoryList = ({ categories = [], showExpandButton = true }: CategoryList
             ],
           }}
           showExpandButton={showExpandButton}
+          spentDate={spentDate}
+          onRefresh={onRefresh}
         />
         <CategoryItem
           data={{
@@ -69,7 +80,9 @@ const CategoryList = ({ categories = [], showExpandButton = true }: CategoryList
             totalAmount: 50000,
             items: [{ id: "5", amount: 50000 }],
           }}
-          showExpandButton={showExpandButton} 
+          showExpandButton={showExpandButton}
+          spentDate={spentDate}
+          onRefresh={onRefresh}
         />
         <CategoryItem
           data={{
@@ -81,6 +94,8 @@ const CategoryList = ({ categories = [], showExpandButton = true }: CategoryList
             ],
           }}
           showExpandButton={showExpandButton}
+          spentDate={spentDate}
+          onRefresh={onRefresh}
         />
         <CategoryItem
           data={{
@@ -89,6 +104,8 @@ const CategoryList = ({ categories = [], showExpandButton = true }: CategoryList
             items: [{ id: "8", amount: 40000 }],
           }}
           showExpandButton={showExpandButton}
+          spentDate={spentDate}
+          onRefresh={onRefresh}
         />
       </div>
     );
@@ -97,20 +114,27 @@ const CategoryList = ({ categories = [], showExpandButton = true }: CategoryList
   // API 데이터가 있으면 API 데이터 표시
   return (
     <div className="flex flex-col gap-[7px]">
-      {categories.map((category) => (
-        <CategoryItem
-          key={category.category}
-          data={{
-            type: getCategoryType(category.category),
-            totalAmount: category.totalAmount,
-            items: category.expenses.map(expense => ({
-              id: expense.id,
-              amount: expense.amount,
-            })),
-          }}
-          showExpandButton={showExpandButton}
-        />
-      ))}
+      {categories.map((category) => {
+        // 각 카테고리의 첫 번째 지출의 날짜를 사용 (없으면 기본 spentDate 사용)
+        const categorySpentDate = category.expenses[0]?.spentDate || spentDate;
+        
+        return (
+          <CategoryItem
+            key={category.category}
+            data={{
+              type: getCategoryType(category.category),
+              totalAmount: category.totalAmount,
+              items: category.expenses.map(expense => ({
+                id: expense.id,
+                amount: expense.amount,
+              })),
+            }}
+            showExpandButton={showExpandButton}
+            spentDate={categorySpentDate}
+            onRefresh={onRefresh}
+          />
+        );
+      })}
     </div>
   );
 };

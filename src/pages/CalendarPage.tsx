@@ -20,9 +20,13 @@ export const CalendarPage = () => {
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth() + 1;
 
-    const { data: monthlyData, isLoading } = useMonthlyCalendar(year, month);
-    const { data: dailyData } = useDailyCalendar(selectedDate);
+    const { data: monthlyData, isLoading, refetch: refetchMonthly } = useMonthlyCalendar(year, month);
+    const { data: dailyData, refetch } = useDailyCalendar(selectedDate);
 
+    const handleRefreshAll = async () => {
+        await refetch();
+        await refetchMonthly();
+        };
     const handleDateClick = (date: Date) => {
         // 타임존 문제 방지: 로컬 날짜를 YYYY-MM-DD 형식으로 변환
         const year = date.getFullYear();
@@ -60,7 +64,11 @@ export const CalendarPage = () => {
 
             {/* 카테고리 리스트 섹션 - 항상 표시 */}
             <section className="w-full flex-1 overflow-y-auto min-h-0 bg-[#1F1F1F] pt-4">
-                <CategoryList categories={dailyData?.categories} />
+                <CategoryList
+                    categories={dailyData?.categories}
+                    spentDate={selectedDate || undefined}
+                    onRefresh={handleRefreshAll}
+                    />
             </section>
 
             {/* 하단 네비게이션 */}
