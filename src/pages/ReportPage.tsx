@@ -202,7 +202,7 @@ export const ReportPage = ({ onClose }: ReportPageProps) => {
           ];
         });
 
-        const exp = await getExpenses({ periodId });
+        const exp = await getExpenses(periodId);
         setDonutItems(buildDonutItems(exp.expenses ?? []));
       } catch (e: unknown) {
         setHasPeriod(false);
@@ -224,7 +224,7 @@ export const ReportPage = ({ onClose }: ReportPageProps) => {
         setLoading(true);
         setErrorMessage(null);
 
-        const exp = await getExpenses({ periodId: selectedPeriodId });
+        const exp = await getExpenses(selectedPeriodId);
         setDonutItems(buildDonutItems(exp.expenses ?? []));
       } catch (e: unknown) {
         setDonutItems(buildDonutItems([]));
