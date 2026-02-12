@@ -27,6 +27,7 @@ type PeriodOption = {
 
 interface ReportPageProps {
   onClose?: () => void;
+  refreshTrigger?: number;
 }
 
 type CategoryKey = "food" | "shopping" | "medical" | "living" | "etc";
@@ -123,7 +124,7 @@ function buildDonutItems(expenses: ExpenseItem[]): DonutItem[] {
   });
 }
 
-export const ReportPage = ({ onClose }: ReportPageProps) => {
+export const ReportPage = ({ onClose, refreshTrigger }: ReportPageProps) => {
   const [isDetailOpen] = useState(true);
   const [isPeriodOpen, setIsPeriodOpen] = useState(false);
 
@@ -163,6 +164,7 @@ export const ReportPage = ({ onClose }: ReportPageProps) => {
     return `${savedAmount.toLocaleString()}원 절약 🎉`;
   }, [savedAmount, exceededAmount]);
 
+  // 초기 로드
   useEffect(() => {
     const init = async () => {
       try {
@@ -216,6 +218,44 @@ export const ReportPage = ({ onClose }: ReportPageProps) => {
     init();
   }, []);
 
+  // refreshTrigger 감지 - 지출 입력 후 새로고침
+  useEffect(() => {
+    if (refreshTrigger === undefined || refreshTrigger === 0) return;
+
+    const refresh = async () => {
+      try {
+        setLoading(true);
+        setErrorMessage(null);
+
+        const dash = await getDashboard();
+
+        if (!dash.hasPeriod || !dash.period) {
+          setHasPeriod(false);
+          setDonutItems(buildDonutItems([]));
+          return;
+        }
+
+        const period = dash.period;
+        const periodId = Number(period.id);
+
+        setBudgetValue(period.budgetAmount ?? 0);
+        setTotalValue(period.totalExpense ?? 0);
+        setSavedAmount((period.savedAmount ?? 0) as number);
+        setExceededAmount((period.exceededAmount ?? 0) as number);
+
+        const exp = await getExpenses(periodId);
+        setDonutItems(buildDonutItems(exp.expenses ?? []));
+      } catch (e: unknown) {
+        setErrorMessage(e instanceof Error ? e.message : "데이터를 새로고침하지 못했어요.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    refresh();
+  }, [refreshTrigger]);
+
+  // selectedPeriodId 변경 감지
   useEffect(() => {
     const refetch = async () => {
       if (!selectedPeriodId) return;

@@ -60,6 +60,8 @@ export const MainPage = () => {
   const [currentAlert, setCurrentAlert] =
     useState<AlertType | null>(null);
 
+  const [reportRefreshTrigger, setReportRefreshTrigger] = useState(0);
+
   /* -------------------- 데이터 조회 -------------------- */
   useEffect(() => {
     const fetchDashboard = async () => {
@@ -122,7 +124,7 @@ export const MainPage = () => {
   /* -------------------- 지출 저장 -------------------- */
   const handleSaveExpense = async (
     response: SaveExpenseResponse
-  ) => {
+  ): Promise<void> => { 
     setShowModal(false);
 
     const alerts: AlertType[] = [];
@@ -154,6 +156,7 @@ export const MainPage = () => {
       setRemainingBudget(data.period.remainingBudget);
       setStartDate(data.period.startDate);
       setEndDate(data.period.endDate);
+      setReportRefreshTrigger(prev => prev + 1);
     }
   } catch (error) {
     console.error("대시보드 새로고침 실패:", error);
@@ -307,7 +310,8 @@ export const MainPage = () => {
 
       {isReportOpen && (
         <div className="fixed inset-0 z-50 bg-transparent">
-          <ReportPage onClose={() => setIsReportOpen(false)} />
+          <ReportPage onClose={() => setIsReportOpen(false)}
+          refreshTrigger={reportRefreshTrigger} />
         </div>
       )}
 

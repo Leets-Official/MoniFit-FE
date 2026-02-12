@@ -49,6 +49,15 @@ interface ActiveBudgetData {
   warningShown: boolean;
 }
 
+// 카테고리별 지출 타입 추가
+interface CategoryExpense {
+  category: string;
+  categoryName: string;
+  amount: number;
+  percentage: number;
+}
+
+// categoryExpenses 추가
 interface CompletedPeriodItem {
   id: string;
   startDate: string;
@@ -58,6 +67,7 @@ interface CompletedPeriodItem {
   savedAmount?: number;
   exceededAmount?: number;
   completionType: 'SUCCESS' | 'OVER_BUDGET';
+  categoryExpenses?: CategoryExpense[];
 }
 
 interface CompletedPeriodsResponse {
@@ -182,10 +192,39 @@ export const getCompletedBudgets = async (): Promise<CompletedPeriodItem[]> => {
 export const getExpenses = async (
   periodId: number
 ): Promise<ExpensesResponse> => {
-
-  const response = await api.get<ApiResponse<ExpensesResponse>>(
-    `/budget-periods/${periodId}/expenses`
-  );
-
-  return response.data.data!;
+  try {
+    // 1. 먼저 완료된 기간에서 찾기
+    const completedResponse = await api.get<ApiResponse<CompletedPeriodsResponse>>(
+      '/budget-periods/completed'
+    );
+    
+    const completedPeriod = completedResponse.data.data?.periods.find(
+      p => Number(p.id) === periodId
+    );
+    
+    if (completedPeriod?.categoryExpenses) {
+      const expenses: ExpenseItem[] = completedPeriod.categoryExpenses.map((cat, index) => ({
+        id: `${periodId}-${index}`,
+        category: cat.category,
+        categoryName: cat.categoryName,
+        amount: cat.amount,
+        spentDate: completedPeriod.endDate,
+        createdAt: completedPeriod.endDate,
+      }));
+      
+      return {
+        expenses,
+        totalCount: expenses.length
+      };
+    }
+    
+    // 2. 완료된 기간에 없으면 활성 기간일 수 있음
+    // 현재 활성 기간은 categoryExpenses가 없으므로 빈 배열 반환
+    console.log('활성 기간이거나 데이터 없음 - 빈 배열 반환');
+    return { expenses: [], totalCount: 0 };
+    
+  } catch (error) {
+    console.error('getExpenses 에러:', error);
+    return { expenses: [], totalCount: 0 };
+  }
 };
