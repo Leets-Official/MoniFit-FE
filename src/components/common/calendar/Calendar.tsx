@@ -7,7 +7,7 @@ type CalendarProps = {
     isRangeMode?: boolean;
     budgetStart?: Date;
     budgetEnd?: Date;
-    dailyAmounts?: Array<{
+    dailySummaries?: Array<{
         date: Date;
         amount: number;
         withinPeriod: boolean;
@@ -22,7 +22,7 @@ export function Calendar({
     isRangeMode = false, 
     budgetStart, 
     budgetEnd,
-    dailyAmounts = [],
+    dailySummaries = [],
     onDateClick,
     onMonthChange,
     currentDate,
@@ -91,7 +91,7 @@ export function Calendar({
                     isRangeMode={isRangeMode}
                     budgetStart={budgetStart}
                     budgetEnd={budgetEnd}
-                    dailySummaries={dailyAmounts}
+                    dailySummaries={dailySummaries}
                     onDateClick={onDateClick}
                     selectedDate={selectedDate}
                 />

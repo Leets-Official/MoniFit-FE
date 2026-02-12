@@ -8,32 +8,25 @@ import { HomeIcon, ReportIcon } from "@/assets/icons";
 import { CalendarIcon } from "@/assets/icons/general/CalendarIcon";
 import { useMonthlyCalendar, useDailyCalendar } from "@/api/calendar";
 
-// 날짜 문자열을 로컬 날짜로 안전하게 변환하는 헬퍼 함수
-const parseLocalDate = (dateString: string): Date => {
-  const [year, month, day] = dateString.split('-').map(Number);
-  return new Date(year, month - 1, day);
-};
-
 export const CalendarPage = () => {
     const navigate = useNavigate();
     const [currentDate, setCurrentDate] = useState(new Date());
     
-    // 오늘 날짜를 로컬 타임존 기준으로 YYYY-MM-DD 형식으로 변환
+    // 오늘 날짜를 기본 선택값으로 설정
     const today = new Date();
-    const todayString = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+    const todayString = `${today.getFullYear()}-${String(
+    today.getMonth() + 1
+    ).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+
     const [selectedDate, setSelectedDate] = useState<string | null>(todayString);
+
 
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth() + 1;
 
-    const { data: monthlyData, isLoading, refetch: refetchMonthly } = useMonthlyCalendar(year, month);
-    const { data: dailyData, refetch } = useDailyCalendar(selectedDate);
+    const { data: monthlyData, isLoading } = useMonthlyCalendar(year, month);
+    const { data: dailyData } = useDailyCalendar(selectedDate);
 
-    const handleRefreshAll = async () => {
-        await refetch();
-        await refetchMonthly();
-    };
-    
     const handleDateClick = (date: Date) => {
         // 타임존 문제 방지: 로컬 날짜를 YYYY-MM-DD 형식으로 변환
         const year = date.getFullYear();
@@ -54,12 +47,12 @@ export const CalendarPage = () => {
                     </div>
                 ) : (
                     <Calendar 
-                        budgetStart={monthlyData?.period?.startDate ? parseLocalDate(monthlyData.period.startDate) : undefined}
-                        budgetEnd={monthlyData?.period?.endDate ? parseLocalDate(monthlyData.period.endDate) : undefined}
-                        dailyAmounts={monthlyData?.dailySummaries?.map(d => ({
-                            date: parseLocalDate(d.date),
+                        budgetStart={monthlyData?.period?.startDate ? new Date(monthlyData.period.startDate) : undefined}
+                        budgetEnd={monthlyData?.period?.endDate ? new Date(monthlyData.period.endDate) : undefined}
+                        dailySummaries={monthlyData?.dailySummaries.map(d => ({
+                            date: new Date(d.date),
                             amount: d.totalAmount,
-                            withinPeriod: d.isWithinPeriod
+                            withinPeriod: d.withinPeriod
                         }))}
                         onDateClick={handleDateClick}
                         onMonthChange={setCurrentDate}
@@ -71,11 +64,7 @@ export const CalendarPage = () => {
 
             {/* 카테고리 리스트 섹션 - 항상 표시 */}
             <section className="w-full flex-1 overflow-y-auto min-h-0 bg-[#1F1F1F] pt-4">
-                <CategoryList
-                    categories={dailyData?.categories}
-                    spentDate={selectedDate || undefined}
-                    onRefresh={handleRefreshAll}
-                />
+                <CategoryList categories={dailyData?.categories} />
             </section>
 
             {/* 하단 네비게이션 */}
