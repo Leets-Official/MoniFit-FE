@@ -45,9 +45,18 @@ export function DateGrid({
     return dailySummaries.find(summary => isSameDate(summary.date, date));
   };
 
+  // 서버의 withinPeriod 값 우선 사용, 없으면 기존 로직으로 폴백
   const isInBudgetPeriod = (date: Date) => {
+    const summary = getDailySummary(date);
+    
+    // summary가 있으면 서버의 withinPeriod 값 사용 (타임존 문제 해결)
+    if (summary) {
+      return summary.withinPeriod;
+    }
+    
+    // 폴백: 기존 로직 (다른 페이지 호환성 유지)
     if (!budgetStart || !budgetEnd) return true;
-
+    
     const targetDate = new Date(
       date.getFullYear(),
       date.getMonth(),
