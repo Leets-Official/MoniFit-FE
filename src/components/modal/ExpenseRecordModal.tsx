@@ -18,7 +18,7 @@ const CATEGORIES = [
   { key: "food", label: "식비", icon: <ColoredFoodIcon /> },
   { key: "shopping", label: "쇼핑", icon: <ColoredShopingIcon /> },
   { key: "medical", label: "의료", icon: <ColoredHospitalIcon /> },
-  { key: "life", label: "생활", icon: <ColoredHomeIcon /> },
+  { key: "living", label: "생활", icon: <ColoredHomeIcon /> },
   { key: "etc", label: "기타", icon: <ColoredStarIcon /> },
 ] as const;
 
