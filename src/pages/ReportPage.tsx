@@ -5,7 +5,8 @@ import type { SVGProps } from "react";
 import CategoryList from "@/components/category/CategoryList";
 import { Button } from "@/components/common/Button";
 import { Header } from "@/components";
-import { HomeIcon, ReportIcon } from "@/assets/icons";
+import { HomeIcon } from "@/assets/icons";
+import { ReportIcon } from "@/assets/icons/general/ReportIcon";
 import { CalendarIcon } from "@/assets/icons/general/CalendarIcon";
 
 import DonutChart from "@/components/report/DonutChart";
@@ -473,7 +474,7 @@ export const ReportPage = ({ refreshTrigger }: ReportPageProps) => {
             <Button 
               borderColor={"outline"}
               bgColor={"none"}
-              className="flex gap-2 w-[122px] h-[52px] bg-white"
+              className="flex w-[122px] h-[52px] gap-2 bg-white"
             >
               <ReportIcon />
               리포트
