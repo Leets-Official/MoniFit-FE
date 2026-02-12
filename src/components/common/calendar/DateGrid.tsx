@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { DateCell } from "./DateCell";
 
 type DateGridProps = {
@@ -15,6 +14,7 @@ type DateGridProps = {
     withinPeriod: boolean;
   }>;
   onDateClick?: (date: Date) => void;
+  selectedDate?: string | null;
 };
 
 export function DateGrid({
@@ -27,9 +27,8 @@ export function DateGrid({
   budgetEnd,
   dailySummaries = [],
   onDateClick,
+  selectedDate,
 }: DateGridProps) {
-  const [selectedDate, setSelectedDate] = useState<number | null>(null);
-
   const firstdayIndex = new Date(year, month, 1).getDay();
   const prevMonthLastDate = new Date(year, month, 0).getDate();
   const lastDate = new Date(year, month + 1, 0).getDate();
@@ -99,9 +98,16 @@ export function DateGrid({
   };
 
   const handleDateClick = (day: number) => {
-    setSelectedDate(day);
     const clickedDate = new Date(year, month, day);
     onDateClick?.(clickedDate);
+  };
+
+  // selectedDate 문자열을 Date 객체로 변환하여 비교
+  const isSelectedDate = (day: number) => {
+    if (!selectedDate) return false;
+    const currentTarget = new Date(year, month, day);
+    const selected = new Date(selectedDate);
+    return isSameDate(currentTarget, selected);
   };
 
   const prevMonthDates = Array.from({ length: firstdayIndex }, (_, index) => ({
@@ -182,7 +188,7 @@ export function DateGrid({
               day={item.day}
               dayOfWeek={dayOfWeek}
               isCurrentMonth={item.isCurrentMonth}
-              isSelected={selectedDate === item.day}
+              isSelected={isSelectedDate(item.day)}
               onClick={() => handleDateClick(item.day)}
               isInBudgetPeriod={isInBudgetPeriod(currentDate)}
               amount={summary?.amount}

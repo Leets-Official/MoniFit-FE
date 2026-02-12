@@ -109,6 +109,11 @@ export function DateCell({
 
   const isSelectedState = isSelected || isRangeStart || isRangeEnd;
 
+  // 다른 달의 날짜는 숨김 처리
+  if (!isCurrentMonth) {
+    return <div className="w-[36px] h-[36px]" />;
+  }
+
   return (
     <div
       className={clsx(
@@ -147,7 +152,7 @@ export function DateCell({
         
         {/* 금액 영역 - 항상 동일한 높이 유지 */}
         <div className="mt-[2px]" style={{ height: '9px' }}>
-          {amount !== undefined && isInBudgetPeriod && isCurrentMonth && (
+          {amount !== undefined && isInBudgetPeriod && (
             <AmountText 
               amount={amount}
               isSelectedState={!!isSelectedState}
