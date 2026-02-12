@@ -11,7 +11,11 @@ import { useMonthlyCalendar, useDailyCalendar } from "@/api/calendar";
 export const CalendarPage = () => {
     const navigate = useNavigate();
     const [currentDate, setCurrentDate] = useState(new Date());
-    const [selectedDate, setSelectedDate] = useState<string | null>(null);
+    
+    // 오늘 날짜를 기본 선택값으로 설정
+    const today = new Date();
+    const todayString = today.toISOString().split('T')[0];
+    const [selectedDate, setSelectedDate] = useState<string | null>(todayString);
 
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth() + 1;
@@ -20,7 +24,11 @@ export const CalendarPage = () => {
     const { data: dailyData } = useDailyCalendar(selectedDate);
 
     const handleDateClick = (date: Date) => {
-        setSelectedDate(date.toISOString().split('T')[0]);
+        // 타임존 문제 방지: 로컬 날짜를 YYYY-MM-DD 형식으로 변환
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        setSelectedDate(`${year}-${month}-${day}`);
     };
 
     return (
@@ -45,6 +53,7 @@ export const CalendarPage = () => {
                         onDateClick={handleDateClick}
                         onMonthChange={setCurrentDate}
                         currentDate={currentDate}
+                        selectedDate={selectedDate}
                     />
                 )}   
             </section>

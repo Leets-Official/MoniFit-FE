@@ -15,6 +15,7 @@ type CalendarProps = {
     onDateClick?: (date: Date) => void;
     onMonthChange?: (date: Date) => void;
     currentDate?: Date;
+    selectedDate?: string | null;
 }
 
 export function Calendar({ 
@@ -24,7 +25,8 @@ export function Calendar({
     dailySummaries = [],
     onDateClick,
     onMonthChange,
-    currentDate
+    currentDate,
+    selectedDate
 }: CalendarProps) {
     const now = currentDate || new Date();
     const [currentYear, setCurrentYear] = useState(now.getFullYear());
@@ -91,6 +93,7 @@ export function Calendar({
                     budgetEnd={budgetEnd}
                     dailySummaries={dailySummaries}
                     onDateClick={onDateClick}
+                    selectedDate={selectedDate}
                 />
             </div>
         </div>
