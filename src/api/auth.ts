@@ -45,7 +45,7 @@ api.interceptors.response.use(
         }
 
         // API 명세서대로 토큰 재발급 요청
-        const response = await axios.post('/api/v1/auth/reissue', {
+        const response = await axios.post('/auth/reissue', {
           refreshToken: refreshToken
         });
 

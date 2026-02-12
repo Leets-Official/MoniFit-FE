@@ -59,3 +59,14 @@ export async function getMemberMe() {
     throw error;
   }
 }
+
+// 회원탈퇴 API 추가
+export async function deleteMember() {
+  try {
+    const { data } = await api.delete("/members/me");
+    return data;
+  } catch (error) {
+    console.error("Failed to delete member:", getAxiosErrorMessage(error));
+    throw error;
+  }
+}

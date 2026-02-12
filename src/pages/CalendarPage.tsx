@@ -14,8 +14,12 @@ export const CalendarPage = () => {
     
     // 오늘 날짜를 기본 선택값으로 설정
     const today = new Date();
-    const todayString = today.toISOString().split('T')[0];
+    const todayString = `${today.getFullYear()}-${String(
+    today.getMonth() + 1
+    ).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+
     const [selectedDate, setSelectedDate] = useState<string | null>(todayString);
+
 
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth() + 1;

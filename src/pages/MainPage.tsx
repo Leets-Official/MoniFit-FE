@@ -19,8 +19,7 @@ const CATEGORY_LABEL: Record<string, "식비" | "쇼핑" | "의료" | "생활" |
 export const MainPage = () => {
   const navigate = useNavigate();
 
-  const [isReportOpen, setIsReportOpen] = useState(false);
-  const [showModal, setShowModal] = useState(false);
+  /* -------------------- state -------------------- */
   const [loading, setLoading] = useState(true);
   const [expenseAlert, setExpenseAlert] = useState<{ category: string; amount: number } | null>(null);
   const [showStampAlert, setShowStampAlert] = useState(false);
@@ -31,15 +30,20 @@ export const MainPage = () => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
 
-  // 대시보드 데이터 불러오기
+  const [showModal, setShowModal] = useState(false);
+
+  const [alertQueue, setAlertQueue] = useState<AlertType[]>([]);
+  const [currentAlert, setCurrentAlert] =
+    useState<AlertType | null>(null);
+
+  /* -------------------- 데이터 조회 -------------------- */
   useEffect(() => {
     const fetchDashboard = async () => {
       try {
         const data = await getDashboard();
-        
-        // 활성 기간 없으면 예산 설정 화면으로
+
         if (!data.hasPeriod || !data.period) {
-          navigate('/onboarding/budget-setting');
+          navigate("/onboarding/budget-setting");
           return;
         }
 
@@ -47,22 +51,24 @@ export const MainPage = () => {
         setRemainingBudget(data.period.remainingBudget);
         setStartDate(data.period.startDate);
         setEndDate(data.period.endDate);
-        
-        setLoading(false);
       } catch (error) {
-        console.error('대시보드 조회 실패:', error);
-        // 에러 시 로그인 페이지로
-        navigate('/login');
+        console.error("대시보드 조회 실패:", error);
+        navigate("/login");
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchDashboard();
   }, [navigate]);
 
-  // 사용률 계산 (API에서 받은 데이터 기반)
-  const percent = dashboardData?.period 
-    ? (dashboardData.period.remainingBudget / dashboardData.period.budgetAmount) * 100
-    : 100;
+  /* -------------------- 계산 -------------------- */
+  const percent =
+    dashboardData?.period
+      ? (dashboardData.period.remainingBudget /
+          dashboardData.period.budgetAmount) *
+        100
+      : 100;
 
   const fillRatio = Math.min(1, Math.max(0, percent / 100));
 
@@ -70,16 +76,24 @@ export const MainPage = () => {
     const f = parseInt(from.replace("#", ""), 16);
     const tt = parseInt(to.replace("#", ""), 16);
     const r = Math.round(
-      ((f >> 16) & 255) + (((tt >> 16) & 255) - ((f >> 16) & 255)) * t,
+      ((f >> 16) & 255) +
+        (((tt >> 16) & 255) - ((f >> 16) & 255)) * t
     );
     const g = Math.round(
-      ((f >> 8) & 255) + (((tt >> 8) & 255) - ((f >> 8) & 255)) * t,
+      ((f >> 8) & 255) +
+        (((tt >> 8) & 255) - ((f >> 8) & 255)) * t
     );
-    const b = Math.round((f & 255) + ((tt & 255) - (f & 255)) * t);
+    const b = Math.round(
+      (f & 255) + ((tt & 255) - (f & 255)) * t
+    );
     return `rgb(${r} ${g} ${b})`;
   };
 
-  const gradientCenter = mixColor("#7976FF", "#1F1F1F", 1 - fillRatio);
+  const gradientCenter = mixColor(
+    "#7976FF",
+    "#1F1F1F",
+    1 - fillRatio
+  );
 
   const handleSaveExpense = async (expense: number, category: string) => {
     const now = new Date();
@@ -109,13 +123,12 @@ export const MainPage = () => {
     }
   };
 
-  // 날짜 포맷 함수
   const formatDate = (dateString: string) => {
     if (!dateString) return "";
-    return dateString.replace(/-/g, '.');
+    return dateString.replace(/-/g, ".");
   };
 
-  // 로딩 중
+  /* -------------------- 로딩 처리 -------------------- */
   if (loading) {
     return (
       <div className="flex h-full items-center justify-center">
@@ -124,9 +137,13 @@ export const MainPage = () => {
     );
   }
 
+  /* -------------------- UI -------------------- */
   return (
     <main className="relative flex h-full w-full flex-col items-center">
-      <Header showStampButton={true} onStampClick={() => navigate("/stamp")} />
+      <Header
+        showStampButton={true}
+        onStampClick={() => navigate("/stamp")}
+      />
 
       {(expenseAlert || showStampAlert) && (
         <div className="absolute top-16 z-50 flex flex-col items-center gap-3">
@@ -149,41 +166,44 @@ export const MainPage = () => {
       )}
 
       {/* 알림 표시 */}
-      {dashboardData?.alerts?.showWarning && dashboardData?.alerts?.warning && (
-        <div className="mt-4 w-90 rounded-lg bg-yellow-500/20 p-4 text-center">
-          <p className="text-body1 text-yellow-500">
-            {dashboardData.alerts.warning.title}
-          </p>
-          <p className="text-body2 text-gray-300 mt-2">
-            {dashboardData.alerts.warning.message}
-          </p>
-        </div>
-      )}
+      {dashboardData?.alerts?.showWarning &&
+        dashboardData?.alerts?.warning && (
+          <div className="mt-4 w-90 rounded-lg bg-yellow-500/20 p-4 text-center">
+            <p className="text-body1 text-yellow-500">
+              {dashboardData.alerts.warning.title}
+            </p>
+            <p className="text-body2 text-gray-300 mt-2">
+              {dashboardData.alerts.warning.message}
+            </p>
+          </div>
+        )}
 
-      {dashboardData?.alerts?.showOverBudget && dashboardData?.alerts?.overBudget && (
-        <div className="mt-4 w-90 rounded-lg bg-red-500/20 p-4 text-center">
-          <p className="text-body1 text-red-500">
-            {dashboardData.alerts.overBudget.title}
-          </p>
-          <p className="text-body2 text-gray-300 mt-2">
-            {dashboardData.alerts.overBudget.message}
-          </p>
-        </div>
-      )}
+      {dashboardData?.alerts?.showOverBudget &&
+        dashboardData?.alerts?.overBudget && (
+          <div className="mt-4 w-90 rounded-lg bg-red-500/20 p-4 text-center">
+            <p className="text-body1 text-red-500">
+              {dashboardData.alerts.overBudget.title}
+            </p>
+            <p className="text-body2 text-gray-300 mt-2">
+              {dashboardData.alerts.overBudget.message}
+            </p>
+          </div>
+        )}
 
-      {dashboardData?.alerts?.showPeriodComplete && dashboardData?.alerts?.periodComplete && (
-        <div className="mt-4 w-90 rounded-lg bg-green-500/20 p-4 text-center">
-          <p className="text-body1 text-green-500">
-            {dashboardData.alerts.periodComplete.title}
-          </p>
-          <p className="text-body2 text-gray-300 mt-2">
-            {dashboardData.alerts.periodComplete.message1}
-          </p>
-          <p className="text-body2 text-gray-300">
-            {dashboardData.alerts.periodComplete.message2}
-          </p>
-        </div>
-      )}
+      {dashboardData?.alerts?.showPeriodComplete &&
+        dashboardData?.alerts?.periodComplete && (
+          <div className="mt-4 w-90 rounded-lg bg-green-500/20 p-4 text-center">
+            <p className="text-body1 text-green-500">
+              {dashboardData.alerts.periodComplete.title}
+            </p>
+            <p className="text-body2 text-gray-300 mt-2">
+              {dashboardData.alerts.periodComplete.message1}
+            </p>
+            <p className="text-body2 text-gray-300">
+              {dashboardData.alerts.periodComplete.message2}
+            </p>
+          </div>
+        )}
 
       <section className="mt-6.25 flex h-fit w-full justify-center">
         <div className="text-body2 flex h-8 w-fit items-center gap-1 rounded-[60px] bg-[#7976FF80] px-3 py-1.5 text-[#DCDCDC]">
@@ -202,18 +222,27 @@ export const MainPage = () => {
         >
           <Canvas>
             <ambientLight intensity={1.2} />
-            <directionalLight position={[1, 2, 3]} intensity={2.5} />
+            <directionalLight
+              position={[1, 2, 3]}
+              intensity={2.5}
+            />
             <LiquidSphere percent={percent} />
           </Canvas>
         </div>
 
         <div className="absolute -bottom-30 left-1/2 flex -translate-x-1/2 flex-col items-center">
-          <span className="text-body2 text-[#8A8A8A]">남은 금액</span>
+          <span className="text-body2 text-[#8A8A8A]">
+            남은 금액
+          </span>
           <span className="text-h1 text-gray-0 flex max-w-70 items-center gap-2 overflow-x-scroll">
             <span>₩</span>
             <span>{remainingBudget.toLocaleString()}</span>
           </span>
-          <Button width="md" className="mt-3.5" onClick={() => setShowModal(true)}>
+          <Button
+            width="md"
+            className="mt-3.5"
+            onClick={() => setShowModal(true)}
+          >
             지출 입력하기
           </Button>
         </div>
@@ -238,24 +267,42 @@ export const MainPage = () => {
           bgColor="none"
           className="flex gap-2"
           fontColor="white"
-          onClick={() => setIsReportOpen(true)}
+          onClick={() => navigate('/report')}
         >
           <ReportIcon />
           <span>리포트</span>
         </Button>
       </section>
 
-      {isReportOpen && (
-        <div className="fixed inset-0 z-50 bg-transparent">
-          <ReportPage onClose={() => setIsReportOpen(false)} />
-        </div>
-      )}
-
       {showModal && (
         <ModalWrapper onClose={() => setShowModal(false)}>
-          <ExpenseRecordModal onClose={() => setShowModal(false)} onSave={handleSaveExpense} />
+          <ExpenseRecordModal
+            onClose={() => setShowModal(false)}
+            onSave={handleSaveExpense}
+          />
         </ModalWrapper>
+      )}
+
+      {currentAlert && (
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50">
+          <AlertModal
+            type={currentAlert.type}
+            value={
+              currentAlert.type === "지출"
+                ? currentAlert.value
+                : undefined
+            }
+            expense={
+              currentAlert.type === "지출"
+                ? currentAlert.expense
+                : undefined
+            }
+            onClose={handleCloseAlert}
+          />
+        </div>
       )}
     </main>
   );
 };
+
+export default MainPage;

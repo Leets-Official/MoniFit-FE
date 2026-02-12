@@ -66,10 +66,7 @@ const AmountText = ({
       color: isSelectedState ? 'rgba(0, 0, 0, 0.6)' : '#ffffff'
     }}
   >
-    {amount >= 10000 
-      ? `₩${Math.floor(amount / 10000)}만`
-      : `₩${amount.toLocaleString()}`
-    }
+    ₩{amount.toLocaleString()}
   </span>
 );
 

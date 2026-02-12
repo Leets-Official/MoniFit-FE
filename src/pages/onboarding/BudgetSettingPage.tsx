@@ -7,17 +7,15 @@ import { createBudgetPeriod } from "@/api/budgetPeriod";
 
 const BudgetSettingPage = () => {
   const [step, setStep] = useState(1);
-  const [startDate, setStartDate] = useState<string>("");
   const navigate = useNavigate();
 
-  const handlePeriodNext = (selectedDate: string) => {
-    setStartDate(selectedDate);
+  const handlePeriodNext = () => {
     setStep(2);
   };
 
   const handleFinalSubmit = async (amount: number) => {
     try {
-      const result = await createBudgetPeriod(startDate, amount);
+      const result = await createBudgetPeriod(amount);
       
       console.log("예산 생성 성공:", result);
       alert("예산이 성공적으로 등록되었습니다!");

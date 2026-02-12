@@ -11,6 +11,8 @@ import { CategoryButton } from "../CategoryButton";
 import { Input } from "../common/Input";
 import { Button } from "../common/Button";
 import clsx from "clsx";
+import { createExpense } from "@/api/expense";
+import type { ExpenseCreateRequest } from "@/types/expense";
 
 const CATEGORIES = [
   { key: "FOOD", label: "식비", icon: <ColoredFoodIcon /> },
@@ -132,6 +134,11 @@ export const ExpenseRecordModal = ({
               className={"text-body2 absolute -bottom-6 left-2 text-[#CA0111]"}
             >
               금액을 입력하세요
+            </span>
+          )}
+          {error && (
+            <span className="text-body2 absolute -bottom-10 left-2 text-[#CA0111]">
+              {error}
             </span>
           )}
         </div>

@@ -1,9 +1,8 @@
 import { Button } from "@/components/common/Button";
 import { Calendar } from "@/components/common/calendar/Calendar";
-import { useState } from "react";
 
 interface PeriodStepProps {
-  onNext: (startDate: string) => void;
+  onNext: () => void;  // startDate 파라미터 제거
   isFirstLogin?: boolean;
 }
 
@@ -34,7 +33,7 @@ const PeriodStep = ({ onNext, isFirstLogin = true }: PeriodStepProps) => {
       <div className="mt-[45px] w-full flex justify-center">
         <Button 
           width={"lg"} 
-          onClick={() => onNext(selectedDate)} 
+          onClick={() => onNext()}  // 파라미터 없이 호출
           className="w-[285px] h-[63px] px-3 py-2 gap-2 rounded-full bg-[#A8A6FF]"
         >
           다음

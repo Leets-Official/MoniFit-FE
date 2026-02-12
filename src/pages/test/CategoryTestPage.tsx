@@ -42,7 +42,7 @@ export default function CategoryTestPage() {
   return (
     <div className="h-full w-full overflow-auto">
       {sampleData.map((data) => (
-        <CategoryItem key={data.type} data={data} />
+        <CategoryItem key={data.type} data={data} spentDate="2024-01-01" />
       ))}
     </div>
   );

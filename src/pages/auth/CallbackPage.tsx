@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { getDashboard } from '@/api/budgetPeriod';
+import api from '@/api/auth';
 
 export default function CallbackPage() {
   const navigate = useNavigate();
@@ -25,11 +26,9 @@ export default function CallbackPage() {
         console.log('백엔드로 인가 코드 전송:', authorizationCode);
         
         // 1. 카카오 로그인
-        const response = await axios.post(
-          '/api/v1/auth/kakao/login',
-          {
-            authorizationCode: authorizationCode
-          }
+        const response = await api.post(
+          '/auth/kakao/login',
+          { authorizationCode }
         );
 
         const { accessToken, refreshToken } = response.data.data;

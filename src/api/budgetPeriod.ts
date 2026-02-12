@@ -1,6 +1,9 @@
-const API_BASE_URL = '/api/v1';
+import api from '@/api/auth';
 
-// 공통 응답 타입
+//
+// ================= 공통 타입 =================
+//
+
 interface ApiResponse<T> {
   success: boolean;
   data?: T;
@@ -10,19 +13,34 @@ interface ApiResponse<T> {
   } | null;
 }
 
-// 예산 기간 데이터 타입
+//
+// ================= 데이터 타입 =================
+//
+
+// 카테고리별 지출 타입
+interface CategoryExpense {
+  category: string;
+  categoryName: string;
+  amount: number;
+  percentage: number;
+}
+
+// BudgetPeriodData에 categoryExpenses 추가
 interface BudgetPeriodData {
   id: string;
   startDate: string;
   endDate: string;
   budgetAmount: number;
+  totalExpense?: number;
+  savedAmount?: number | null;
+  exceededAmount?: number | null;
   status: string;
   completionType: string | null;
   warningShown: boolean;
   createdAt: string;
+  categoryExpenses?: CategoryExpense[]; 
 }
 
-// 활성 예산 데이터 타입
 interface ActiveBudgetData {
   id: string;
   startDate: string;
@@ -44,7 +62,6 @@ interface ActiveBudgetData {
   warningShown: boolean;
 }
 
-// 완료된 예산 기간 아이템 타입
 interface CompletedPeriodItem {
   id: string;
   startDate: string;
@@ -54,15 +71,28 @@ interface CompletedPeriodItem {
   savedAmount?: number;
   exceededAmount?: number;
   completionType: 'SUCCESS' | 'OVER_BUDGET';
+  categoryExpenses?: CategoryExpense[];
 }
 
-// 완료된 예산 목록 응답 타입
 interface CompletedPeriodsResponse {
   periods: CompletedPeriodItem[];
   totalCount: number;
 }
 
-// 대시보드 데이터 타입
+export interface ExpenseItem {
+  id: string;
+  category: string;
+  categoryName: string;
+  amount: number;
+  spentDate: string;
+  createdAt: string;
+}
+
+interface ExpensesResponse {
+  expenses: ExpenseItem[];
+  totalCount: number;
+}
+
 export interface DashboardData {
   hasPeriod: boolean;
   period: ActiveBudgetData | null;
@@ -89,144 +119,78 @@ export interface DashboardData {
   };
 }
 
-// JWT 토큰 가져오기
-const getAuthToken = (): string => {
-  return localStorage.getItem('accessToken') || '';
-};
+
+//
+// ================= API 함수 =================
+//
 
 // 1. 예산 기간 생성
 export const createBudgetPeriod = async (
-  startDate: string,
   budgetAmount: number
 ): Promise<BudgetPeriodData> => {
-  try {
-    const response = await fetch(`${API_BASE_URL}/budget-periods`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${getAuthToken()}`,
-      },
-      body: JSON.stringify({
-        startDate,
-        budgetAmount
-      })
-    });
 
-    const result: ApiResponse<BudgetPeriodData> = await response.json();
-    
-    if (result.success && result.data) {
-      return result.data;
-    } else {
-      throw new Error(result.error?.message || '예산 생성 실패');
+  const now = new Date();
+  const today =
+    now.getFullYear() +
+    "-" +
+    String(now.getMonth() + 1).padStart(2, "0") +
+    "-" +
+    String(now.getDate()).padStart(2, "0");
+
+  const response = await api.post<ApiResponse<BudgetPeriodData>>(
+    '/budget-periods',
+    {
+      startDate: today,
+      budgetAmount
     }
-  } catch (error) {
-    console.error('createBudgetPeriod 오류:', error);
-    throw error;
-  }
+  );
+
+  return response.data.data!;
 };
 
-// 2. 활성 예산 기간 조회
+
+// 2. 활성 예산 조회
 export const getActiveBudget = async (): Promise<ActiveBudgetData | null> => {
-  try {
-    const response = await fetch(`${API_BASE_URL}/budget-periods/active`, {
-      headers: {
-        'Authorization': `Bearer ${getAuthToken()}`,
-      }
-    });
+  const response = await api.get<ApiResponse<ActiveBudgetData>>(
+    '/budget-periods/active'
+  );
 
-    const result: ApiResponse<ActiveBudgetData> = await response.json();
-    
-    if (result.success && result.data) {
-      return result.data;
-    }
-    return null;
-  } catch (error) {
-    console.error('getActiveBudget 오류:', error);
-    throw error;
-  }
+  return response.data.data ?? null;
 };
 
-// 3. 대시보드 데이터 조회
+
+// 3. 대시보드 조회
 export const getDashboard = async (): Promise<DashboardData> => {
-  try {
-    const response = await fetch(`${API_BASE_URL}/dashboard`, {
-      headers: {
-        'Authorization': `Bearer ${getAuthToken()}`,
-      }
-    });
+  const response = await api.get<ApiResponse<DashboardData>>(
+    '/dashboard'
+  );
 
-    const result: ApiResponse<DashboardData> = await response.json();
-    
-    if (result.success && result.data) {
-      return result.data;
-    } else {
-      throw new Error(result.error?.message || '대시보드 조회 실패');
-    }
-  } catch (error) {
-    console.error('getDashboard 오류:', error);
-    throw error;
-  }
+  return response.data.data!;
 };
+
 
 // 4. 특정 예산 기간 상세 조회
-export const getBudgetPeriod = async (periodId: string): Promise<BudgetPeriodData> => {
-  try {
-    const response = await fetch(`${API_BASE_URL}/budget-periods/${periodId}`, {
-      headers: {
-        'Authorization': `Bearer ${getAuthToken()}`,
-      }
-    });
+export const getBudgetPeriod = async (
+  periodId: string
+): Promise<BudgetPeriodData> => {
 
-    const result: ApiResponse<BudgetPeriodData> = await response.json();
-    
-    if (result.success && result.data) {
-      return result.data;
-    } else {
-      throw new Error(result.error?.message || '예산 조회 실패');
-    }
-  } catch (error) {
-    console.error('getBudgetPeriod 오류:', error);
-    throw error;
-  }
+  const response = await api.get<ApiResponse<BudgetPeriodData>>(
+    `/budget-periods/${periodId}`
+  );
+
+  return response.data.data!;
 };
 
-// 5. 완료된 예산 기간 목록 조회
+
+// 5. 완료된 예산 목록 조회
 export const getCompletedBudgets = async (): Promise<CompletedPeriodItem[]> => {
-  try {
-    const response = await fetch(`${API_BASE_URL}/budget-periods/completed`, {
-      headers: {
-        'Authorization': `Bearer ${getAuthToken()}`,
-      }
-    });
+  const response = await api.get<ApiResponse<CompletedPeriodsResponse>>(
+    '/budget-periods/completed'
+  );
 
-    const result: ApiResponse<CompletedPeriodsResponse> = await response.json();
-    
-    if (result.success && result.data) {
-      return result.data.periods;
-    } else {
-      throw new Error(result.error?.message || '완료 목록 조회 실패');
-    }
-  } catch (error) {
-    console.error('getCompletedBudgets 오류:', error);
-    throw error;
-  }
+  return response.data.data?.periods ?? [];
 };
-  // 지출 항목 타입 (리포트 도넛/카테고리 합산용)
-export interface ExpenseItem {
-  id: number;
-  category: string;
-  categoryName: string;
-  amount: number;
-  spentDate: string;
-  createdAt: string;
-}
 
-// 지출 목록 응답 타입
-interface ExpensesData {
-  expenses: ExpenseItem[];
-  totalCount: number;
-  totalAmount: number;
-}
 
 
 interface AlertDetail {
@@ -277,33 +241,37 @@ export const getExpenses = async (params?: {
   category?: string;
 }): Promise<ExpensesData> => {
   try {
-    const query = new URLSearchParams();
+    console.log('getExpenses 호출:', periodId);
     
-    if (params?.periodId !== undefined) query.set('periodId', String(params.periodId));
-    if (params?.date) query.set('date', params.date);
-    if (params?.category) query.set('category', params.category);
-
-    const queryString = query.toString();
-    const url = queryString
-      ? `${API_BASE_URL}/expenses?${queryString}`
-      : `${API_BASE_URL}/expenses`;
-
-    const response = await fetch(url, {
-      headers: {
-        'Authorization': `Bearer ${getAuthToken()}`,
-      }
-    });
-
-    const result: ApiResponse<ExpensesData> = await response.json();
+    // getBudgetPeriod로 개별 기간 상세 조회
+    const periodData = await getBudgetPeriod(String(periodId));
     
-    if (result.success && result.data) {
-      return result.data;
-    } else {
-      throw new Error(result.error?.message || '지출 목록 조회 실패');
+    console.log('기간 상세 데이터:', periodData);
+    console.log('categoryExpenses:', periodData.categoryExpenses);
+    
+    if (periodData.categoryExpenses && periodData.categoryExpenses.length > 0) {
+      const expenses: ExpenseItem[] = periodData.categoryExpenses.map((cat) => ({
+        id: `${periodId}-${cat.category}`,
+        category: cat.category,
+        categoryName: cat.categoryName,
+        amount: cat.amount,
+        spentDate: periodData.endDate,
+        createdAt: periodData.endDate,
+      }));
+      
+      console.log('변환된 expenses:', expenses);
+      
+      return {
+        expenses,
+        totalCount: expenses.length
+      };
     }
+    
+    console.log('categoryExpenses 없음 - 빈 배열 반환');
+    return { expenses: [], totalCount: 0 };
+    
   } catch (error) {
-    console.error('getExpenses 오류:', error);
-    throw error;
+    console.error('getExpenses 에러:', error);
+    return { expenses: [], totalCount: 0 };
   }
 };
-
