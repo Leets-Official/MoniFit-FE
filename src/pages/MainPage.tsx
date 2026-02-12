@@ -5,7 +5,7 @@ import { CalendarIcon, ReportIcon } from "@/assets/icons";
 import { AlertModal, Button, ExpenseRecordModal, Header, LiquidSphere } from "@/components";
 import { ModalWrapper } from "@/components/modal/ModalWrapper";
 import ReportPage from "./ReportPage";
-import { getDashboard, createExpense, getExpenses } from "@/api/budgetPeriod";
+import { getDashboard, createExpense } from "@/api/budgetPeriod";
 import type { DashboardData } from "@/api/budgetPeriod"; 
 
 const CATEGORY_LABEL: Record<string, "식비" | "쇼핑" | "의료" | "생활" | "기타"> = {
@@ -93,7 +93,7 @@ export const MainPage = () => {
     const spentDate = `${year}-${month}-${day}`;
 
     try {
-      await createExpense(category, expense, spentDate);
+      const result = await createExpense(category, expense, spentDate);
       const data = await getDashboard();
 
       if (data.hasPeriod && data.period) {
@@ -103,12 +103,10 @@ export const MainPage = () => {
         setRemainingBudget(data.period.remainingBudget);
       }
 
-      const expensesData = await getExpenses({ date: spentDate });
-
       setShowModal(false);
       setExpenseAlert({ category, amount: expense });
 
-      if (expensesData.totalCount === 1) {
+      if (result.alerts.showStamp) {
         setShowStampAlert(true);
       }
     } catch (error) {

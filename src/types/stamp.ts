@@ -15,8 +15,8 @@ export interface Period {
 export interface Navigation {
   hasPrevious: boolean;
   hasNext: boolean;
-  previousPeriodId: number;
-  nextPeriodId: number;
+  previousPeriodId: number | null;
+  nextPeriodId: number | null;
 }
 
 export interface StampResponse {

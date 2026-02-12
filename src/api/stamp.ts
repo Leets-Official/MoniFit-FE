@@ -1,3 +1,5 @@
+import { useQuery, keepPreviousData } from "@tanstack/react-query";
+
 import api from "./auth";
 import type { ApiResponse, StampResponse } from "@/types/stamp";
 
@@ -12,4 +14,12 @@ export const getStamps = async (periodId?: number): Promise<StampResponse> => {
   }
 
   return response.data.data;
+};
+
+export const useStamps = (periodId?: number) => {
+  return useQuery({
+    queryKey: ["stamps", periodId] as const,
+    queryFn: () => getStamps(periodId),
+    placeholderData: keepPreviousData,
+  });
 };
