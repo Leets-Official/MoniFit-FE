@@ -4,7 +4,6 @@ import { Canvas } from "@react-three/fiber";
 import { CalendarIcon, ReportIcon } from "@/assets/icons";
 import { AlertModal, Button, ExpenseRecordModal, Header, LiquidSphere } from "@/components";
 import { ModalWrapper } from "@/components/modal/ModalWrapper";
-import ReportPage from "./ReportPage";
 import { getDashboard, createExpense } from "@/api/budgetPeriod";
 import type { DashboardData } from "@/api/budgetPeriod"; 
 
@@ -31,10 +30,6 @@ export const MainPage = () => {
   const [endDate, setEndDate] = useState("");
 
   const [showModal, setShowModal] = useState(false);
-
-  const [alertQueue, setAlertQueue] = useState<AlertType[]>([]);
-  const [currentAlert, setCurrentAlert] =
-    useState<AlertType | null>(null);
 
   /* -------------------- 데이터 조회 -------------------- */
   useEffect(() => {
@@ -283,24 +278,6 @@ export const MainPage = () => {
         </ModalWrapper>
       )}
 
-      {currentAlert && (
-        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50">
-          <AlertModal
-            type={currentAlert.type}
-            value={
-              currentAlert.type === "지출"
-                ? currentAlert.value
-                : undefined
-            }
-            expense={
-              currentAlert.type === "지출"
-                ? currentAlert.expense
-                : undefined
-            }
-            onClose={handleCloseAlert}
-          />
-        </div>
-      )}
     </main>
   );
 };

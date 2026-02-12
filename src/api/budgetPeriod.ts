@@ -217,38 +217,28 @@ export const createExpense = async (
   amount: number,
   spentDate: string
 ): Promise<CreateExpenseResponse> => {
-  const response = await fetch(`${API_BASE_URL}/expenses`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${getAuthToken()}`,
-    },
-    body: JSON.stringify({ category, amount, spentDate })
-  });
+  const response = await api.post<ApiResponse<CreateExpenseResponse>>(
+    '/expenses',
+    { category, amount, spentDate }
+  );
 
-  const result: ApiResponse<CreateExpenseResponse> = await response.json();
-
-  if (!result.success || !result.data) {
-    throw new Error(result.error?.message || '지출 기록 실패');
+  if (!response.data.success || !response.data.data) {
+    throw new Error(response.data.error?.message || '지출 기록 실패');
   }
 
-  return result.data;
+  return response.data.data;
 };
 
 export const getExpenses = async (params?: {
   periodId?: string | number;
   date?: string;
   category?: string;
-}): Promise<ExpensesData> => {
+}): Promise<ExpensesResponse> => {
   try {
-    console.log('getExpenses 호출:', periodId);
-    
-    // getBudgetPeriod로 개별 기간 상세 조회
+    const periodId = params?.periodId;
+
     const periodData = await getBudgetPeriod(String(periodId));
-    
-    console.log('기간 상세 데이터:', periodData);
-    console.log('categoryExpenses:', periodData.categoryExpenses);
-    
+
     if (periodData.categoryExpenses && periodData.categoryExpenses.length > 0) {
       const expenses: ExpenseItem[] = periodData.categoryExpenses.map((cat) => ({
         id: `${periodId}-${cat.category}`,
@@ -258,20 +248,16 @@ export const getExpenses = async (params?: {
         spentDate: periodData.endDate,
         createdAt: periodData.endDate,
       }));
-      
-      console.log('변환된 expenses:', expenses);
-      
+
       return {
         expenses,
         totalCount: expenses.length
       };
     }
-    
-    console.log('categoryExpenses 없음 - 빈 배열 반환');
+
     return { expenses: [], totalCount: 0 };
-    
-  } catch (error) {
-    console.error('getExpenses 에러:', error);
+
+  } catch {
     return { expenses: [], totalCount: 0 };
   }
 };

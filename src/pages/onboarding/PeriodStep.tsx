@@ -2,14 +2,11 @@ import { Button } from "@/components/common/Button";
 import { Calendar } from "@/components/common/calendar/Calendar";
 
 interface PeriodStepProps {
-  onNext: () => void;  // startDate 파라미터 제거
+  onNext: () => void;
   isFirstLogin?: boolean;
 }
 
 const PeriodStep = ({ onNext, isFirstLogin = true }: PeriodStepProps) => {
-  const now = new Date();
-  const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-  const [selectedDate] = useState(today);
 
   return (
     <div className="flex flex-col h-full">

@@ -4,7 +4,6 @@ import type { SVGProps } from "react";
 
 import CategoryList from "@/components/category/CategoryList";
 import { Button } from "@/components/common/Button";
-import { Header } from "@/components";
 import { HomeIcon } from "@/assets/icons";
 import { ReportIcon } from "@/assets/icons/general/ReportIcon";
 import { CalendarIcon } from "@/assets/icons/general/CalendarIcon";
@@ -18,6 +17,7 @@ import TintedHospitalIcon from "@/assets/icons/tinted/TintedHospitalIcon";
 import TintedHomeIcon from "@/assets/icons/tinted/TintedHomeIcon";
 import TintedStarIcon from "@/assets/icons/tinted/TintedStarIcon";
 
+import SideSheet from "@/components/SideSheet/SideSheet";
 import { getDashboard, getExpenses, getCompletedBudgets, type ExpenseItem } from "@/api/budgetPeriod";
 
 type PeriodOption = {
@@ -257,7 +257,7 @@ export const ReportPage = ({ refreshTrigger }: ReportPageProps) => {
         });
         setPeriodOptions(options);
 
-        const exp = await getExpenses(periodId);
+        const exp = await getExpenses({ periodId });
         setDonutItems(buildDonutItems(exp.expenses ?? []));
         setCategories(buildCategoryData(exp.expenses ?? []));
       } catch (e: unknown) {
@@ -328,7 +328,7 @@ export const ReportPage = ({ refreshTrigger }: ReportPageProps) => {
         });
         setPeriodOptions(options);
 
-        const exp = await getExpenses(periodId);
+        const exp = await getExpenses({ periodId });
         setDonutItems(buildDonutItems(exp.expenses ?? []));
         setCategories(buildCategoryData(exp.expenses ?? [])); 
       } catch (e: unknown) {
@@ -361,7 +361,7 @@ export const ReportPage = ({ refreshTrigger }: ReportPageProps) => {
           setExceededAmount((selectedPeriod.exceededAmount ?? 0) as number);
         }
 
-        const exp = await getExpenses(selectedPeriodId);
+        const exp = await getExpenses({ periodId: selectedPeriodId });
         setDonutItems(buildDonutItems(exp.expenses ?? []));
         setCategories(buildCategoryData(exp.expenses ?? []));
       } catch (e: unknown) {
@@ -479,7 +479,7 @@ export const ReportPage = ({ refreshTrigger }: ReportPageProps) => {
           centerTextColor="var(--color-gray-80)"
           budgetTextColor="var(--color-gray-60)"
         />
-      )}
+      </section>
 
       {/* 기간 선택 사이드 패널 */}
       {isPeriodOpen && (
