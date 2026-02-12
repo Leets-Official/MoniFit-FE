@@ -120,7 +120,7 @@ export const MainPage = () => {
   );
 
   /* -------------------- 지출 저장 -------------------- */
-  const handleSaveExpense = (
+  const handleSaveExpense = async (
     response: SaveExpenseResponse
   ) => {
     setShowModal(false);
@@ -146,6 +146,18 @@ export const MainPage = () => {
     setCurrentAlert(alerts[0]);
 
     console.log("지출 등록 완료:", response);
+
+    try {
+    const data = await getDashboard();
+    if (data.hasPeriod && data.period) {
+      setDashboardData(data);
+      setRemainingBudget(data.period.remainingBudget);
+      setStartDate(data.period.startDate);
+      setEndDate(data.period.endDate);
+    }
+  } catch (error) {
+    console.error("대시보드 새로고침 실패:", error);
+  }
   };
 
   const handleCloseAlert = () => {
