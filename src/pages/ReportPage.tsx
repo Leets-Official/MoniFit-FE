@@ -238,7 +238,7 @@ export const ReportPage = ({ onClose }: ReportPageProps) => {
   }, [selectedPeriodId]);
 
   return (
-    <div className="relative z-50 flex h-screen w-full flex-col items-center bg-black pt-20">
+    <div className="relative z-50 flex h-full w-full flex-col items-center bg-black pt-20">
       <SideSheet
         open={isPeriodOpen}
         onClose={() => setIsPeriodOpen(false)}

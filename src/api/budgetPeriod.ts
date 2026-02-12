@@ -229,7 +229,48 @@ interface ExpensesData {
 }
 
 
-// 6. 지출 목록 조회 (리포트용)
+interface AlertDetail {
+  title: string;
+  message: string;
+}
+
+interface CreateExpenseAlerts {
+  expenseInput: AlertDetail;
+  showStamp: boolean;
+  stamp: AlertDetail;
+  showWarning: boolean;
+  warning: AlertDetail;
+  showOverBudget: boolean;
+  overBudget: AlertDetail;
+}
+
+export interface CreateExpenseResponse {
+  alerts: CreateExpenseAlerts;
+}
+
+export const createExpense = async (
+  category: string,
+  amount: number,
+  spentDate: string
+): Promise<CreateExpenseResponse> => {
+  const response = await fetch(`${API_BASE_URL}/expenses`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${getAuthToken()}`,
+    },
+    body: JSON.stringify({ category, amount, spentDate })
+  });
+
+  const result: ApiResponse<CreateExpenseResponse> = await response.json();
+
+  if (!result.success || !result.data) {
+    throw new Error(result.error?.message || '지출 기록 실패');
+  }
+
+  return result.data;
+};
+
 export const getExpenses = async (params?: {
   periodId?: string | number;
   date?: string;

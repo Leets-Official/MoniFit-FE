@@ -8,8 +8,8 @@ interface PeriodStepProps {
 }
 
 const PeriodStep = ({ onNext, isFirstLogin = true }: PeriodStepProps) => {
-  // 오늘 날짜를 기본값으로
-  const today = new Date().toISOString().split('T')[0]; // "2026-02-07" 형식
+  const now = new Date();
+  const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
   const [selectedDate] = useState(today);
 
   return (
