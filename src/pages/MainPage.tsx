@@ -2,11 +2,19 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Canvas } from "@react-three/fiber";
 import { CalendarIcon, ReportIcon } from "@/assets/icons";
-import { Button, ExpenseRecordModal, Header, LiquidSphere } from "@/components";
+import { AlertModal, Button, ExpenseRecordModal, Header, LiquidSphere } from "@/components";
 import { ModalWrapper } from "@/components/modal/ModalWrapper";
 import ReportPage from "./ReportPage";
-import { getDashboard, createExpense } from "@/api/budgetPeriod";
+import { getDashboard, createExpense, getExpenses } from "@/api/budgetPeriod";
 import type { DashboardData } from "@/api/budgetPeriod"; 
+
+const CATEGORY_LABEL: Record<string, "식비" | "쇼핑" | "의료" | "생활" | "기타"> = {
+  FOOD: "식비",
+  SHOPPING: "쇼핑",
+  MEDICAL: "의료",
+  LIVING: "생활",
+  ETC: "기타",
+};
 
 export const MainPage = () => {
   const navigate = useNavigate();
@@ -14,6 +22,8 @@ export const MainPage = () => {
   const [isReportOpen, setIsReportOpen] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [expenseAlert, setExpenseAlert] = useState<{ category: string; amount: number } | null>(null);
+  const [showStampAlert, setShowStampAlert] = useState(false);
   
   // API 데이터 state
   const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
@@ -93,7 +103,14 @@ export const MainPage = () => {
         setRemainingBudget(data.period.remainingBudget);
       }
 
+      const expensesData = await getExpenses({ date: spentDate });
+
       setShowModal(false);
+      setExpenseAlert({ category, amount: expense });
+
+      if (expensesData.totalCount === 1) {
+        setShowStampAlert(true);
+      }
     } catch (error) {
       console.error('지출 기록 실패:', error);
       throw error;
@@ -118,6 +135,26 @@ export const MainPage = () => {
   return (
     <main className="relative flex h-full w-full flex-col items-center">
       <Header showStampButton={true} onStampClick={() => navigate("/stamp")} />
+
+      {(expenseAlert || showStampAlert) && (
+        <div className="absolute top-16 z-50 flex flex-col items-center gap-3">
+          {expenseAlert && (
+            <AlertModal
+              type="지출"
+              value={CATEGORY_LABEL[expenseAlert.category]}
+              expense={expenseAlert.amount}
+              onClose={() => setExpenseAlert(null)}
+            />
+          )}
+          {showStampAlert && (
+            <AlertModal
+              type="스탬프"
+              onClose={() => setShowStampAlert(false)}
+              onNavigate={() => navigate("/stamp")}
+            />
+          )}
+        </div>
+      )}
 
       {/* 알림 표시 */}
       {dashboardData?.alerts?.showWarning && dashboardData?.alerts?.warning && (
