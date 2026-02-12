@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import MyPageTopBar from "./_components/MyPageTopBar";
@@ -7,21 +7,52 @@ import ConfirmAlert from "./_components/ConfirmAlert";
 
 import { AvartarIcon } from "@/assets/icons";
 import { Input } from "@/components";
-import { deleteMember } from "@/api/members";
+import { deleteMember, getMemberMe } from "@/api/members";
 
 type ModalType = "logout" | "withdraw" | null;
 
 export default function MyPageProfilePage() {
   const navigate = useNavigate();
 
-  const initialName = "홍길동";
-  const [name, setName] = useState(initialName);
+  const [initialName, setInitialName] = useState("");
+  const [name, setName] = useState("");
   const [modal, setModal] = useState<ModalType>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isFetching, setIsFetching] = useState(true);
 
-  const isDirty = useMemo(() => name.trim() !== initialName, [name]);
+  // 사용자 정보 가져오기
+  useEffect(() => {
+    const fetchMemberInfo = async () => {
+      try {
+        setIsFetching(true);
+        const response = await getMemberMe();
+        
+        if (response.success && response.data) {
+          const memberName = response.data.name || "";
+          setInitialName(memberName);
+          setName(memberName);
+        }
+      } catch (error) {
+        console.error("사용자 정보 조회 실패:", error);
+        // 에러 발생 시 빈 문자열로 초기화
+        setInitialName("");
+        setName("");
+      } finally {
+        setIsFetching(false);
+      }
+    };
 
-  const handleSave = () => {
+    fetchMemberInfo();
+  }, []);
+
+  const isDirty = useMemo(() => name.trim() !== initialName, [name, initialName]);
+
+  const handleSave = async () => {
+    // TODO: 이름 업데이트 API 호출 (API가 있다면)
+    // await updateMemberName(name);
+    
+    // 임시로 성공 처리
+    setInitialName(name);
     navigate("/mypage");
   };
 
@@ -77,7 +108,7 @@ export default function MyPageProfilePage() {
           <button
             type="button"
             className="text-sub1 text-primary-50 disabled:text-gray-50"
-            disabled={!isDirty}
+            disabled={!isDirty || isFetching}
             onClick={handleSave}
           >
             저장
@@ -98,6 +129,7 @@ export default function MyPageProfilePage() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="이름을 입력하세요"
+            disabled={isFetching}
             className="border-gray-10 text-sub1-size text-gray-0 placeholder:text-sub1-size mt-3 h-11 w-58.75 rounded border-[0.5px] px-4 leading-5.5 font-normal placeholder:leading-5.5 placeholder:font-normal placeholder:text-gray-50"
           />
         </div>
