@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Calendar } from "@/components/common/calendar/Calendar";
 import { Header } from "@/components";
 import CategoryList from "@/components/category/CategoryList";
@@ -8,6 +9,7 @@ import { CalendarIcon } from "@/assets/icons/general/CalendarIcon";
 import { useMonthlyCalendar, useDailyCalendar } from "@/api/calendar";
 
 export const CalendarPage = () => {
+    const navigate = useNavigate();
     const [currentDate, setCurrentDate] = useState(new Date());
     const [selectedDate, setSelectedDate] = useState<string | null>(null);
     
@@ -74,12 +76,13 @@ export const CalendarPage = () => {
                             bgColor={"none"}
                             className="flex gap-2 w-[122px] h-[52px]"
                             fontColor={"white"}
+                            onClick={() => navigate('/report')}
                         >
                             <ReportIcon />
                             리포트
                         </Button>
                     </div>
-                    <div className="cursor-pointer">
+                    <div className="cursor-pointer" onClick={() => navigate('/main')}>
                         <HomeIcon className="w-[52px] h-[52px]" />
                     </div>
                 </div>
