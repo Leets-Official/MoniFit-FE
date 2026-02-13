@@ -40,7 +40,7 @@ export interface ExpenseCreateResponse {
     totalExpense: number;
     remainingBudget: number;
     usageRate: number;
-  };
+  } | null;
 }
 
 // API 응답 래퍼

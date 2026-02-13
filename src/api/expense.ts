@@ -11,7 +11,7 @@ type DeleteExpenseResponse = {
     totalExpense: number;
     remainingBudget: number;
     usageRate: number;
-  };
+  } | null;
 };
 
 // 기존 생성 API (그대로 유지)

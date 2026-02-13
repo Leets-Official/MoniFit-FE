@@ -112,6 +112,52 @@ export const MainPage = () => {
 
     try {
       const result = await createExpense(category, expense, spentDate);
+
+      setShowModal(false);
+      setExpenseAlert({ category, amount: expense });
+
+      if (result.alerts.showStamp) {
+        setShowStampAlert(true);
+      }
+
+      if (result.periodCompleted) {
+        const newRemaining =
+          result.completionType === "OVER_BUDGET" ? -result.exceededAmount : 0;
+        setRemainingBudget(newRemaining);
+
+        setDashboardData((prev) => {
+          if (!prev) return prev;
+          const alerts = { ...prev.alerts };
+
+          if (
+            result.completionType === "OVER_BUDGET" &&
+            result.alerts.overBudget
+          ) {
+            alerts.overBudget = {
+              title: result.alerts.overBudget.title,
+              message: result.alerts.overBudget.message,
+              exceededAmount: result.exceededAmount,
+            };
+          } else if (!alerts.periodComplete) {
+            alerts.periodComplete = {
+              title: "예산 기간 종료",
+              message1: "설정한 예산 기간이 종료되었습니다.",
+              message2: "새로운 예산을 설정해 주세요.",
+              savedAmount: 0,
+            };
+          }
+
+          return { ...prev, alerts };
+        });
+
+        if (result.completionType === "OVER_BUDGET") {
+          setAlertModal("overBudget");
+        } else {
+          setAlertModal("periodComplete");
+        }
+        return;
+      }
+
       const data = await getDashboard();
 
       if (data.hasPeriod && data.period) {
@@ -131,31 +177,15 @@ export const MainPage = () => {
             exceededAmount: data.period.exceededAmount ?? 0,
           };
         }
-        if (data.alerts?.periodComplete) {
-          alerts.periodComplete = data.alerts.periodComplete;
-        }
 
         setDashboardData({ ...data, alerts });
         setRemainingBudget(data.period.remainingBudget);
       }
 
-      setShowModal(false);
-      setExpenseAlert({ category, amount: expense });
-
-      if (result.periodCompleted) {
-        if (result.completionType === "OVER_BUDGET") {
-          setAlertModal("overBudget");
-        } else {
-          setAlertModal("periodComplete");
-        }
-      } else if (result.alerts.showOverBudget) {
+      if (result.alerts.showOverBudget) {
         setAlertModal("overBudget");
       } else if (result.alerts.showWarning) {
         setAlertModal("warning");
-      }
-
-      if (result.alerts.showStamp) {
-        setShowStampAlert(true);
       }
     } catch (error) {
       console.error('지출 기록 실패:', error);
