@@ -7,7 +7,7 @@ import ConfirmAlert from "./_components/ConfirmAlert";
 
 import { AvartarIcon } from "@/assets/icons";
 import { Input } from "@/components";
-import { deleteMember, getMemberMe } from "@/api/members";
+import { deleteMember, getMemberMe, updateMemberName } from "@/api/members";
 
 type ModalType = "logout" | "withdraw" | null;
 
@@ -48,12 +48,16 @@ export default function MyPageProfilePage() {
   const isDirty = useMemo(() => name.trim() !== initialName, [name, initialName]);
 
   const handleSave = async () => {
-    // TODO: 이름 업데이트 API 호출 (API가 있다면)
-    // await updateMemberName(name);
-    
-    // 임시로 성공 처리
-    setInitialName(name);
-    navigate("/mypage");
+    try {
+      setIsLoading(true);
+      await updateMemberName(name.trim());
+      setInitialName(name.trim());
+      navigate("/mypage");
+    } catch {
+      alert("이름 변경에 실패했습니다. 다시 시도해주세요.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const modalInfo = useMemo(() => {
@@ -108,7 +112,7 @@ export default function MyPageProfilePage() {
           <button
             type="button"
             className="text-sub1 text-primary-50 disabled:text-gray-50"
-            disabled={!isDirty || isFetching}
+            disabled={!isDirty || isFetching || isLoading}
             onClick={handleSave}
           >
             저장

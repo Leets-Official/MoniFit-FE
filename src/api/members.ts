@@ -50,6 +50,35 @@ function getAxiosErrorMessage(error: unknown): string {
   return `[${status ?? "NO_STATUS"}] ${serverMessage ?? error.message}`;
 }
 
+export type MemberNameUpdateResponse = {
+  success: boolean;
+  data: {
+    id: number;
+    name: string;
+    email: string;
+  };
+  error?: {
+    code: string;
+    message: string;
+  };
+};
+
+export async function updateMemberName(name: string) {
+  try {
+    const { data } = await api.patch<MemberNameUpdateResponse>(
+      "/members/me/name",
+      { name },
+    );
+    return data;
+  } catch (error) {
+    console.error(
+      "Failed to update member name:",
+      getAxiosErrorMessage(error),
+    );
+    throw error;
+  }
+}
+
 export async function getMemberMe() {
   try {
     const { data } = await api.get<MemberMeResponse>("/members/me");
