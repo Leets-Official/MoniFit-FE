@@ -115,7 +115,24 @@ export const MainPage = () => {
       const data = await getDashboard();
 
       if (data.hasPeriod && data.period) {
-        setDashboardData(data);
+        const alerts = { ...data.alerts };
+
+        if (result.alerts.showWarning && result.alerts.warning) {
+          alerts.warning = {
+            title: result.alerts.warning.title,
+            message: result.alerts.warning.message,
+            dailyRecommendedExpense: data.period.dailyRecommendedExpense,
+          };
+        }
+        if (result.alerts.showOverBudget && result.alerts.overBudget) {
+          alerts.overBudget = {
+            title: result.alerts.overBudget.title,
+            message: result.alerts.overBudget.message,
+            exceededAmount: data.period.exceededAmount ?? 0,
+          };
+        }
+
+        setDashboardData({ ...data, alerts });
         setRemainingBudget(data.period.remainingBudget);
       }
 
@@ -124,9 +141,9 @@ export const MainPage = () => {
 
       if (data.alerts?.showPeriodComplete) {
         setAlertModal("periodComplete");
-      } else if (data.alerts?.showOverBudget) {
+      } else if (result.alerts.showOverBudget) {
         setAlertModal("overBudget");
-      } else if (data.alerts?.showWarning) {
+      } else if (result.alerts.showWarning) {
         setAlertModal("warning");
       }
 
