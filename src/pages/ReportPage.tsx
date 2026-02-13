@@ -17,8 +17,6 @@ import TintedShoppingIcon from "@/assets/icons/tinted/TintedShoppingIcon";
 import TintedHospitalIcon from "@/assets/icons/tinted/TintedHospitalIcon";
 import TintedHomeIcon from "@/assets/icons/tinted/TintedHomeIcon";
 import TintedStarIcon from "@/assets/icons/tinted/TintedStarIcon";
-
-import SideSheet from "@/components/SideSheet/SideSheet";
 import { getDashboard, getExpenses, getCompletedBudgets, type ExpenseItem } from "@/api/budgetPeriod";
 
 type PeriodOption = {
@@ -380,79 +378,6 @@ export const ReportPage = ({ refreshTrigger }: ReportPageProps) => {
   return (
     <div className="relative z-50 flex h-full w-full flex-col items-center bg-[#1F1F1F]">
       <Header />
-      <SideSheet
-        open={isPeriodOpen}
-        onClose={() => setIsPeriodOpen(false)}
-        width={158}
-        side="left"
-        ariaLabel="period select side sheet"
-      >
-        <div className="flex items-center justify-end px-3 pt-3">
-          <button
-            type="button"
-            onClick={() => setIsPeriodOpen(false)}
-            className="grid h-8 w-8 place-items-center rounded-full hover:bg-white/5"
-            aria-label="close"
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-              <path
-                d="M15 18l-6-6 6-6"
-                stroke="white"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </button>
-        </div>
-
-        <div className="px-3 pt-2">
-          <ul className="space-y-2">
-            {periodOptions.map((opt) => {
-              const active = opt.id === selectedPeriodId;
-
-              return (
-                <li key={opt.id}>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setSelectedPeriodId(opt.id);
-                      setIsPeriodOpen(false);
-                    }}
-                    className={[
-                      "w-full rounded-[10px] p-3 text-left",
-                      "flex items-start gap-2",
-                      "transition-colors",
-                      active ? "bg-[#5D57FF]/35" : "hover:bg-white/5",
-                    ].join(" ")}
-                  >
-                    <div className="mt-0.5 shrink-0">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                        <circle cx="12" cy="12" r="9" stroke="#3B82F6" strokeWidth="2" />
-                        <path
-                          d="M12 8v5l3 2"
-                          stroke="#3B82F6"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    </div>
-
-                    <div className="flex flex-col leading-tight">
-                      <span className="text-[12px] text-white/90">{opt.primary}</span>
-                      <span className="mt-1 text-[12px] text-white/70">{opt.secondary}</span>
-                    </div>
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-
-        <div className="flex-1" />
-      </SideSheet>
-
       {/* 기간 선택 사이드 패널 */}
       {isPeriodOpen && (
         <div 
