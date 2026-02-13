@@ -7,9 +7,9 @@ import ConfirmAlert from "./_components/ConfirmAlert";
 
 import { AvartarIcon } from "@/assets/icons";
 import { Input } from "@/components";
-import { deleteMember, getMemberMe } from "@/api/members";
+import { getMemberMe, patchMemberName } from "@/api/members";
 
-type ModalType = "logout" | "withdraw" | null;
+type ModalType = "logout" | null;
 
 export default function MyPageProfilePage() {
   const navigate = useNavigate();
@@ -20,13 +20,12 @@ export default function MyPageProfilePage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(true);
 
-  // 사용자 정보 가져오기
   useEffect(() => {
     const fetchMemberInfo = async () => {
       try {
         setIsFetching(true);
         const response = await getMemberMe();
-        
+
         if (response.success && response.data) {
           const memberName = response.data.name || "";
           setInitialName(memberName);
@@ -34,7 +33,6 @@ export default function MyPageProfilePage() {
         }
       } catch (error) {
         console.error("사용자 정보 조회 실패:", error);
-        // 에러 발생 시 빈 문자열로 초기화
         setInitialName("");
         setName("");
       } finally {
@@ -48,53 +46,38 @@ export default function MyPageProfilePage() {
   const isDirty = useMemo(() => name.trim() !== initialName, [name, initialName]);
 
   const handleSave = async () => {
-    // TODO: 이름 업데이트 API 호출 (API가 있다면)
-    // await updateMemberName(name);
-    
-    // 임시로 성공 처리
-    setInitialName(name);
-    navigate("/mypage");
+    const nextName = name.trim();
+    if (!nextName) return;
+
+    try {
+      setIsLoading(true);
+      const res = await patchMemberName(nextName);
+
+      if (!res.success) {
+        alert(res.error?.message ?? "이름 수정에 실패했습니다.");
+        return;
+      }
+
+      setInitialName(res.data?.name ?? nextName);
+      navigate("/mypage");
+    } catch (error) {
+      console.error("이름 수정 실패:", error);
+      alert("이름 수정에 실패했습니다. 다시 시도해주세요.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const modalInfo = useMemo(() => {
-    if (modal === "logout")
-      return { title: "로그아웃", desc: "로그아웃 할까요?" };
-    if (modal === "withdraw")
-      return {
-        title: "회원탈퇴",
-        desc: "회원탈퇴 시 회원 정보는 복구 되지 않습니다.",
-      };
+    if (modal === "logout") return { title: "로그아웃", desc: "로그아웃 할까요?" };
     return null;
   }, [modal]);
 
   const handleConfirm = async () => {
-    if (modal === "withdraw") {
-      try {
-        setIsLoading(true);
-        
-        // 회원탈퇴 API 호출
-        await deleteMember();
-        
-        // 모든 인증 토큰 및 로컬 데이터 제거
-        localStorage.clear();
-        sessionStorage.clear();
-        
-        setModal(null);
-        
-        // 로그인 페이지로 이동 (replace: true로 뒤로가기 방지)
-        navigate("/login", { replace: true });
-      } catch (error) {
-        console.error("회원탈퇴 실패:", error);
-        alert("회원탈퇴에 실패했습니다. 다시 시도해주세요.");
-        setIsLoading(false); // 에러 시에만 false로 (성공 시는 페이지 이동)
-      }
-    } else if (modal === "logout") {
-      // 로그아웃 처리
-      localStorage.clear();
-      sessionStorage.clear();
-      setModal(null);
-      navigate("/login", { replace: true });
-    }
+    localStorage.clear();
+    sessionStorage.clear();
+    setModal(null);
+    navigate("/login", { replace: true });
   };
 
   return (
@@ -108,7 +91,7 @@ export default function MyPageProfilePage() {
           <button
             type="button"
             className="text-sub1 text-primary-50 disabled:text-gray-50"
-            disabled={!isDirty || isFetching}
+            disabled={!isDirty || isFetching || isLoading}
             onClick={handleSave}
           >
             저장
@@ -129,26 +112,14 @@ export default function MyPageProfilePage() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="이름을 입력하세요"
-            disabled={isFetching}
+            disabled={isFetching || isLoading}
             className="border-gray-10 text-sub1-size text-gray-0 placeholder:text-sub1-size mt-3 h-11 w-58.75 rounded border-[0.5px] px-4 leading-5.5 font-normal placeholder:leading-5.5 placeholder:font-normal placeholder:text-gray-50"
           />
         </div>
 
-        <div className="mt-20 flex w-full items-center justify-center gap-6 text-[15px] font-semibold text-gray-50">
-          <button 
-            type="button" 
-            onClick={() => setModal("logout")}
-            disabled={isLoading}
-          >
+        <div className="mt-20 flex w-full items-center justify-center text-[15px] font-semibold text-gray-50">
+          <button type="button" onClick={() => setModal("logout")} disabled={isLoading}>
             로그아웃
-          </button>
-          <span className="text-gray-50">|</span>
-          <button 
-            type="button" 
-            onClick={() => setModal("withdraw")}
-            disabled={isLoading}
-          >
-            회원탈퇴
           </button>
         </div>
       </section>
