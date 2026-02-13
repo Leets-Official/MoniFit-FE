@@ -4,7 +4,9 @@ type Props = {
   title: string;
   desc?: string;
   onClose: () => void;
-  onConfirm: () => void;
+  onConfirm?: () => void;
+  confirmOnly?: boolean;
+  buttonText?: string;
 };
 
 export default function ConfirmAlert({
@@ -12,6 +14,8 @@ export default function ConfirmAlert({
   desc,
   onClose,
   onConfirm,
+  confirmOnly = false,
+  buttonText,
 }: Props) {
   useEffect(() => {
     const prev = document.body.style.overflow;
@@ -31,17 +35,17 @@ export default function ConfirmAlert({
       />
 
       <div
-        className="absolute top-1/2 left-1/2 h-32 w-67.5 -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-3xl"
+        className="absolute top-1/2 left-1/2 min-h-32 w-67.5 -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-3xl"
         style={{ backgroundColor: "rgba(30, 30, 30)" }}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex h-21 flex-col items-center justify-center px-5 text-center">
+        <div className="flex min-h-21 flex-col items-center justify-center px-5 py-4 text-center">
           <p className="text-gray-0 text-[19px] leading-tight font-semibold">
             {title}
           </p>
 
           {desc ? (
-            <p className="text-gray-0 mt-2 text-[14px] leading-tight font-bold">
+            <p className="text-gray-0 mt-2 whitespace-pre-line text-[14px] leading-tight font-bold">
               {desc}
             </p>
           ) : null}
@@ -50,23 +54,35 @@ export default function ConfirmAlert({
         <div className="h-px w-full bg-white/20" />
 
         <div className="flex h-11">
-          <button
-            type="button"
-            className="flex-1 text-[17px] leading-none font-normal text-[#007AFF]"
-            onClick={onClose}
-          >
-            아니요
-          </button>
+          {confirmOnly ? (
+            <button
+              type="button"
+              className="flex-1 text-[17px] leading-none font-normal text-[#007AFF]"
+              onClick={onClose}
+            >
+              {buttonText ?? "확인"}
+            </button>
+          ) : (
+            <>
+              <button
+                type="button"
+                className="flex-1 text-[17px] leading-none font-normal text-[#007AFF]"
+                onClick={onClose}
+              >
+                아니요
+              </button>
 
-          <div className="w-px bg-white/20" />
+              <div className="w-px bg-white/20" />
 
-          <button
-            type="button"
-            className="flex-1 text-[17px] leading-none font-normal text-[#007AFF]"
-            onClick={onConfirm}
-          >
-            네
-          </button>
+              <button
+                type="button"
+                className="flex-1 text-[17px] leading-none font-normal text-[#007AFF]"
+                onClick={onConfirm}
+              >
+                네
+              </button>
+            </>
+          )}
         </div>
       </div>
     </div>

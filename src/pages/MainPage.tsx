@@ -4,8 +4,11 @@ import { Canvas } from "@react-three/fiber";
 import { CalendarIcon, ReportIcon } from "@/assets/icons";
 import { AlertModal, Button, ExpenseRecordModal, Header, LiquidSphere } from "@/components";
 import { ModalWrapper } from "@/components/modal/ModalWrapper";
+import ConfirmAlert from "@/pages/mypage/_components/ConfirmAlert";
 import { getDashboard, createExpense } from "@/api/budgetPeriod";
 import type { DashboardData } from "@/api/budgetPeriod"; 
+
+type AlertModalType = "warning" | "overBudget" | "periodComplete" | null;
 
 const CATEGORY_LABEL: Record<string, "식비" | "쇼핑" | "의료" | "생활" | "기타"> = {
   FOOD: "식비",
@@ -31,6 +34,8 @@ export const MainPage = () => {
 
   const [showModal, setShowModal] = useState(false);
 
+  const [alertModal, setAlertModal] = useState<AlertModalType>(null);
+
   /* -------------------- 데이터 조회 -------------------- */
   useEffect(() => {
     const fetchDashboard = async () => {
@@ -46,6 +51,14 @@ export const MainPage = () => {
         setRemainingBudget(data.period.remainingBudget);
         setStartDate(data.period.startDate);
         setEndDate(data.period.endDate);
+
+        if (data.alerts?.showPeriodComplete) {
+          setAlertModal("periodComplete");
+        } else if (data.alerts?.showOverBudget) {
+          setAlertModal("overBudget");
+        } else if (data.alerts?.showWarning) {
+          setAlertModal("warning");
+        }
       } catch (error) {
         console.error("대시보드 조회 실패:", error);
         navigate("/login");
@@ -109,6 +122,14 @@ export const MainPage = () => {
       setShowModal(false);
       setExpenseAlert({ category, amount: expense });
 
+      if (data.alerts?.showPeriodComplete) {
+        setAlertModal("periodComplete");
+      } else if (data.alerts?.showOverBudget) {
+        setAlertModal("overBudget");
+      } else if (data.alerts?.showWarning) {
+        setAlertModal("warning");
+      }
+
       if (result.alerts.showStamp) {
         setShowStampAlert(true);
       }
@@ -159,46 +180,6 @@ export const MainPage = () => {
           )}
         </div>
       )}
-
-      {/* 알림 표시 */}
-      {dashboardData?.alerts?.showWarning &&
-        dashboardData?.alerts?.warning && (
-          <div className="mt-4 w-90 rounded-lg bg-yellow-500/20 p-4 text-center">
-            <p className="text-body1 text-yellow-500">
-              {dashboardData.alerts.warning.title}
-            </p>
-            <p className="text-body2 text-gray-300 mt-2">
-              {dashboardData.alerts.warning.message}
-            </p>
-          </div>
-        )}
-
-      {dashboardData?.alerts?.showOverBudget &&
-        dashboardData?.alerts?.overBudget && (
-          <div className="mt-4 w-90 rounded-lg bg-red-500/20 p-4 text-center">
-            <p className="text-body1 text-red-500">
-              {dashboardData.alerts.overBudget.title}
-            </p>
-            <p className="text-body2 text-gray-300 mt-2">
-              {dashboardData.alerts.overBudget.message}
-            </p>
-          </div>
-        )}
-
-      {dashboardData?.alerts?.showPeriodComplete &&
-        dashboardData?.alerts?.periodComplete && (
-          <div className="mt-4 w-90 rounded-lg bg-green-500/20 p-4 text-center">
-            <p className="text-body1 text-green-500">
-              {dashboardData.alerts.periodComplete.title}
-            </p>
-            <p className="text-body2 text-gray-300 mt-2">
-              {dashboardData.alerts.periodComplete.message1}
-            </p>
-            <p className="text-body2 text-gray-300">
-              {dashboardData.alerts.periodComplete.message2}
-            </p>
-          </div>
-        )}
 
       <section className="mt-6.25 flex h-fit w-full justify-center">
         <div className="text-body2 flex h-8 w-fit items-center gap-1 rounded-[60px] bg-[#7976FF80] px-3 py-1.5 text-[#DCDCDC]">
@@ -276,6 +257,42 @@ export const MainPage = () => {
             onSave={handleSaveExpense}
           />
         </ModalWrapper>
+      )}
+
+      {alertModal === "warning" && dashboardData?.alerts?.warning && (
+        <ConfirmAlert
+          title={dashboardData.alerts.warning.title}
+          desc={dashboardData.alerts.warning.message}
+          onClose={() => setAlertModal(null)}
+          confirmOnly
+          buttonText="닫기"
+        />
+      )}
+
+      {alertModal === "overBudget" && dashboardData?.alerts?.overBudget && (
+        <ConfirmAlert
+          title={dashboardData.alerts.overBudget.title}
+          desc={dashboardData.alerts.overBudget.message}
+          onClose={() => {
+            setAlertModal(null);
+            navigate("/onboarding/budget-setting");
+          }}
+          confirmOnly
+          buttonText="예산 재설정 하기"
+        />
+      )}
+
+      {alertModal === "periodComplete" && dashboardData?.alerts?.periodComplete && (
+        <ConfirmAlert
+          title={dashboardData.alerts.periodComplete.title}
+          desc={`${dashboardData.alerts.periodComplete.message1}\n${dashboardData.alerts.periodComplete.message2}`}
+          onClose={() => {
+            setAlertModal(null);
+            navigate("/onboarding/budget-setting");
+          }}
+          confirmOnly
+          buttonText="예산 재설정 하기"
+        />
       )}
 
     </main>
