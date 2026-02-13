@@ -8,6 +8,7 @@ import { CommonCard } from "@/components";
 import { AvartarIcon, ChevronRightIcon } from "@/assets/icons";
 
 import { getMemberMe } from "@/api/members";
+import { getActiveBudget } from "@/api/budgetPeriod";
 import { addDays, formatDotYMD, formatYMD, usageText } from "./mypage.utils";
 
 type CurrentRecord = {
@@ -64,7 +65,7 @@ type MeState = {
 export default function MyPageMainPage() {
   const navigate = useNavigate();
 
-  const currentRecord: CurrentRecord | null = useMemo(() => null, []);
+  const [currentRecord, setCurrentRecord] = useState<CurrentRecord | null>(null);
   const [me, setMe] = useState<MeState>(null);
 
   const emptyPeriod = useMemo(() => {
@@ -92,6 +93,7 @@ export default function MyPageMainPage() {
         if (!mounted) return;
 
         if (res?.success && res.data) {
+          const memberData = res.data;
           setMe({
             name: res.data.name,
             email: res.data.email,
@@ -101,6 +103,31 @@ export default function MyPageMainPage() {
             summarySaved: res.data.summary.savedPeriodCount,
             summaryOver: res.data.summary.exceededPeriodCount,
           });
+          if (memberData.hasEverSetBudget) {
+          try {
+            const active = await getActiveBudget();
+            if (!mounted) return;
+
+            if (active) {
+              setCurrentRecord({
+                startDate: active.startDate,
+                endDate: active.endDate,
+                targetBudget: active.budgetAmount,
+                spentAmount: active.totalExpense,
+              });
+            }
+          } catch (error: unknown) {
+            if (
+              typeof error === "object" &&
+              error !== null &&
+              "response" in error &&
+              (error as { response?: { status?: number } }).response?.status === 404
+            ) {
+              navigate("/budget/setup");
+            }
+          }
+
+        }
           return;
         }
 
@@ -114,7 +141,7 @@ export default function MyPageMainPage() {
     return () => {
       mounted = false;
     };
-  }, []);
+  }, [navigate]);
 
   const userName = me?.name ?? "길동";
   const userEmail = me?.email ?? "user@kakao.com";
