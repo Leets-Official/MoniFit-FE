@@ -131,6 +131,9 @@ export const MainPage = () => {
             exceededAmount: data.period.exceededAmount ?? 0,
           };
         }
+        if (data.alerts?.periodComplete) {
+          alerts.periodComplete = data.alerts.periodComplete;
+        }
 
         setDashboardData({ ...data, alerts });
         setRemainingBudget(data.period.remainingBudget);
@@ -139,8 +142,12 @@ export const MainPage = () => {
       setShowModal(false);
       setExpenseAlert({ category, amount: expense });
 
-      if (data.alerts?.showPeriodComplete) {
-        setAlertModal("periodComplete");
+      if (result.periodCompleted) {
+        if (result.completionType === "OVER_BUDGET") {
+          setAlertModal("overBudget");
+        } else {
+          setAlertModal("periodComplete");
+        }
       } else if (result.alerts.showOverBudget) {
         setAlertModal("overBudget");
       } else if (result.alerts.showWarning) {

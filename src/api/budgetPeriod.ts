@@ -209,6 +209,9 @@ interface CreateExpenseAlerts {
 }
 
 export interface CreateExpenseResponse {
+  periodCompleted: boolean;
+  completionType: string | null;
+  exceededAmount: number;
   alerts: CreateExpenseAlerts;
 }
 
