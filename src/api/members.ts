@@ -26,6 +26,19 @@ export type MemberMeResponse = {
   };
 };
 
+export type PatchMemberNameResponse = {
+  success: boolean;
+  data: {
+    id: number;
+    name: string;
+    email: string;
+  };
+  error?: {
+    code: string;
+    message: string;
+  };
+};
+
 function isRecord(v: unknown): v is Record<string, unknown> {
   return typeof v === "object" && v !== null;
 }
@@ -60,13 +73,22 @@ export async function getMemberMe() {
   }
 }
 
-// 회원탈퇴 API 추가
 export async function deleteMember() {
   try {
     const { data } = await api.delete("/members/me");
     return data;
   } catch (error) {
     console.error("Failed to delete member:", getAxiosErrorMessage(error));
+    throw error;
+  }
+}
+
+export async function patchMemberName(name: string) {
+  try {
+    const { data } = await api.patch<PatchMemberNameResponse>("/members/me/name", { name });
+    return data;
+  } catch (error) {
+    console.error("Failed to patch member name:", getAxiosErrorMessage(error));
     throw error;
   }
 }
