@@ -125,7 +125,7 @@ export default function BudgetProgressCard({
             </p>
           </div>
 
-          <div className="mt-4">
+          <div className="mt-6 pt-2">
             <div className="relative w-68">
               <ProgressBar
                 ratio={state.isOver ? state.overRatio : state.savingRatio}
@@ -136,7 +136,7 @@ export default function BudgetProgressCard({
                 className="absolute -top-7 flex -translate-x-1/2 flex-col items-center"
                 style={{ left: `${state.indicatorLeftPercent}%` }}
               >
-                <span className="text-[10px] text-primary-50">{state.badgeText}</span>
+                <span className="text-[10px] text-primary-50 whitespace-nowrap">{state.badgeText}</span>
                 <img src={ChevronDown} alt="" className="mt-pt h-2.5 w-2.5" />
               </div>
             </div>
