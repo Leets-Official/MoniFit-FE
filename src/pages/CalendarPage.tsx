@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 import { Calendar } from "@/components/common/calendar/Calendar";
 import { Header } from "@/components";
 import CategoryList from "@/components/category/CategoryList";
@@ -10,6 +11,7 @@ import { useMonthlyCalendar, useDailyCalendar } from "@/api/calendar";
 
 export const CalendarPage = () => {
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
     const [currentDate, setCurrentDate] = useState(new Date());
     
     // 오늘 날짜를 기본 선택값으로 설정
@@ -26,6 +28,13 @@ export const CalendarPage = () => {
 
     const { data: monthlyData, isLoading } = useMonthlyCalendar(year, month);
     const { data: dailyData } = useDailyCalendar(selectedDate);
+
+    const handleRefresh = async () => {
+        await Promise.all([
+            queryClient.invalidateQueries({ queryKey: ['calendar', 'monthly', year, month] }),
+            queryClient.invalidateQueries({ queryKey: ['calendar', 'daily', selectedDate] }),
+        ]);
+    };
 
     const handleDateClick = (date: Date) => {
         // 타임존 문제 방지: 로컬 날짜를 YYYY-MM-DD 형식으로 변환
@@ -64,7 +73,11 @@ export const CalendarPage = () => {
 
             {/* 카테고리 리스트 섹션 - 항상 표시 */}
             <section className="w-full flex-1 overflow-y-auto min-h-0 bg-[#1F1F1F] pt-4">
-                <CategoryList categories={dailyData?.categories} />
+                <CategoryList
+                    categories={dailyData?.categories}
+                    spentDate={selectedDate ?? undefined}
+                    onRefresh={handleRefresh}
+                />
             </section>
 
             {/* 하단 네비게이션 */}
